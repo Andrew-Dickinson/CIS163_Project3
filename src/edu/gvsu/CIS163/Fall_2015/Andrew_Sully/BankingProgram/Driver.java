@@ -1,4 +1,4 @@
-package BankingProgram;
+package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 /***********************************************************************
  * Launches the BankingProgram GUI so that the user can interact
