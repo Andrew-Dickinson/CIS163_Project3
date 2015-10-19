@@ -50,6 +50,7 @@ public class SavingsAccount extends Account {
 	 * @param minBalance the new minimum balance to set
 	 ******************************************************************/
 	public void setMinBalance(double minBalance) {
+        //TODO: Fix potential bug where minBalance could be set lower than balance
 		this.minBalance = minBalance;
 	}
 	
