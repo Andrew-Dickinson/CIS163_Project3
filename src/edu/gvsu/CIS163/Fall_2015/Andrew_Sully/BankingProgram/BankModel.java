@@ -2,6 +2,8 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 //TODO: Javadoc this class
 public class BankModel extends AbstractListModel {
@@ -66,7 +68,92 @@ public class BankModel extends AbstractListModel {
         //TODO: Notify the fire thingy
     }
 
-    //TODO: add methods to sort accounts on required fields
+    /*******************************************************************
+     * Sorts the accounts based on the account number
+     * @param sortAscending If true, the accounts are sorted in
+     *                      ascending order. If false, the accounts are
+     *                      sorted in descending order
+     ******************************************************************/
+    public void sortByAccountNumber(final boolean sortAscending){
+        Collections.sort(accounts, new Comparator<Account>() {
+            public int compare(Account a, Account b) {
+                if (!sortAscending){
+                    //Just flip-flop a and b to sort descending
+                    //TODO: Make sure this works
+                    Account temp = a;
+                    a = b;
+                    b = temp;
+                }
+                return a.getNumber().compareTo(b.getNumber());
+            }
+        });
+    }
+
+    /*******************************************************************
+     *  Sort the accounts in ascending order based on the account number
+     ******************************************************************/
+    public void sortByAccountNumber(){
+        //If reverse is not specified, we sort ascending
+        sortByAccountNumber(true);
+    }
+
+    /*******************************************************************
+     * Sorts the accounts based on the account name
+     * @param sortAscending If true, the accounts are sorted in
+     *                      ascending order. If false, the accounts are
+     *                      sorted in descending order
+     ******************************************************************/
+    public void sortByAccountName(final boolean sortAscending){
+        Collections.sort(accounts, new Comparator<Account>() {
+            public int compare(Account a, Account b) {
+                if (!sortAscending){
+                    //Just flip-flop a and b to sort descending
+                    //TODO: Make sure this works
+                    Account temp = a;
+                    a = b;
+                    b = temp;
+                }
+                return a.getOwnerName().compareTo(b.getOwnerName());
+            }
+        });
+    }
+
+    /*******************************************************************
+     *  Sort the accounts in ascending order based on the account name
+     ******************************************************************/
+    public void sortByAccountName(){
+        //If reverse is not specified, we sort ascending
+        sortByAccountName(true);
+    }
+
+    /*******************************************************************
+     * Sorts the accounts based on the date opened
+     * @param sortAscending If true, the accounts are sorted in
+     *                      ascending order. If false, the accounts are
+     *                      sorted in descending order
+     ******************************************************************/
+    public void sortByDateOpened(final boolean sortAscending){
+        Collections.sort(accounts, new Comparator<Account>() {
+            public int compare(Account a, Account b) {
+                if (!sortAscending){
+                    //Just flip-flop a and b to sort descending
+                    //TODO: Make sure this works
+                    Account temp = a;
+                    a = b;
+                    b = temp;
+                }
+                return a.getDateOpened().compareTo(b.getDateOpened());
+            }
+        });
+    }
+
+    /*******************************************************************
+     *  Sort the accounts in ascending order based on the date opened
+     ******************************************************************/
+    public void sortByDateOpened(){
+        //If reverse is not specified, we sort ascending
+        sortByDateOpened(true);
+    }
 
     //TODO: add methods to load/save accounts from/to a binary file
 
