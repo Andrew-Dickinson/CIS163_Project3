@@ -18,7 +18,7 @@ public abstract class Account implements Serializable{
     /**
      * The unique account number for this account
      */
-	private int number;
+	private String number;
 
     /**
      * The name of the owner of this account
@@ -35,10 +35,9 @@ public abstract class Account implements Serializable{
      */
 	private double balance;
 
-	public Account()
-	{
+	public Account() {
         //TODO: Different constructors?
-		number = 0;
+		number = "";
 		owner = "";
 		//dateOpened = "";
 		balance = 0;
@@ -48,7 +47,7 @@ public abstract class Account implements Serializable{
 	 * Gets the account number of this account
 	 * @return The account number
 	 ******************************************************************/
-	public int getNumber() {
+	public String getNumber() {
 		return number;
 	}
 	
@@ -89,7 +88,7 @@ public abstract class Account implements Serializable{
      * Sets the account number
 	 * @param number The new account number for this account
 	 ******************************************************************/
-	public void setNumber(int number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 
