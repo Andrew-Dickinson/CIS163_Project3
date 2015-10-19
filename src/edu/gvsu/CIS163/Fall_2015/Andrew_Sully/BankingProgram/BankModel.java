@@ -36,7 +36,35 @@ public class BankModel extends AbstractListModel {
         return accounts.get(index);
     }
 
-    //TODO: add methods to find, add, delete, and update accounts
+    /*******************************************************************
+     * Adds an account to this model
+     * @param account The account to add
+     ******************************************************************/
+    public void addAccount(Account account){
+        accounts.add(account);
+        //TODO: Notify the fire thingy
+    }
+
+    /*******************************************************************
+     * Removes an account from this model
+     * @param index The index of the account to remove
+     * @throws IndexOutOfBoundsException if index >= this.getSize()
+     ******************************************************************/
+    public void removeAccount(int index){
+        accounts.remove(index);
+        //TODO: Notify the fire thingy
+    }
+
+    /*******************************************************************
+     * Replaces an account with a new one
+     * @param index The index of the account to replace
+     * @param account The new account
+     * @throws IndexOutOfBoundsException if index >= this.getSize()
+     ******************************************************************/
+    public void updateAccount(int index, Account account){
+        accounts.set(index, account);
+        //TODO: Notify the fire thingy
+    }
 
     //TODO: add methods to sort accounts on required fields
 
