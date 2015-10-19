@@ -61,18 +61,34 @@ public class SavingsAccount extends Account {
 		this.interestRate = interestRate;
 	}
 
+
     /*******************************************************************
      * Sets the balance of the account if balance >= this.minBalance
      * @param balance The new balance of the account
      * @throws IllegalArgumentException if balance < this.minBalance
      ******************************************************************/
+    @Override
     public void setBalance(double balance){
+        //TODO: Determine if this is the correct behavior of minBalance
         if (balance > this.minBalance){
             super.setBalance(balance);
         } else {
             throw new IllegalArgumentException();
         }
     }
+
+    /*******************************************************************
+     * Subtract a certain amount (a debit) from the account
+     * @param amount The amount to subtract
+     * @throws IllegalArgumentException if this debit would
+     *                                  cause balance < this.minBalance
+     ******************************************************************/
+    @Override
+    public void subtractDebit(double amount){
+        this.setBalance(getBalance() - amount);
+    }
+
+
 
     //TODO: Clean this up
 //	/* (non-Javadoc)
