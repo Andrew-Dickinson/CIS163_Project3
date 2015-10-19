@@ -78,19 +78,6 @@ public class SavingsAccount extends Account {
         }
     }
 
-    /*******************************************************************
-     * Subtract a certain amount (a debit) from the account
-     * @param amount The amount to subtract
-     * @throws IllegalArgumentException if this debit would
-     *                                  cause balance < this.minBalance
-     ******************************************************************/
-    @Override
-    public void subtractDebit(double amount){
-        this.setBalance(getBalance() - amount);
-    }
-
-
-
     //TODO: Clean this up
 //	/* (non-Javadoc)
 //	 * @see java.lang.Object#toString()

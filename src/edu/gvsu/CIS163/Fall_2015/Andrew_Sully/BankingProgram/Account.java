@@ -116,20 +116,4 @@ public abstract class Account implements Serializable{
 	public void setBalance(double balance) {
 		this.balance = balance;
 	}
-
-    /*******************************************************************
-     * Add a certain amount (a credit) to the account
-     * @param amount The amount to add
-     ******************************************************************/
-    public void addCredit(double amount){
-        balance += amount;
-    }
-
-    /*******************************************************************
-     * Subtract a certain amount (a debit) from the account
-     * @param amount The amount to subtract
-     ******************************************************************/
-    public void subtractDebit(double amount){
-        balance -= amount;
-    }
 }
