@@ -1,29 +1,37 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
+/***********************************************************************
+ * An account that has a minimum balance and an interest rate
+ **********************************************************************/
 public class SavingsAccount extends Account {
-	
+	//TODO: Javadoc
 	private static final long serialVersionUID = 1L;
+    /**
+     * The minimum balance the account must have
+     */
 	private double minBalance;
+    /**
+     * The interest rate for this account
+     */
 	private double interestRate;
-
-	public static void main(String[] args) {
-		
-	}
 	
 	public SavingsAccount() {
+        //TODO: Other constructors
 		this.minBalance = 0;
 		this.interestRate = 0;
 	}
 	
 	/*******************************************************************
-	 * @return the minBalance
+	 * Gets the minimum required balance for this account
+	 * @return the minimum required balance
 	 ******************************************************************/
 	public double getMinBalance() {
 		return minBalance;
 	}
 	
 	/*******************************************************************
-	 * @return the interestRate
+     * Gets the interest rate for this account
+	 * @return the interest rate for this account
 	 ******************************************************************/
 	public double getInterestRate() {
 		return interestRate;
@@ -33,23 +41,40 @@ public class SavingsAccount extends Account {
 	 * @return the serialVersionuid
 	 ******************************************************************/
 	public static long getSerialversionuid() {
-		return serialVersionUID;
+		//TODO: Javadoc this
+        return serialVersionUID;
 	}
 	
 	/*******************************************************************
-	 * @param minBalance the minBalance to set
+     * Sets the minimum balance for this account
+	 * @param minBalance the new minimum balance to set
 	 ******************************************************************/
 	public void setMinBalance(double minBalance) {
 		this.minBalance = minBalance;
 	}
 	
 	/*******************************************************************
-	 * @param interestRate the interestRate to set
+     * Sets the interest rate for this account
+	 * @param interestRate the new interest rate to set
 	 ******************************************************************/
 	public void setInterestRate(double interestRate) {
 		this.interestRate = interestRate;
 	}
 
+    /*******************************************************************
+     * Sets the balance of the account if balance >= this.minBalance
+     * @param balance The new balance of the account
+     * @throws IllegalArgumentException if balance < this.minBalance
+     ******************************************************************/
+    public void setBalance(double balance){
+        if (balance > this.minBalance){
+            super.setBalance(balance);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    //TODO: Clean this up
 //	/* (non-Javadoc)
 //	 * @see java.lang.Object#toString()
 //	 */
