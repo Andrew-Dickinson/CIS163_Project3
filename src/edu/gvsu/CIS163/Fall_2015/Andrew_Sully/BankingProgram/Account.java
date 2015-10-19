@@ -55,7 +55,7 @@ public abstract class Account implements Serializable{
      * Gets the name of the owner of this account
 	 * @return The name of the owner
 	 ******************************************************************/
-	public String getOwner() {
+	public String getOwnerName() {
 		return owner;
 	}
 	
@@ -96,7 +96,7 @@ public abstract class Account implements Serializable{
      * Sets the name of the owner of this account
 	 * @param owner The name of the owner
 	 ******************************************************************/
-	public void setOwner(String owner) {
+	public void setOwnerName(String owner) {
 		this.owner = owner;
 	}
 
