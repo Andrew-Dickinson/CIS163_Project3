@@ -10,7 +10,11 @@ public class BankModel extends AbstractListModel {
      */
     private ArrayList<Account> accounts;
 
-    //TODO: Create constructor
+    public BankModel(){
+        //Create an empty ArrayList of accounts
+        accounts = new ArrayList<Account>();
+        //TODO: Other constructors?
+    }
 
     /*******************************************************************
      * Gets the number of accounts in this BankModel
