@@ -1,9 +1,11 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
+import java.io.Serializable;
+
 /***********************************************************************
  * An account that has a minimum balance and an interest rate
  **********************************************************************/
-public class SavingsAccount extends Account {
+public class SavingsAccount extends Account implements Serializable {
 	//TODO: Javadoc
 	private static final long serialVersionUID = 996106642L;
 

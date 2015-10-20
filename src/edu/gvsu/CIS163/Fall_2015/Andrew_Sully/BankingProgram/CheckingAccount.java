@@ -1,9 +1,11 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
+import java.io.Serializable;
+
 /***********************************************************************
  * An account that has a monthly fee
  **********************************************************************/
-public class CheckingAccount extends Account {
+public class CheckingAccount extends Account implements Serializable {
 	//TODO: Javadoc this variable
 	private static final long serialVersionUID = 920560622L;
 

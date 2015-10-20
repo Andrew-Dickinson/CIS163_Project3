@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 //TODO: Javadoc this class
-public class BankModel extends AbstractListModel {
+public class BankModel extends AbstractListModel implements Serializable {
     /**
      * Stores all of this accounts for this bank
      */
@@ -157,8 +157,44 @@ public class BankModel extends AbstractListModel {
         sortByDateOpened(true);
     }
 
-    //TODO: add methods to load/save accounts from/to a binary file
+    /*******************************************************************
+     * Save the account list to a binary file
+     * @param filePath The place to save the list to
+     * @throws IOException if an error occurs while writing the file
+     ******************************************************************/
+    public void saveToBinaryFile(String filePath) throws IOException{
+        //TODO: Test this method
+        FileOutputStream fileOut = new FileOutputStream(filePath);
+        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        for (Account account : accounts){
+            out.writeObject(account);
+        }
+        out.close();
+        fileOut.close();
+    }
 
+    /*******************************************************************
+     * Load the account list from a binary file
+     * @param filePath The place to load the list from
+     * @throws IOException if an error occurs while reading the file
+     * @throws IllegalArgumentException If the file is formatted wrongly
+     ******************************************************************/
+    public void loadFromBinaryFile(String filePath) throws IOException {
+        //TODO: Test this method
+        try {
+            FileInputStream fileIn = new FileInputStream(filePath);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+
+            BankModel bm = (BankModel) in.readObject();
+            accounts = bm.accounts;
+
+            fileIn.close();
+        } catch(ClassNotFoundException c) {
+            throw new IllegalArgumentException();
+        } catch (ObjectStreamException e){
+            throw new IllegalArgumentException();
+        }
+    }
 
     /*******************************************************************
      * Save the account list to a text file
@@ -190,6 +226,8 @@ public class BankModel extends AbstractListModel {
      ******************************************************************/
     public void loadFromTextFile(String filePath) throws IOException {
         //TODO: Test this method
+        accounts = new ArrayList<Account>();
+
         Scanner fileReader = new Scanner(new File(filePath));
         while (fileReader.hasNextLine()){
             String currentLine = fileReader.nextLine();
@@ -210,6 +248,8 @@ public class BankModel extends AbstractListModel {
 
             //Polymorphic
             incomingAccount.parseFromString(currentLine);
+
+            accounts.add(incomingAccount);
         }
 
     }
