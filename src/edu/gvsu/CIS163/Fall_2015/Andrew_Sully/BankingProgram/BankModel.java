@@ -1,9 +1,11 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import javax.swing.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Scanner;
 
 //TODO: Javadoc this class
 public class BankModel extends AbstractListModel {
@@ -157,7 +159,60 @@ public class BankModel extends AbstractListModel {
 
     //TODO: add methods to load/save accounts from/to a binary file
 
-    //TODO: add methods to load/save accounts from/to a text file
+
+    /*******************************************************************
+     * Save the account list to a text file
+     * @param filePath The place to save the list to
+     * @throws IOException if an error occurs while writing the file
+     ******************************************************************/
+    public void saveToTextFile(String filePath) throws IOException {
+        //TODO: Test this method
+        PrintWriter out;
+
+        out = new PrintWriter(
+                new BufferedWriter(new FileWriter(filePath))
+        );
+
+        //Put each account on its own line
+        for (Account account : accounts){
+            //Write each account based on it's own toString()
+            out.println(account.toString());
+        }
+
+        out.close();
+    }
+
+    /*******************************************************************
+     * Load the account list from a text file
+     * @param filePath The place to load the list from
+     * @throws IllegalArgumentException If the file is formatted wrongly
+     * @throws IOException If something blows up while reading from file
+     ******************************************************************/
+    public void loadFromTextFile(String filePath) throws IOException {
+        //TODO: Test this method
+        Scanner fileReader = new Scanner(new File(filePath));
+        while (fileReader.hasNextLine()){
+            String currentLine = fileReader.nextLine();
+
+            //Look at the first string in the toString() output
+            String accountType = currentLine
+                                   .split(Account.toStringSeparator)[0];
+
+            Account incomingAccount;
+            if (accountType.equals(CheckingAccount.classIdentifier)){
+                incomingAccount = new CheckingAccount();
+            } else if (accountType.equals(
+                                    SavingsAccount.classIdentifier)){
+                incomingAccount = new SavingsAccount();
+            } else {
+                throw new IllegalArgumentException();
+            }
+
+            //Polymorphic
+            incomingAccount.parseFromString(currentLine);
+        }
+
+    }
 
     //TODO: add methods to load/save accounts from/to an XML file
 
