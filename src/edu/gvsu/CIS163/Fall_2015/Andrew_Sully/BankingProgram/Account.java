@@ -16,6 +16,11 @@ public abstract class Account implements Serializable{
 	private static final long serialVersionUID = 959565410L;
 
     /**
+     * The character used to separate the values in toString()
+     */
+    public static final String toStringSeparator = ";";
+
+    /**
      * The unique account number for this account
      */
 	private String number;
@@ -136,7 +141,7 @@ public abstract class Account implements Serializable{
     /*******************************************************************
      * Generates a string representation of this account
      * @return A string in the format:
-     *          "NUMBER;NAME;DATE_OPENED;BALANCE;(Any other parameters)"
+     *       "ID:NUMBER;NAME;DATE_OPENED;BALANCE;(Any other parameters)"
      ******************************************************************/
     @Override
     public abstract String toString();

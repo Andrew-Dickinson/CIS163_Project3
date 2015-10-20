@@ -8,14 +8,14 @@ public class SavingsAccount extends Account {
 	private static final long serialVersionUID = 996106642L;
 
     /**
-     * The character used to separate the values in toString()
+     * Identifies the class for the toString() method
      */
-    private static final String toStringSeparator = ";";
+    public static final String classIdentifier = "SavingsAccount";
 
     /**
      * The number of items represented in the output of toString()
      */
-    private static final int numberOfItemsInToString = 6;
+    private static final int numberOfItemsInToString = 7;
 
     /**
      * The minimum balance the account must have
@@ -43,15 +43,18 @@ public class SavingsAccount extends Account {
         if (parsedStrings.length != numberOfItemsInToString)
             throw new IllegalArgumentException();
 
+        if(!parsedStrings[0].equals(classIdentifier))
+            throw new IllegalArgumentException();
+
         try  {
             //Try to parse out the strings into the various variables
-            setNumber(parsedStrings[0]);
-            setOwnerName(parsedStrings[1]);
+            setNumber(parsedStrings[1]);
+            setOwnerName(parsedStrings[2]);
             //TODO: Find a way to convert a string to a Gregorian calendar
-//            setDateOpened(parsedStrings[2]);
-            setBalance(Double.parseDouble(parsedStrings[3]));
-            setMinBalance(Double.parseDouble(parsedStrings[4]));
-            setInterestRate(Double.parseDouble(parsedStrings[5]));
+//            setDateOpened(parsedStrings[3]);
+            setBalance(Double.parseDouble(parsedStrings[4]));
+            setMinBalance(Double.parseDouble(parsedStrings[5]));
+            setInterestRate(Double.parseDouble(parsedStrings[6]));
         } catch (NumberFormatException e){
             //If the numbers weren't right, it's an argument problem
             throw new IllegalArgumentException();
@@ -121,12 +124,13 @@ public class SavingsAccount extends Account {
     /*******************************************************************
      * Generates a string representation of this account
      * @return A string in the format:
-     *       "NUMBER;NAME;DATE_OPENED;BALANCE;MIN_BALANCE;INTEREST_RATE"
+     *    "ID:NUMBER;NAME;DATE_OPENED;BALANCE;MIN_BALANCE;INTEREST_RATE"
      ******************************************************************/
     @Override
     public String toString(){
         //Hidden toString calls here
-        return    getNumber() + toStringSeparator
+        return  classIdentifier + toStringSeparator
+                + getNumber() + toStringSeparator
                 + getOwnerName() + toStringSeparator
                 + getDateOpened() + toStringSeparator
                 + getBalance() + toStringSeparator

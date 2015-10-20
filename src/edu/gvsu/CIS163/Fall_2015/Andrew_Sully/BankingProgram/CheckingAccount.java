@@ -8,14 +8,14 @@ public class CheckingAccount extends Account {
 	private static final long serialVersionUID = 920560622L;
 
     /**
-     * The character used to separate the values in toString()
+     * Identifies the class for the toString() method
      */
-    private static final String toStringSeparator = ";";
+    public static final String classIdentifier = "CheckingAccount";
 
     /**
      * The number of items represented in the output of toString()
      */
-    private static final int numberOfItemsInToString = 5;
+    private static final int numberOfItemsInToString = 6;
 
     /**
      * The fee to be deducted from this account every month
@@ -38,14 +38,17 @@ public class CheckingAccount extends Account {
         if (parsedStrings.length != numberOfItemsInToString)
             throw new IllegalArgumentException();
 
+        if(!parsedStrings[0].equals(classIdentifier))
+            throw new IllegalArgumentException();
+
         try  {
             //Try to parse out the strings into the various variables
-            setNumber(parsedStrings[0]);
-            setOwnerName(parsedStrings[1]);
+            setNumber(parsedStrings[1]);
+            setOwnerName(parsedStrings[2]);
             //TODO: Find a way to convert a string to a Gregorian calendar
-//            setDateOpened(parsedStrings[2]);
-            setBalance(Double.parseDouble(parsedStrings[3]));
-            setMonthlyFee(Double.parseDouble(parsedStrings[4]));
+//            setDateOpened(parsedStrings[3]);
+            setBalance(Double.parseDouble(parsedStrings[4]));
+            setMonthlyFee(Double.parseDouble(parsedStrings[5]));
         } catch (NumberFormatException e){
             //If the numbers weren't right, it's an argument problem
             throw new IllegalArgumentException();
@@ -74,13 +77,14 @@ public class CheckingAccount extends Account {
     /*******************************************************************
      * Generates a string representation of this account
      * @return A string in the format:
-     *          "NUMBER;NAME;DATE_OPENED;BALANCE;MONTHLY_FEE"
+     *          "ID:NUMBER;NAME;DATE_OPENED;BALANCE;MONTHLY_FEE"
      ******************************************************************/
     @Override
     public String toString(){
         //Hidden toString calls for dateOpened, balance, and monthlyFee
         //toStringSeparator = ";"
-        return    getNumber() + toStringSeparator
+        return  classIdentifier + toStringSeparator
+                + getNumber() + toStringSeparator
                 + getOwnerName() + toStringSeparator
                 + getDateOpened() + toStringSeparator
                 + getBalance() + toStringSeparator
