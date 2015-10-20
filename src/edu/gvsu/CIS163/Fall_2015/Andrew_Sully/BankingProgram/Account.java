@@ -42,6 +42,7 @@ public abstract class Account implements Serializable{
 
 	public Account() {
         //TODO: Different constructors?
+        //TODO: Make sure these get used in subclasses
 
         //Calls to methods to ensure the strings are in valid format
 		setNumber("");
@@ -145,4 +146,22 @@ public abstract class Account implements Serializable{
      ******************************************************************/
     @Override
     public abstract String toString();
+
+    /*******************************************************************
+     * Checks the equality of this and other
+     * @param other The other object to compare to
+     * @return True of they are equal
+     ******************************************************************/
+    @Override
+	public boolean equals(Object other){
+        if (other instanceof Account){
+            //We don't have to check anything else because
+            //these numbers are unique
+            Account o = (Account) other;
+            return o.getNumber().equals(getNumber());
+        }
+
+        //Other is not an Account
+        return false;
+    }
 }

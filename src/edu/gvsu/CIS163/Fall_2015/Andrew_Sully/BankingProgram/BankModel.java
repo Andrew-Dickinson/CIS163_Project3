@@ -45,6 +45,8 @@ public class BankModel extends AbstractListModel implements Serializable {
      * @param account The account to add
      ******************************************************************/
     public void addAccount(Account account){
+        if (hasAccountNumber(account.getNumber()))
+            throw new IllegalArgumentException();
         accounts.add(account);
         //TODO: Notify the fire thingy
     }
@@ -66,8 +68,27 @@ public class BankModel extends AbstractListModel implements Serializable {
      * @throws IndexOutOfBoundsException if index >= this.getSize()
      ******************************************************************/
     public void updateAccount(int index, Account account){
-        accounts.set(index, account);
+        accounts.remove(index);
+        if (hasAccountNumber(account.getOwnerName()))
+            throw new IllegalArgumentException();
+        accounts.add(index, account);
         //TODO: Notify the fire thingy
+    }
+
+    /*******************************************************************
+     * Check if this BankModel has an account with a certain number
+     * @param number The number to check for
+     * @return True if there is an account with accountNumber = number
+     ******************************************************************/
+    public boolean hasAccountNumber(String number){
+        for (Account account : accounts){
+            if (account.getNumber().equals(number)){
+                return true;
+            }
+        }
+
+        //We didn't find it
+        return false;
     }
 
     /*******************************************************************
@@ -265,4 +286,35 @@ public class BankModel extends AbstractListModel implements Serializable {
     //fireIntervalAdded(), fireIntervalRemoved(), and fireContentsChanged()
     //The BankModel class inherits these methods from the
     //AbstractListModel class.
+
+    /*******************************************************************
+     * Test if other contains the same accounts sorted in the same way
+     * @param other Another object
+     * @return True if other is a BankModel and contains the same
+     *         accounts sorted in the same way
+     ******************************************************************/
+    @Override
+    public boolean equals(Object other){
+        if (!(other instanceof BankModel))
+            return false;
+
+        BankModel o = (BankModel) other;
+
+        //So we don't go out of bounds
+        int minSize;
+        if (o.getSize() < getSize()){
+            minSize = o.getSize();
+        } else {
+            minSize = getSize();
+        }
+
+        for (int i = 0; i < minSize; i++){
+            if (!o.getElementAt(i).equals(getElementAt(i))){
+                //If any are unequal,
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
