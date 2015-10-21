@@ -20,7 +20,13 @@ public class BankModel extends AbstractListModel implements Serializable {
     public BankModel(){
         //Create an empty ArrayList of accounts
         accounts = new ArrayList<Account>();
-        //TODO: Other constructors?
+    }
+
+    public BankModel(ArrayList<Account> accounts){
+        //Done this way so that we can encounter any invalid accounts
+        for (Account account : accounts){
+            addAccount(account);
+        }
     }
 
     /*******************************************************************
