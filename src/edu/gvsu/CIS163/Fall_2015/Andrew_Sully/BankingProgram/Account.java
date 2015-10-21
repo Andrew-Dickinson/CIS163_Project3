@@ -115,11 +115,10 @@ public abstract class Account implements Serializable{
 	}
 	
 	/*******************************************************************
-     *
+     * Gets the serial UID of this class
 	 * @return the serialversionuid
 	 ******************************************************************/
 	public static long getSerialversionuid() {
-		//TODO: Figure out what this does and write javadoc
         return serialVersionUID;
 	}
 	
