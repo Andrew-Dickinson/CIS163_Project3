@@ -123,7 +123,6 @@ public class SavingsAccount extends Account implements Serializable {
      ******************************************************************/
     @Override
     public void setBalance(double balance){
-        //TODO: Determine if this is the correct behavior of minBalance
         if (balance >= this.minBalance){
             super.setBalance(balance);
         } else {
@@ -147,14 +146,4 @@ public class SavingsAccount extends Account implements Serializable {
                 + getMinBalance() + toStringSeparator
                 + getInterestRate();
     }
-
-    //TODO: Clean this up
-//	/* (non-Javadoc)
-//	 * @see java.lang.Object#toString()
-//	 */
-//	@Override
-//	public String toString() {
-//		return "SavingsAccount [minBalance=" + minBalance + ", "
-//		+ "interestRate=" + interestRate + "]";
-//	}
 }
