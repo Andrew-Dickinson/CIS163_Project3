@@ -7,7 +7,9 @@ import java.util.GregorianCalendar;
  * An account that has a monthly fee
  **********************************************************************/
 public class CheckingAccount extends Account implements Serializable {
-	//TODO: Javadoc this variable
+    /**
+     * A unique identifier for this class
+     */
 	private static final long serialVersionUID = 920560622L;
 
     /**

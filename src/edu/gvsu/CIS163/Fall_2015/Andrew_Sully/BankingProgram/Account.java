@@ -12,7 +12,9 @@ import java.util.GregorianCalendar;
  * @author Sully
  **********************************************************************/
 public abstract class Account implements Serializable{
-    //TODO: Javadoc this variable
+    /**
+     * A unique identifier for this class
+     */
 	private static final long serialVersionUID = 959565410L;
 
     /**
