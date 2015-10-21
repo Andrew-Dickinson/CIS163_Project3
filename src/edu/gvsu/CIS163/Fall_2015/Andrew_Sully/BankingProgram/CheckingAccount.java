@@ -62,11 +62,8 @@ public class CheckingAccount extends Account implements Serializable {
 //            setDateOpened(parsedStrings[3]);
             setBalance(Double.parseDouble(parsedStrings[4]));
             setMonthlyFee(Double.parseDouble(parsedStrings[5]));
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException | NullPointerException e){
             //If the numbers weren't right, it's an argument problem
-            throw new IllegalArgumentException();
-        } catch (NullPointerException e){
-            //If one of the strings is null, it's an argument problem
             throw new IllegalArgumentException();
         }
     }
