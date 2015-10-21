@@ -6,7 +6,9 @@ import java.io.Serializable;
  * An account that has a minimum balance and an interest rate
  **********************************************************************/
 public class SavingsAccount extends Account implements Serializable {
-	//TODO: Javadoc
+    /**
+     * A unique identifier for this class
+     */
 	private static final long serialVersionUID = 996106642L;
 
     /**
