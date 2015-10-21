@@ -12,35 +12,36 @@ import java.util.GregorianCalendar;
  * @author Sully
  **********************************************************************/
 public abstract class Account implements Serializable{
-    /**
+	private double balance;
+	
+    /*******************************************************************
      * A unique identifier for this class
-     */
+     ******************************************************************/
 	private static final long serialVersionUID = 959565410L;
 
-    /**
+    /*******************************************************************
      * The character used to separate the values in toString()
-     */
+     ******************************************************************/
     public static final String toStringSeparator = ";";
 
-    /**
+    /*******************************************************************
      * The unique account number for this account
-     */
+     ******************************************************************/
 	private String number;
 
-    /**
+    /*******************************************************************
      * The name of the owner of this account
-     */
+     ******************************************************************/
 	private String owner;
 
-    /**
+    /*******************************************************************
      * The date that this account was created
-     */
+     ******************************************************************/
 	private GregorianCalendar dateOpened;
 
-    /**
+    /*******************************************************************
      * The current balance of the account
-     */
-	private double balance;
+     ******************************************************************/
 
     public Account(String number, String ownerName,
                    GregorianCalendar dateOpened, double balance){
@@ -51,8 +52,6 @@ public abstract class Account implements Serializable{
 
         this.dateOpened = dateOpened;
     }
-
-
 
     /*******************************************************************
      * Set account instance variables based on a dataString

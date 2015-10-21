@@ -12,9 +12,9 @@ import java.util.Scanner;
  * various ways and saved to and read from disk in a variety of formats
  **********************************************************************/
 public class BankModel extends AbstractListModel implements Serializable {
-    /**
+    /*******************************************************************
      * Stores all of this accounts for this bank
-     */
+     ******************************************************************/
     private ArrayList<Account> accounts;
 
     public BankModel(){

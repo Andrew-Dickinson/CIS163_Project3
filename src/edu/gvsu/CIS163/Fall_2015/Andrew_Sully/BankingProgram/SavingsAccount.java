@@ -7,28 +7,28 @@ import java.util.GregorianCalendar;
  * An account that has a minimum balance and an interest rate
  **********************************************************************/
 public class SavingsAccount extends Account implements Serializable {
-    /**
+    /*******************************************************************
      * A unique identifier for this class
-     */
+     ******************************************************************/
 	private static final long serialVersionUID = 996106642L;
 
-    /**
+    /*******************************************************************
      * Identifies the class for the toString() method
-     */
+     ******************************************************************/
     public static final String classIdentifier = "SavingsAccount";
 
-    /**
+    /*******************************************************************
      * The number of items represented in the output of toString()
-     */
+     ******************************************************************/
     private static final int numberOfItemsInToString = 7;
 
-    /**
+    /*******************************************************************
      * The minimum balance the account must have
-     */
+     ******************************************************************/
 	private double minBalance;
-    /**
+    /*******************************************************************
      * The interest rate for this account
-     */
+     ******************************************************************/
 	private double interestRate;
 
     public SavingsAccount() {

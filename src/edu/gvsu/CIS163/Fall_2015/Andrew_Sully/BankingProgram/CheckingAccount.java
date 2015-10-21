@@ -7,24 +7,24 @@ import java.util.GregorianCalendar;
  * An account that has a monthly fee
  **********************************************************************/
 public class CheckingAccount extends Account implements Serializable {
-    /**
+    /*******************************************************************
      * A unique identifier for this class
-     */
+     ******************************************************************/
 	private static final long serialVersionUID = 920560622L;
 
-    /**
+    /*******************************************************************
      * Identifies the class for the toString() method
-     */
+     ******************************************************************/
     public static final String classIdentifier = "CheckingAccount";
 
-    /**
+    /*******************************************************************
      * The number of items represented in the output of toString()
-     */
+     ******************************************************************/
     private static final int numberOfItemsInToString = 6;
 
-    /**
+    /*******************************************************************
      * The fee to be deducted from this account every month
-     */
+     ******************************************************************/
 	private double monthlyFee;
 
     public CheckingAccount() {

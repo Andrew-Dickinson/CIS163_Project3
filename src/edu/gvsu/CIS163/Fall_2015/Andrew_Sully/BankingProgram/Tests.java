@@ -1,9 +1,8 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
+
 import org.junit.Test;
-
 import java.util.GregorianCalendar;
-
 import static org.junit.Assert.*;
 
 /***********************************************************************
