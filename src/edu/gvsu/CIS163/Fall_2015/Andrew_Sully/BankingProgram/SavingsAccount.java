@@ -91,10 +91,10 @@ public class SavingsAccount extends Account implements Serializable {
 	}
 	
 	/*******************************************************************
-	 * @return the serialVersionuid
+     * Gets the serial version UID for file identification purposes
+	 * @return the serialVersionuid for this class
 	 ******************************************************************/
 	public static long getSerialversionuid() {
-		//TODO: Javadoc this
         return serialVersionUID;
 	}
 	
