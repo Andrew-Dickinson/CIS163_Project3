@@ -124,7 +124,7 @@ public class SavingsAccount extends Account implements Serializable {
     @Override
     public void setBalance(double balance){
         //TODO: Determine if this is the correct behavior of minBalance
-        if (balance > this.minBalance){
+        if (balance >= this.minBalance){
             super.setBalance(balance);
         } else {
             throw new IllegalArgumentException();
