@@ -187,9 +187,7 @@ public class BankModel extends AbstractListModel implements Serializable {
         //TODO: Test this method
         FileOutputStream fileOut = new FileOutputStream(filePath);
         ObjectOutputStream out = new ObjectOutputStream(fileOut);
-        for (Account account : accounts){
-            out.writeObject(account);
-        }
+        out.writeObject(this);
         out.close();
         fileOut.close();
     }
