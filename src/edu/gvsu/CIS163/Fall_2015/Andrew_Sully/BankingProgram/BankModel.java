@@ -206,9 +206,7 @@ public class BankModel extends AbstractListModel implements Serializable {
             accounts = bm.accounts;
 
             fileIn.close();
-        } catch(ClassNotFoundException c) {
-            throw new IllegalArgumentException();
-        } catch (ObjectStreamException e){
+        } catch(ClassNotFoundException | ObjectStreamException c) {
             throw new IllegalArgumentException();
         }
     }
