@@ -184,7 +184,6 @@ public class BankModel extends AbstractListModel implements Serializable {
      * @throws IOException if an error occurs while writing the file
      ******************************************************************/
     public void saveToBinaryFile(String filePath) throws IOException{
-        //TODO: Test this method
         FileOutputStream fileOut = new FileOutputStream(filePath);
         ObjectOutputStream out = new ObjectOutputStream(fileOut);
         out.writeObject(this);
@@ -199,7 +198,6 @@ public class BankModel extends AbstractListModel implements Serializable {
      * @throws IllegalArgumentException If the file is formatted wrongly
      ******************************************************************/
     public void loadFromBinaryFile(String filePath) throws IOException {
-        //TODO: Test this method
         try {
             FileInputStream fileIn = new FileInputStream(filePath);
             ObjectInputStream in = new ObjectInputStream(fileIn);

@@ -107,7 +107,18 @@ public class Tests {
 
     @Test
     public void testSaveToBinaryFile() throws Exception {
-        //TODO: Implement this test
+        BankModel bm = new BankModel();
+        bm.addAccount(new SavingsAccount("b"));
+        bm.addAccount(new SavingsAccount("c"));
+        bm.addAccount(new CheckingAccount("d"));
+        bm.addAccount(new SavingsAccount("a"));
+
+        bm.saveToBinaryFile("test.bnk");
+
+        BankModel newBM = new BankModel();
+        newBM.loadFromBinaryFile("test.bnk");
+
+        assertEquals(bm, newBM);
     }
 
     @Test
