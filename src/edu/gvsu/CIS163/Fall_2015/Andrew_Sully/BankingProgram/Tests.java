@@ -149,6 +149,17 @@ public class Tests {
 
     @Test
     public void testSaveToTextFile() throws Exception {
-        //TODO: Implement this test
+        BankModel bm = new BankModel();
+        bm.addAccount(new SavingsAccount("b"));
+        bm.addAccount(new SavingsAccount("c"));
+        bm.addAccount(new CheckingAccount("d"));
+        bm.addAccount(new SavingsAccount("a"));
+
+        bm.saveToTextFile("test.txt");
+
+        BankModel newBM = new BankModel();
+        newBM.loadFromTextFile("test.txt");
+
+        assertEquals(bm, newBM);
     }
 }
