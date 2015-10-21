@@ -2,6 +2,7 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
@@ -175,6 +176,37 @@ public class CheckingAccount extends Account implements Serializable {
      ******************************************************************/
     @Override
     public void parseFromDOMElement(Element root) {
-        //TODO: Implement this method
+        NodeList accNums = root.getElementsByTagName("AccountNumber");
+        if (accNums.item(0).getFirstChild() != null) {
+            setNumber(accNums.item(0)
+                    .getFirstChild().getTextContent());
+        } else {
+            setNumber("");
+        }
+
+        NodeList ownNames = root.getElementsByTagName("OwnerName");
+        if (ownNames.item(0).getFirstChild() != null){
+            setOwnerName(ownNames.item(0)
+                    .getFirstChild().getTextContent());
+        } else {
+            setOwnerName("");
+        }
+
+
+        NodeList dateOpeneds = root.getElementsByTagName("DateOpened");
+        setDateOpenedInMillis(Long.parseLong(
+                   dateOpeneds.item(0).getFirstChild().getTextContent())
+        );
+
+        NodeList bals = root.getElementsByTagName("Balance");
+        setBalance(Double.parseDouble(
+                        bals.item(0).getFirstChild().getTextContent())
+        );
+
+        NodeList monthFee = root.getElementsByTagName("MonthlyFee");
+        setMonthlyFee(Double.parseDouble(
+                      monthFee.item(0).getFirstChild().getTextContent())
+        );
+
     }
 }
