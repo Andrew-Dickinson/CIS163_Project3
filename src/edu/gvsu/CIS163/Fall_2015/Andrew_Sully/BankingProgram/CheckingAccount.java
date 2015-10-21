@@ -1,5 +1,8 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 
@@ -127,5 +130,51 @@ public class CheckingAccount extends Account implements Serializable {
                 + getDateOpenedInMillis() + toStringSeparator
                 + getBalance() + toStringSeparator
                 + getMonthlyFee();
+    }
+
+    /*******************************************************************
+     * Generates a DOM element that represents this account
+     * @return A DOM element that represents the account
+     ******************************************************************/
+    @Override
+    public Element getDOMNode(Document dom){
+        Element root = dom.createElement(classIdentifier);
+
+        Element accNumber = dom.createElement("AccountNumber");
+        accNumber.appendChild(dom.createTextNode(getNumber()));
+        root.appendChild(accNumber);
+
+        Element ownName = dom.createElement("OwnerName");
+        ownName.appendChild(dom.createTextNode(getOwnerName()));
+        root.appendChild(ownName);
+
+        Element date = dom.createElement("DateOpened");
+        date.appendChild(dom.createTextNode(Long.toString(
+                        getDateOpenedInMillis()))
+        );
+        root.appendChild(date);
+
+        Element balance = dom.createElement("Balance");
+        balance.appendChild(dom.createTextNode(Double.toString(
+                getBalance()
+        )));
+        root.appendChild(balance);
+
+        Element monthlyFee = dom.createElement("MonthlyFee");
+        monthlyFee.appendChild(dom.createTextNode(Double.toString(
+                getMonthlyFee()
+        )));
+        root.appendChild(monthlyFee);
+
+        return root;
+    }
+
+    /*******************************************************************
+     * Parses an account from a DOM element and sets instance variables
+     * @param root The element to parse from
+     ******************************************************************/
+    @Override
+    public void parseFromDOMElement(Element root) {
+        //TODO: Implement this method
     }
 }

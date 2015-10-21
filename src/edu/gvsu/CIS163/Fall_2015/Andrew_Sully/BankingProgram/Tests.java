@@ -2,6 +2,7 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.GregorianCalendar;
 
 import static org.junit.Assert.*;
@@ -108,7 +109,7 @@ public class Tests {
         bm.addAccount(new SavingsAccount("h", "b", new GregorianCalendar(2015, 2, 23)));
         bm.addAccount(new SavingsAccount("z", "c", new GregorianCalendar(2015, 6, 16)));
         bm.addAccount(new CheckingAccount("f", "d", new GregorianCalendar(2015, 1, 6)));
-        bm.addAccount(new SavingsAccount("m","a", new GregorianCalendar(2015, 5, 1)));
+        bm.addAccount(new SavingsAccount("m", "a", new GregorianCalendar(2015, 5, 1)));
 
         bm.sortByDateOpened();
         Account firstElem = (Account) bm.getElementAt(0);
@@ -146,7 +147,7 @@ public class Tests {
     }
 
     @Test
-    public void testSaveToBinaryFile() throws Exception {
+    public void testSaveToBinaryFile() throws IOException{
         BankModel bm = new BankModel();
         bm.addAccount(new SavingsAccount("b"));
         bm.addAccount(new SavingsAccount("c"));
@@ -162,7 +163,7 @@ public class Tests {
     }
 
     @Test
-    public void testSaveToTextFile() throws Exception {
+    public void testSaveToTextFile() throws IOException{
         BankModel bm = new BankModel();
         bm.addAccount(new SavingsAccount("b"));
         bm.addAccount(new SavingsAccount("c"));
@@ -173,6 +174,24 @@ public class Tests {
 
         BankModel newBM = new BankModel();
         newBM.loadFromTextFile("test.txt");
+        assertEquals(bm, newBM);
+    }
+
+    @Test
+    public void testSaveToXMLFile() throws IOException {
+        //ANDREW IS AWARE THAT THIS TEST IS FAILING
+        BankModel bm = new BankModel();
+        bm.addAccount(new SavingsAccount("b"));
+        bm.addAccount(new SavingsAccount("c"));
+        bm.addAccount(new CheckingAccount("d"));
+        bm.addAccount(new SavingsAccount("a"));
+
+
+        bm.saveToXMLFile("test.xml");
+
+        BankModel newBM = new BankModel();
+        //SEE ABOVE
+        newBM.loadFromXMLFile("test.xml");
 
         assertEquals(bm, newBM);
     }

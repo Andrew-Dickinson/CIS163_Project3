@@ -7,6 +7,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 
+import javax.xml.parsers.*;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.*;
+import org.w3c.dom.*;
+
 /***********************************************************************
  * This class contains a collection of accounts that can be sorted in
  * various ways and saved to and read from disk in a variety of formats
@@ -75,7 +85,7 @@ public class BankModel extends AbstractListModel implements Serializable {
      * @param account The new account
      * @throws IndexOutOfBoundsException if index >= this.getSize()
      ******************************************************************/
-    public void updateAccount(int index, Account account){
+    public void updateAccount(int index, Account account) {
         accounts.remove(index);
         if (hasAccountNumber(account.getOwnerName()))
             throw new IllegalArgumentException();
@@ -133,10 +143,10 @@ public class BankModel extends AbstractListModel implements Serializable {
      *                      ascending order. If false, the accounts are
      *                      sorted in descending order
      ******************************************************************/
-    public void sortByAccountName(final boolean sortAscending){
+    public void sortByAccountName(final boolean sortAscending) {
         Collections.sort(accounts, new Comparator<Account>() {
             public int compare(Account a, Account b) {
-                if (!sortAscending){
+                if (!sortAscending) {
                     //Just flip-flop a and b to sort descending
                     Account temp = a;
                     a = b;
@@ -161,10 +171,10 @@ public class BankModel extends AbstractListModel implements Serializable {
      *                      ascending order. If false, the accounts are
      *                      sorted in descending order
      ******************************************************************/
-    public void sortByDateOpened(final boolean sortAscending){
+    public void sortByDateOpened(final boolean sortAscending) {
         Collections.sort(accounts, new Comparator<Account>() {
             public int compare(Account a, Account b) {
-                if (!sortAscending){
+                if (!sortAscending) {
                     //Just flip-flop a and b to sort descending
                     Account temp = a;
                     a = b;
@@ -270,6 +280,104 @@ public class BankModel extends AbstractListModel implements Serializable {
             accounts.add(incomingAccount);
         }
 
+    }
+
+    /*******************************************************************
+     * Uses DOM to save the account list to an xml file
+     * @param filePath The file to save to
+     * @throws IOException if something goes wrong while writing
+     ******************************************************************/
+    public void saveToXMLFile(String filePath) throws IOException {
+        Document dom;
+
+        // instance of a DocumentBuilderFactory
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        try {
+            // use factory to get an instance of document builder
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            // create instance of DOM
+            dom = db.newDocument();
+
+            // create the root element
+            Element rootEle = dom.createElement("accounts");
+
+            //Add an element for each account
+            for (Account account : accounts){
+                Element e = account.getDOMNode(dom);
+                rootEle.appendChild(e);
+            }
+
+            //Add our root element to the main dom
+            dom.appendChild(rootEle);
+
+            Transformer tr = TransformerFactory.newInstance().newTransformer();
+            tr.setOutputProperty(OutputKeys.INDENT, "yes");
+            tr.setOutputProperty(OutputKeys.METHOD, "xml");
+            tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
+            // send DOM to file
+            tr.transform(new DOMSource(dom),
+                    new StreamResult(new FileOutputStream(filePath)));
+
+        } catch (TransformerException | ParserConfigurationException te) {
+            throw new IOException();
+        }
+    }
+
+    /*******************************************************************
+     * Reads an XML representation of a list of accounts and makes them
+     * the accounts of this BankModel
+     * @param filePath The file to read
+     * @throws IOException If any kind of error occurs reading the file
+     ******************************************************************/
+    public void loadFromXMLFile(String filePath) throws IOException{
+        accounts = new ArrayList<Account>();
+
+        Document dom;
+        // Make an  instance of the DocumentBuilderFactory
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        try {
+            // use the factory to take an instance of the document builder
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            // parse using the builder to get the DOM mapping of the    
+            // XML file
+            dom = db.parse(filePath);
+
+            Element doc = dom.getDocumentElement();
+
+            //TODO: Fix this lump of junk. There has to be a better way
+            // of getting the elements of doc
+            //Try doc.getElementByTagName() for each account type. It'll
+            // discard the ordering, but we could work around that with
+            // an int property representing position
+            for (Node n = doc.getFirstChild();
+                        n != null;
+                        n = n.getNextSibling()){
+
+                System.out.println(n);
+                Account a;
+
+                if (!n.getNodeName().equals("")) {
+                    if (n.getNodeName()
+                            .equals(SavingsAccount.classIdentifier)) {
+                        a = new SavingsAccount();
+                    } else if (n.getNodeName()
+                            .equals(CheckingAccount.classIdentifier)) {
+                        a = new CheckingAccount();
+                    } else {
+                        System.out.println(n.getNodeName());
+                        throw new IOException();
+                    }
+
+                    a.parseFromDOMElement((Element) n);
+                    addAccount(a);
+                }
+            }
+
+        } catch (ParserConfigurationException | SAXException pce) {
+            throw new IOException();
+        }
     }
 
     //TODO: add methods to load/save accounts from/to an XML file

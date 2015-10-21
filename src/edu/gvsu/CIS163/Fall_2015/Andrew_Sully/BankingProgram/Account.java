@@ -2,6 +2,9 @@
  * 
  */
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 
@@ -165,6 +168,19 @@ public abstract class Account implements Serializable{
      ******************************************************************/
     @Override
     public abstract String toString();
+
+    /*******************************************************************
+     * Generates a DOM element that represents this account
+     * @param dom The parent document for this element
+     * @return A DOM element that represents the account
+     ******************************************************************/
+    public abstract Element getDOMNode(Document dom);
+
+    /*******************************************************************
+     * Parses an account from an element and sets instance variables
+     * @param element The element to parse from
+     ******************************************************************/
+    public abstract void parseFromDOMElement(Element element);
 
     /*******************************************************************
      * Checks the equality of this and other
