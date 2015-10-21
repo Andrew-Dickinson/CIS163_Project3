@@ -6,13 +6,13 @@ import java.util.GregorianCalendar;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Andrew on 10/20/15.
- */
+/***********************************************************************
+ * Contains basic tests for this package
+ **********************************************************************/
 public class Tests {
 
     @Test(expected=IllegalArgumentException.class)
-    public void testUniquieID(){
+    public void testUniqueID(){
         BankModel bm = new BankModel();
         bm.addAccount(new SavingsAccount("lasdjf"));
         bm.addAccount(new CheckingAccount("lasdjf"));
