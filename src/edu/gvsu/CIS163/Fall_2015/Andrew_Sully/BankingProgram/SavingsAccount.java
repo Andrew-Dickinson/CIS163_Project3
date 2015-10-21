@@ -101,9 +101,11 @@ public class SavingsAccount extends Account implements Serializable {
 	/*******************************************************************
      * Sets the minimum balance for this account
 	 * @param minBalance the new minimum balance to set
+     * @throws IllegalArgumentException if minBalance < this.balance
 	 ******************************************************************/
 	public void setMinBalance(double minBalance) {
-        //TODO: Fix potential bug where minBalance could be set lower than balance
+        if (minBalance < getBalance())
+            throw new IllegalArgumentException();
 		this.minBalance = minBalance;
 	}
 	
