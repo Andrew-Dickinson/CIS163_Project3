@@ -2,11 +2,7 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-<<<<<<< HEAD
-=======
-
 import java.io.IOException;
->>>>>>> origin/master
 import java.util.GregorianCalendar;
 import static org.junit.Assert.*;
 
