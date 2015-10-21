@@ -3,6 +3,7 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
@@ -238,10 +239,44 @@ public class SavingsAccount extends Account implements Serializable {
 
     /*******************************************************************
      * Parses an account from a DOM element and sets instance variables
-     * @param element The element to parse from
+     * @param root The element to parse from
      ******************************************************************/
     @Override
-    public void parseFromDOMElement(Element element) {
-        //TODO: Implement this method
+    public void parseFromDOMElement(Element root) {
+        NodeList accNums = root.getElementsByTagName("AccountNumber");
+        if (accNums.item(0).getFirstChild() != null) {
+            setNumber(accNums.item(0).getFirstChild().getTextContent());
+        } else {
+            setNumber("");
+        }
+
+        NodeList ownNames = root.getElementsByTagName("OwnerName");
+        if (ownNames.item(0).getFirstChild() != null){
+            setOwnerName(ownNames.item(0).getFirstChild().getTextContent());
+        } else {
+            setOwnerName("");
+        }
+
+
+        NodeList dateOpeneds = root.getElementsByTagName("DateOpened");
+        setDateOpenedInMillis(Long.parseLong(
+                        dateOpeneds.item(0).getFirstChild().getTextContent())
+        );
+
+        NodeList bals = root.getElementsByTagName("Balance");
+        setBalance(Double.parseDouble(
+                        bals.item(0).getFirstChild().getTextContent())
+        );
+
+        NodeList minBals = root.getElementsByTagName("MinimumBalance");
+        setMinBalance(Double.parseDouble(
+                minBals.item(0).getFirstChild().getTextContent())
+        );
+
+        NodeList intRates = root.getElementsByTagName("InterestRate");
+        setInterestRate(Double.parseDouble(
+                intRates.item(0).getFirstChild().getTextContent())
+        );
+
     }
 }

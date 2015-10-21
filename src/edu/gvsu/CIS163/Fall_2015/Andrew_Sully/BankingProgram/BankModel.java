@@ -346,33 +346,28 @@ public class BankModel extends AbstractListModel implements Serializable {
 
             Element doc = dom.getDocumentElement();
 
-            //TODO: Fix this lump of junk. There has to be a better way
-            // of getting the elements of doc
-            //Try doc.getElementByTagName() for each account type. It'll
-            // discard the ordering, but we could work around that with
-            // an int property representing position
-            for (Node n = doc.getFirstChild();
-                        n != null;
-                        n = n.getNextSibling()){
+            //TODO: This method looses the order of the xml elements
+            //This could be fixed with the right tag system
 
-                System.out.println(n);
-                Account a;
+            NodeList savingsAccounts = doc
+                  .getElementsByTagName(SavingsAccount.classIdentifier);
+            NodeList checkingAccounts = doc
+                 .getElementsByTagName(CheckingAccount.classIdentifier);
 
-                if (!n.getNodeName().equals("")) {
-                    if (n.getNodeName()
-                            .equals(SavingsAccount.classIdentifier)) {
-                        a = new SavingsAccount();
-                    } else if (n.getNodeName()
-                            .equals(CheckingAccount.classIdentifier)) {
-                        a = new CheckingAccount();
-                    } else {
-                        System.out.println(n.getNodeName());
-                        throw new IOException();
-                    }
+            for (int i = 0; i < savingsAccounts.getLength(); i++){
+                Element accountEl = (Element) savingsAccounts.item(i);
 
-                    a.parseFromDOMElement((Element) n);
-                    addAccount(a);
-                }
+                Account a = new SavingsAccount();
+                a.parseFromDOMElement(accountEl);
+                addAccount(a);
+            }
+
+            for (int i = 0; i < checkingAccounts.getLength(); i++){
+                Element accountEl = (Element) checkingAccounts.item(i);
+
+                Account a = new CheckingAccount();
+                a.parseFromDOMElement(accountEl);
+                addAccount(a);
             }
 
         } catch (ParserConfigurationException | SAXException pce) {
@@ -421,5 +416,15 @@ public class BankModel extends AbstractListModel implements Serializable {
         }
 
         return true;
+    }
+
+    @Override
+    public String toString(){
+        String built = "";
+
+        for (Account account : accounts)
+            built += account + "\n";
+
+        return built;
     }
 }

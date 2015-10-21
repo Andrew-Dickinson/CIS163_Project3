@@ -185,9 +185,9 @@ public class Tests extends TestCase{
     public void testSaveToXMLFile() throws IOException {
         //ANDREW IS AWARE THAT THIS TEST IS FAILING
         BankModel bm = new BankModel();
-        bm.addAccount(new SavingsAccount("b"));
+        bm.addAccount(new SavingsAccount("b", "Sully"));
         bm.addAccount(new SavingsAccount("c"));
-        bm.addAccount(new CheckingAccount("d"));
+        bm.addAccount(new CheckingAccount("d", "Andrew"));
         bm.addAccount(new SavingsAccount("a"));
 
 
