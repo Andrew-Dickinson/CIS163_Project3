@@ -2,6 +2,8 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import org.junit.Test;
 
+import java.util.GregorianCalendar;
+
 import static org.junit.Assert.*;
 
 /**
@@ -102,7 +104,19 @@ public class Tests {
 
     @Test
     public void testSortByDateOpened() {
-        //TODO: Implement this test
+        BankModel bm = new BankModel();
+        bm.addAccount(new SavingsAccount("h", "b", new GregorianCalendar(2015, 2, 23)));
+        bm.addAccount(new SavingsAccount("z", "c", new GregorianCalendar(2015, 6, 16)));
+        bm.addAccount(new CheckingAccount("f", "d", new GregorianCalendar(2015, 1, 6)));
+        bm.addAccount(new SavingsAccount("m","a", new GregorianCalendar(2015, 5, 1)));
+
+        bm.sortByDateOpened();
+        Account firstElem = (Account) bm.getElementAt(0);
+        assertTrue(firstElem.getNumber().equals("f"));
+
+        bm.sortByDateOpened(false);
+        firstElem = (Account) bm.getElementAt(0);
+        assertTrue(firstElem.getNumber().equals("z"));
     }
 
     @Test
