@@ -36,7 +36,6 @@ public class BankModel extends AbstractListModel implements Serializable {
      ******************************************************************/
     @Override
     public Object getElementAt(int index) {
-        //TODO: Determine if this is the correct behavior + update javadoc
         return accounts.get(index);
     }
 
@@ -102,7 +101,6 @@ public class BankModel extends AbstractListModel implements Serializable {
             public int compare(Account a, Account b) {
                 if (!sortAscending){
                     //Just flip-flop a and b to sort descending
-                    //TODO: Make sure this works
                     Account temp = a;
                     a = b;
                     b = temp;
@@ -131,7 +129,6 @@ public class BankModel extends AbstractListModel implements Serializable {
             public int compare(Account a, Account b) {
                 if (!sortAscending){
                     //Just flip-flop a and b to sort descending
-                    //TODO: Make sure this works
                     Account temp = a;
                     a = b;
                     b = temp;
@@ -160,7 +157,6 @@ public class BankModel extends AbstractListModel implements Serializable {
             public int compare(Account a, Account b) {
                 if (!sortAscending){
                     //Just flip-flop a and b to sort descending
-                    //TODO: Make sure this works
                     Account temp = a;
                     a = b;
                     b = temp;
@@ -217,7 +213,6 @@ public class BankModel extends AbstractListModel implements Serializable {
      * @throws IOException if an error occurs while writing the file
      ******************************************************************/
     public void saveToTextFile(String filePath) throws IOException {
-        //TODO: Test this method
         PrintWriter out;
 
         out = new PrintWriter(
@@ -240,7 +235,6 @@ public class BankModel extends AbstractListModel implements Serializable {
      * @throws IOException If something blows up while reading from file
      ******************************************************************/
     public void loadFromTextFile(String filePath) throws IOException {
-        //TODO: Test this method
         accounts = new ArrayList<Account>();
 
         Scanner fileReader = new Scanner(new File(filePath));
