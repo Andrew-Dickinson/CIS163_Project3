@@ -87,8 +87,7 @@ public class CheckingAccount extends Account implements Serializable {
             //Try to parse out the strings into the various variables
             setNumber(parsedStrings[1]);
             setOwnerName(parsedStrings[2]);
-            //TODO: Find a way to convert a string to a Gregorian calendar
-//            setDateOpened(parsedStrings[3]);
+            setDateOpenedInMillis(Long.parseLong(parsedStrings[3]));
             setBalance(Double.parseDouble(parsedStrings[4]));
             setMonthlyFee(Double.parseDouble(parsedStrings[5]));
         } catch (NumberFormatException | NullPointerException e){
@@ -125,7 +124,7 @@ public class CheckingAccount extends Account implements Serializable {
         return  classIdentifier + toStringSeparator
                 + getNumber() + toStringSeparator
                 + getOwnerName() + toStringSeparator
-                + getDateOpened() + toStringSeparator
+                + getDateOpenedInMillis() + toStringSeparator
                 + getBalance() + toStringSeparator
                 + getMonthlyFee();
     }

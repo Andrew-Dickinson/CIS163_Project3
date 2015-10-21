@@ -84,6 +84,14 @@ public abstract class Account implements Serializable{
 	public GregorianCalendar getDateOpened() {
 		return dateOpened;
 	}
+
+    /*******************************************************************
+     * Gets the date that the account was opened
+	 * @return The date the account opened in milliseconds since epoch
+	 ******************************************************************/
+	public long getDateOpenedInMillis() {
+		return dateOpened.getTimeInMillis();
+	}
 	
 	/*******************************************************************
      * Gets the current balance of the account
@@ -130,6 +138,14 @@ public abstract class Account implements Serializable{
 	public void setDateOpened(GregorianCalendar dateOpened) {
 		this.dateOpened = dateOpened;
 	}
+
+    /*******************************************************************
+     * Sets the date that the account was opened
+     * @param milliSec The calendar date in milliseconds since epoch
+     ******************************************************************/
+    public void setDateOpenedInMillis(long milliSec) {
+        dateOpened.setTimeInMillis(milliSec);
+    }
 
 	/*******************************************************************
      * Sets the balance of the account
