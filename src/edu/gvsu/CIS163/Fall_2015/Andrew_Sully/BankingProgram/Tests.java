@@ -106,6 +106,32 @@ public class Tests {
     }
 
     @Test
+    public void testBankModelEquals(){
+        BankModel bm = new BankModel();
+        bm.addAccount(new SavingsAccount("b"));
+        bm.addAccount(new SavingsAccount("c"));
+        bm.addAccount(new CheckingAccount("d"));
+        bm.addAccount(new SavingsAccount("a"));
+
+        BankModel bm2 = new BankModel();
+        bm2.addAccount(new SavingsAccount("b"));
+        bm2.addAccount(new SavingsAccount("c"));
+        bm2.addAccount(new CheckingAccount("d"));
+        bm2.addAccount(new SavingsAccount("a"));
+
+        assertEquals(bm, bm2);
+
+        bm2.sortByAccountNumber();
+        assertNotEquals(bm, bm2);
+
+        bm.sortByAccountNumber();
+        assertEquals(bm, bm2);
+
+        bm2.removeAccount(0);
+        assertNotEquals(bm, bm2);
+    }
+
+    @Test
     public void testSaveToBinaryFile() throws Exception {
         BankModel bm = new BankModel();
         bm.addAccount(new SavingsAccount("b"));
