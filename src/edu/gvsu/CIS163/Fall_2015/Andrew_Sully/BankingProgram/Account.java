@@ -5,15 +5,12 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 
-
 /***********************************************************************
  * A base account class with several
  * instance variables and getters and setters
  * @author Sully
  **********************************************************************/
-public abstract class Account implements Serializable{
-	private double balance;
-	
+public abstract class Account implements Serializable{	
     /*******************************************************************
      * A unique identifier for this class
      ******************************************************************/
@@ -42,6 +39,7 @@ public abstract class Account implements Serializable{
     /*******************************************************************
      * The current balance of the account
      ******************************************************************/
+	private double balance;
 
     public Account(String number, String ownerName,
                    GregorianCalendar dateOpened, double balance){
@@ -178,7 +176,6 @@ public abstract class Account implements Serializable{
             Account o = (Account) other;
             return o.getNumber().equals(getNumber());
         }
-
         //Other is not an Account
         return false;
     }
