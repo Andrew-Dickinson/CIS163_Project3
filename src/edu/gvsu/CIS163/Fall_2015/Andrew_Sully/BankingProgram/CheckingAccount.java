@@ -1,6 +1,7 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import java.io.Serializable;
+import java.util.GregorianCalendar;
 
 /***********************************************************************
  * An account that has a monthly fee
@@ -23,22 +24,48 @@ public class CheckingAccount extends Account implements Serializable {
      * The fee to be deducted from this account every month
      */
 	private double monthlyFee;
-	
-	public CheckingAccount() {
-            //TODO: Other constructors
-			monthlyFee = 0;
-	}
+
+    public CheckingAccount() {
+        this("","", new GregorianCalendar(), 0);
+    }
 
     public CheckingAccount(String number){
-        this();
-        setNumber(number);
+        this(number, "", new GregorianCalendar(), 0);
     }
 
     public CheckingAccount(String number, String name){
-        this(number);
-
-        setOwnerName(name);
+        this(number, name, new GregorianCalendar(), 0);
     }
+
+    public CheckingAccount(String number, String ownerName,
+                          double balance){
+        this(number, ownerName, new GregorianCalendar(), balance);
+    }
+
+    public CheckingAccount(String number, String ownerName,
+                          double balance, double monthlyFee){
+        this(number, ownerName, new GregorianCalendar(),
+                balance, monthlyFee);
+    }
+
+    public CheckingAccount(String number, String ownerName,
+                          GregorianCalendar dateOpened){
+        this(number, ownerName, dateOpened, 0);
+    }
+
+    public CheckingAccount(String number, String ownerName,
+                          GregorianCalendar dateOpened, double balance){
+        this(number, ownerName, dateOpened, balance, 0);
+    }
+
+    public CheckingAccount(String number, String ownerName,
+                          GregorianCalendar dateOpened, double balance,
+                          double monthlyFee){
+        super(number, ownerName, dateOpened, balance);
+
+        setMonthlyFee(monthlyFee);
+    }
+
 
     /*******************************************************************
      * Set account instance variables based on a dataString

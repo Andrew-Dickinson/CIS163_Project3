@@ -1,6 +1,7 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import java.io.Serializable;
+import java.util.GregorianCalendar;
 
 /***********************************************************************
  * An account that has a minimum balance and an interest rate
@@ -29,22 +30,60 @@ public class SavingsAccount extends Account implements Serializable {
      * The interest rate for this account
      */
 	private double interestRate;
-	
-	public SavingsAccount() {
-        //TODO: Other constructors
-		this.minBalance = 0;
-		this.interestRate = 0;
-	}
+
+    public SavingsAccount() {
+        this("","", new GregorianCalendar(), 0);
+    }
 
     public SavingsAccount(String number){
-        this();
-        setNumber(number);
+        this(number, "", new GregorianCalendar(), 0);
     }
 
     public SavingsAccount(String number, String name){
-        this(number);
+        this(number, name, new GregorianCalendar(), 0);
+    }
 
-        setOwnerName(name);
+    public SavingsAccount(String number, String ownerName,
+                          double balance){
+        this(number, ownerName, new GregorianCalendar(), balance);
+    }
+
+    public SavingsAccount(String number, String ownerName,
+                          double balance, double minBalance){
+        this(number, ownerName, new GregorianCalendar(),
+                balance, minBalance);
+    }
+
+    public SavingsAccount(String number, String ownerName,
+                          double balance, double minBalance,
+                          double interestRate){
+        this(number, ownerName, new GregorianCalendar(), balance,
+                minBalance, interestRate);
+    }
+
+    public SavingsAccount(String number, String ownerName,
+                   GregorianCalendar dateOpened){
+        this(number, ownerName, dateOpened, 0);
+    }
+
+    public SavingsAccount(String number, String ownerName,
+                   GregorianCalendar dateOpened, double balance){
+        this(number, ownerName, dateOpened, balance, 0);
+    }
+
+    public SavingsAccount(String number, String ownerName,
+                   GregorianCalendar dateOpened, double balance,
+                   double minBalance){
+        this(number, ownerName, dateOpened, balance, minBalance, 0);
+    }
+
+    public SavingsAccount(String number, String ownerName,
+                   GregorianCalendar dateOpened, double balance,
+                   double minBalance, double interestRate){
+        super(number, ownerName, dateOpened, balance);
+
+        setMinBalance(minBalance);
+        setInterestRate(interestRate);
     }
 
     /*******************************************************************

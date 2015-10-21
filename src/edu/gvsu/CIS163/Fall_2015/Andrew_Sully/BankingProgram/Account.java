@@ -41,17 +41,37 @@ public abstract class Account implements Serializable{
 	private double balance;
 
 	public Account() {
-        //TODO: Different constructors?
-        //TODO: Make sure these get used in subclasses
-
-        //Calls to methods to ensure the strings are in valid format
-		setNumber("");
-		setOwnerName("");
-
-        //TODO: Come up with a better default value
-		//dateOpened = "";
-		balance = 0;
+        this("","", new GregorianCalendar(), 0);
 	}
+
+    public Account(String number){
+        this(number, "", new GregorianCalendar(), 0);
+    }
+
+    public Account(String number, String name){
+        this(number, name, new GregorianCalendar(), 0);
+    }
+
+    public Account(String number, String ownerName, double balance){
+        this(number, ownerName, new GregorianCalendar(), balance);
+    }
+
+    public Account(String number, String ownerName,
+                   GregorianCalendar dateOpened){
+        this(number, ownerName, dateOpened, 0);
+    }
+
+    public Account(String number, String ownerName,
+                   GregorianCalendar dateOpened, double balance){
+        //Calls to methods to ensure the data is in valid format
+        setNumber(number);
+        setOwnerName(ownerName);
+        setBalance(balance);
+
+        this.dateOpened = dateOpened;
+    }
+
+
 
     /*******************************************************************
      * Set account instance variables based on a dataString
@@ -134,8 +154,11 @@ public abstract class Account implements Serializable{
 	/*******************************************************************
      * Sets the balance of the account
 	 * @param balance The new balance of the account
+     * @throws IllegalArgumentException if balance < 0
 	 ******************************************************************/
 	public void setBalance(double balance) {
+        if (balance < 0)
+            throw new IllegalArgumentException();
 		this.balance = balance;
 	}
 
