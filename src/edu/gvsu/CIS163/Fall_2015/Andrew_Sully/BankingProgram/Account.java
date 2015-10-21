@@ -42,27 +42,6 @@ public abstract class Account implements Serializable{
      */
 	private double balance;
 
-	public Account() {
-        this("","", new GregorianCalendar(), 0);
-	}
-
-    public Account(String number){
-        this(number, "", new GregorianCalendar(), 0);
-    }
-
-    public Account(String number, String name){
-        this(number, name, new GregorianCalendar(), 0);
-    }
-
-    public Account(String number, String ownerName, double balance){
-        this(number, ownerName, new GregorianCalendar(), balance);
-    }
-
-    public Account(String number, String ownerName,
-                   GregorianCalendar dateOpened){
-        this(number, ownerName, dateOpened, 0);
-    }
-
     public Account(String number, String ownerName,
                    GregorianCalendar dateOpened, double balance){
         //Calls to methods to ensure the data is in valid format
