@@ -2,7 +2,6 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 //Imports
 import javax.swing.*;
-
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,10 +15,18 @@ import java.awt.event.ActionListener;
 //		then add the new accounts into the Table probably make an 
 //		 add method in this class using fireback and TableModelEvent(GUI)
 
+//README:
+//		Also need a way to delete/update accounts I am thinking that 
+//		 another tab on the dropdown menu called "modify" that asks the
+//		 user for the account number of the account they want to modify
+//		 then gives them the option to delete or change data.
+// if this is a viable solution, I would love to do it, because I 
+/// enjoy it :D thanks!
+
 
 public class BankPanel extends JFrame
 {
-	// Instance attributes used in this example
+	// Instance attributes
 	private JMenu file;
 	private JMenu sort;
 	private JFrame frame; 	
@@ -75,12 +82,12 @@ public class BankPanel extends JFrame
 		addSave = new JMenuItem("Add a Savings Account");
 		
 		// Create columns names may want to change these, I don't know
-		// exactly how to output the data.
+		// exactly how we want to output the data.
 		String columnNames[] = {"Account Type","Account Number",
 				"Account Name","Date Opened","Balance",
 				"Minimum Balance","Intrest Rate","Monthly Fee"};
 		
-		// Create some data
+		// Create some data this is a test
 		Object dataValues[][] ={{"","","","","","","",""}};
 		
 		// Create a new table instance
@@ -236,12 +243,13 @@ public class BankPanel extends JFrame
 					System.out.println("monthly Fee value: " +
 							monField.getText());
 				}
+				
+				//TODO: Put this data into the account classes and 
+				//		into the JTable 
 			}
 
 			// adds a savings account to the JTable
 			if (addSave == event.getSource()) {
-				// TODO: Add a savings account
-
 				// User inputed account number
 				JTextField numField = new JTextField();
 				// User inputed owner name
@@ -291,6 +299,9 @@ public class BankPanel extends JFrame
 					System.out.println("Intrest Rate value: " + 
 							intField.getText());
 				}
+				
+				//TODO: Put this data into the account classes and 
+				//		into the JTable 
 			}
 		}
 	}	
