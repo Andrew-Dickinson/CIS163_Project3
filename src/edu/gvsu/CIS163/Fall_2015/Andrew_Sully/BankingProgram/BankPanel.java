@@ -2,12 +2,20 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 //Imports
 import javax.swing.*;
+
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /***********************************************************************
  * Displays the GUI for interacting with the banking program
  **********************************************************************/
+
+//TODO: in order, use a dialogue box to have user input account data
+//		then use the user input to make new Accounts 
+//		then add the new accounts into the Table probably make an 
+//		 add method in this class using fireback and TableModelEvent(GUI)
+
 
 public class BankPanel extends JFrame
 {
@@ -73,7 +81,7 @@ public class BankPanel extends JFrame
 				"Minimum Balance","Intrest Rate","Monthly Fee"};
 		
 		// Create some data
-		String dataValues[][] ={{"","","","","","","",""}};
+		Object dataValues[][] ={{"","","","","","","",""}};
 		
 		// Create a new table instance
 		table = new JTable(dataValues, columnNames);
@@ -182,14 +190,107 @@ public class BankPanel extends JFrame
 				//TODO: sort by date opened
 			}
 			
-			//adds a checking account to the JTable
-			if(addCheck == event.getSource()){
-				//TODO: add a checking account
+			// adds a checking account to the JTable
+			if (addCheck == event.getSource()) {
+				// TODO: add a checking account
+				// User inputed account number
+				JTextField numField = new JTextField();
+				// User inputed owner name
+				JTextField ownField = new JTextField();
+				// User inputed date
+				JTextField dateField = new JTextField();
+				// User inputed balance
+				JTextField balField = new JTextField();
+				// User inputed monthly fee
+				JTextField monField = new JTextField();
+
+				// popup menu that asks for input
+				JPanel myPanel = new JPanel();
+				myPanel.setLayout(new GridLayout(10, 2));
+				myPanel.add(new JLabel("Account Number:  "));
+				myPanel.add(numField);
+				myPanel.add(new JLabel("Owner Name:"));
+				myPanel.add(ownField);
+				myPanel.add(new JLabel("Date Created:"));
+				myPanel.add(dateField);
+				myPanel.add(new JLabel("Balance:"));
+				myPanel.add(balField);
+				myPanel.add(new JLabel("Monthly Fee:"));
+				myPanel.add(monField);
+
+				// type of dialog box and if they hit okay or cancel
+				int result = JOptionPane.showConfirmDialog(null, 
+						myPanel, "Please Enter Checking Account Data",
+						JOptionPane.OK_CANCEL_OPTION);
+
+				// if the user hit okay
+				if (result == JOptionPane.OK_OPTION) {
+					System.out.println("owner value: " + 
+							ownField.getText());
+					System.out.println("Number value: " +
+							numField.getText());
+					System.out.println("date value: " + 
+							dateField.getText());
+					System.out.println("Balance value: " +
+							balField.getText());
+					System.out.println("monthly Fee value: " +
+							monField.getText());
+				}
 			}
-			
-			//adds a savings account to the JTable
-			if(addSave == event.getSource()){
-				//TODO: Add a savings account
+
+			// adds a savings account to the JTable
+			if (addSave == event.getSource()) {
+				// TODO: Add a savings account
+
+				// User inputed account number
+				JTextField numField = new JTextField();
+				// User inputed owner name
+				JTextField ownField = new JTextField();
+				// User inputed date
+				JTextField dateField = new JTextField();
+				// User inputed balance
+				JTextField balField = new JTextField();
+				// User inputed minimum balance
+				JTextField minField = new JTextField();
+				// User inputed intrest rate
+				JTextField intField = new JTextField();
+
+				// popup menu that asks for input
+				JPanel myPanel = new JPanel();
+				myPanel.setLayout(new GridLayout(12, 2));
+				myPanel.add(new JLabel("Account Number:"));
+				myPanel.add(numField);
+				myPanel.add(new JLabel("Owner Name:"));
+				myPanel.add(ownField);
+				myPanel.add(new JLabel("Date Created:"));
+				myPanel.add(dateField);
+				myPanel.add(new JLabel("Balance:"));
+				myPanel.add(balField);
+				myPanel.add(new JLabel("Minimum Balance:"));
+				myPanel.add(minField);
+				myPanel.add(new JLabel("Intrest Rate:"));
+				myPanel.add(intField);
+
+				// type of dialog box and if they hit okay or cancel
+				int result = JOptionPane.showConfirmDialog(null, 
+						myPanel,"Please Enter Savings Account Data",
+						JOptionPane.OK_CANCEL_OPTION);
+
+				// if the user hit okay
+				if (result == JOptionPane.OK_OPTION) {
+					System.out.println("owner value: " + 
+							ownField.getText());
+					System.out.println("Number value: " +
+							numField.getText());
+					System.out.println("date value: " +
+							dateField.getText());
+					System.out.println("Balance value: " + 
+							balField.getText());
+					System.out.println("minimum balance value: " +
+							minField.getText());
+					System.out.println("Intrest Rate value: " + 
+							intField.getText());
+				}
 			}
 		}
 	}	
