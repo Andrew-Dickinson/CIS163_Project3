@@ -1,25 +1,20 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
-import java.awt.HeadlessException;
+//Imports
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.*;
 
 /***********************************************************************
  * Displays the GUI for interacting with the banking program
  **********************************************************************/
-//TODO: Create the gui :P
-// In the BankGUI class, set the BankModel as the model for the
-// JList in the BankGUI class using the setModel() method of
-// the JList class.
 
-public class BankPanel extends JFrame {
-	
-	private JFrame frame; 
-	private JPanel panel;
+public class BankPanel extends JFrame
+{
+	// Instance attributes used in this example
 	private JMenu file;
 	private JMenu sort;
+	private JFrame frame; 	
 	private JMenuItem quit;
 	//save to a Binary File
 	private JMenuItem saveToB;
@@ -43,10 +38,14 @@ public class BankPanel extends JFrame {
 	private JMenuItem addCheck;
 	//add a checking account
 	private JMenuItem addSave;
+	//an array of the column names in the JTable
 	private JTable table;
 	private JMenuBar menuBar;
+	private JScrollPane scrollPane;
 
-	public BankPanel(){
+	// Constructor of main frame
+	public BankPanel()
+	{
 		//a new button Listener
 		ButtonListener butListener = new ButtonListener();
 		//Initializes objects 
@@ -55,7 +54,6 @@ public class BankPanel extends JFrame {
 		file = new JMenu("File");
 		sort = new JMenu("Sort");
 		quit = new JMenuItem("Quit");
-		panel = new JPanel();
 		saveToB = new JMenuItem("Save To Binary");
 		loadFromB = new JMenuItem("Load From Binary");
 		saveToT = new JMenuItem("Save To Txt");
@@ -67,7 +65,21 @@ public class BankPanel extends JFrame {
 		byDateOpen = new JMenuItem("By Date Opened");
 		addCheck = new JMenuItem("Add a Checking Account");
 		addSave = new JMenuItem("Add a Savings Account");
-		table = new JTable();
+		
+		// Create columns names may want to change these, I don't know
+		// exactly how to output the data.
+		String columnNames[] = {"Account Type","Account Number",
+				"Account Name","Date Opened","Balance",
+				"Minimum Balance","Intrest Rate","Monthly Fee"};
+		
+		// Create some data
+		String dataValues[][] ={{"","","","","","","",""}};
+		
+		// Create a new table instance
+		table = new JTable(dataValues, columnNames);
+		
+		// Add the table to a scrolling pane
+		scrollPane = new JScrollPane( table );
 		
 		//adds actionListener butListener to objects
 		quit.addActionListener(butListener);
@@ -103,21 +115,19 @@ public class BankPanel extends JFrame {
 		menuBar.add(file);
 		menuBar.add(sort);
 		
-		panel.add(table);
-		
-		//sets the frame
-		frame.add(panel);
+		//frame stuff
+		frame.add(scrollPane);
+		frame.setTitle("Bank Application");
 		frame.setJMenuBar(menuBar);
-		frame.setSize(500,500);
-		frame.setVisible(true);
+		frame.setSize(600,600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
 	}
 
-	
-	public static void main(String[] args) {
+	public static void main(String args[])
+	{
 		new BankPanel();
 	}
-	
 	
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
@@ -182,5 +192,5 @@ public class BankPanel extends JFrame {
 				//TODO: Add a savings account
 			}
 		}
-	}
+	}	
 }
