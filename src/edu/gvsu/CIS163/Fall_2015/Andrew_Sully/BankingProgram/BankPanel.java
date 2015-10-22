@@ -2,6 +2,8 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 //Imports
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +23,10 @@ import java.awt.event.ActionListener;
 //		 user for the account number of the account they want to modify
 //		 then gives them the option to delete or change data.
 // if this is a viable solution, I would love to do it, because I 
-/// enjoy it :D thanks!
+//  enjoy it :D thanks!
+//		Also do you want to have the Jtable to say what type of account
+//		 it is or do you want a radio button to go between types of
+//		 accounts?
 
 
 public class BankPanel extends JFrame
@@ -55,7 +60,11 @@ public class BankPanel extends JFrame
 	private JMenuItem addSave;
 	//an array of the column names in the JTable
 	private JTable table;
+	//used to manipulate data in a JTable
+	private DefaultTableModel model;
+	//menu bar
 	private JMenuBar menuBar;
+	//this allows us to have any size window and we can scroll through data
 	private JScrollPane scrollPane;
 
 	// Constructor of main frame
@@ -91,7 +100,8 @@ public class BankPanel extends JFrame
 		Object dataValues[][] ={{"","","","","","","",""}};
 		
 		// Create a new table instance
-		table = new JTable(dataValues, columnNames);
+		table = new JTable(new DefaultTableModel(columnNames, 0));
+		model = (DefaultTableModel) table.getModel();
 		
 		// Add the table to a scrolling pane
 		scrollPane = new JScrollPane( table );
@@ -244,8 +254,19 @@ public class BankPanel extends JFrame
 							monField.getText());
 				}
 				
-				//TODO: Put this data into the account classes and 
-				//		into the JTable 
+				//information to put into JTable
+				String[] newAcct ={"Checking Account ",
+						ownField.getText(),
+						numField.getText(),
+						dateField.getText(),
+						balField.getText(),
+						"-","-",
+						monField.getText()};
+				
+				//putting info into JTable
+				model.addRow(newAcct);
+				
+				//TODO: Put this data into the account 
 			}
 
 			// adds a savings account to the JTable
@@ -300,8 +321,20 @@ public class BankPanel extends JFrame
 							intField.getText());
 				}
 				
-				//TODO: Put this data into the account classes and 
-				//		into the JTable 
+				//information to put into JTable
+				String[] newAcct ={"Saving Account ",
+						ownField.getText(),
+						numField.getText(),
+						dateField.getText(),
+						balField.getText(),
+						minField.getText(),
+						intField.getText(),
+						"-"};
+				
+				//putting info into JTable
+				model.addRow(newAcct);
+				
+				//TODO: Put this data into the account classes 
 			}
 		}
 	}	
