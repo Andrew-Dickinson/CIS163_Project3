@@ -1,7 +1,7 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
-import junit.framework.TestCase;
 import org.junit.Test;
+
 import java.io.IOException;
 import java.util.GregorianCalendar;
 import static org.junit.Assert.*;
@@ -9,10 +9,9 @@ import static org.junit.Assert.*;
 /***********************************************************************
  * Contains basic tests for this package
  **********************************************************************/
-public class Tests extends TestCase{
+public class Tests {
 
-    @Test
-    (expected=IllegalArgumentException.class)
+    @Test(expected=java.lang.IllegalArgumentException.class)
     public void testUniqueID(){
         BankModel bm = new BankModel();
         bm.addAccount(new SavingsAccount("lasdjf"));
