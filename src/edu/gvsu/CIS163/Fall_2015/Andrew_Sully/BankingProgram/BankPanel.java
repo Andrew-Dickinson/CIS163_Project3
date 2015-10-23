@@ -2,30 +2,20 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 //Imports
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.GregorianCalendar;
 
 /***********************************************************************
  * Displays the GUI for interacting with the banking program
  **********************************************************************/
 
-//TODO: in order, use a dialogue box to have user input account data
-//		then use the user input to make new Accounts 
-//		then add the new accounts into the Table probably make an 
-//		 add method in this class using fireback and TableModelEvent(GUI)
-
-//README:
-//		Also need a way to delete/update accounts I am thinking that 
-//		 another tab on the dropdown menu called "modify" that asks the
-//		 user for the account number of the account they want to modify
-//		 then gives them the option to delete or change data.
-// if this is a viable solution, I would love to do it, because I 
-//  enjoy it :D thanks!
-//		Also do you want to have the Jtable to say what type of account
-//		 it is or do you want a radio button to go between types of
-//		 accounts?
+//TODO: the sorts and the remove I can do both i'm just really tired.
     
 public class BankPanel extends JPanel {
     // Instance attributes
@@ -55,8 +45,10 @@ public class BankPanel extends JPanel {
 	private JMenuBar menuBar;
 	//this allows us to have any size window and we can scroll through data
 	private JScrollPane scrollPane;
-
+	//This is for the save/load 
 	private JFileChooser fileChoose;
+	//bankModel 
+	BankModel bm = new BankModel();
 	
 	// Constructor of main frame
 	public BankPanel(JFrame frame){
@@ -66,7 +58,7 @@ public class BankPanel extends JPanel {
 		file = new JMenu("File");
 		sort = new JMenu("Sort");
 		quit = new JMenuItem("Quit");
-		save = new JMenuItem("Save");
+		save = new JMenuItem("Save As ");
 		load = new JMenuItem("Load");
 		addAcct = new JMenu("Add");
 		byAcctNum = new JMenuItem("By Account Number");
@@ -82,13 +74,10 @@ public class BankPanel extends JPanel {
 				"Account Name","Date Opened","Balance",
 				"Minimum Balance","Intrest Rate","Monthly Fee"};
 		
-		// Create some data this is a test
-		Object dataValues[] ={"","","","","","","",""};
-		
 		// Create a new table instance
 		table = new JTable(new DefaultTableModel(columnNames, 0));
 		model = (DefaultTableModel) table.getModel();
-		model.addRow(dataValues);
+		
 		// Add the table to a scrolling pane
 		scrollPane = new JScrollPane( table );
 		
@@ -117,24 +106,78 @@ public class BankPanel extends JPanel {
 		menuBar.add(file);
 		menuBar.add(sort);
 		
-		add(scrollPane);
-
+		this.add(scrollPane);
 		frame.setJMenuBar(menuBar);
 	}
 	
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			//what happens when a button is pressed
+
+	        //filters needed to determine which type of file
+			FileNameExtensionFilter txtFilter = new FileNameExtensionFilter(
+			        "TXT files", "txt");
+			FileNameExtensionFilter binFilter = new FileNameExtensionFilter(
+			        "BIN files", "bin");
+			FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter(
+			        "XML files", "xml");
+			
 			//quits the program
 			if(quit == event.getSource()){
 				System.exit(0);
 			}
-			if(save == event.getSource()){
-				//TODO:
-				int returnVal = fileChoose.showOpenDialog(getParent());
+			
+			//saves the account data to files
+			if(save == event.getSource()){ 	
+				if (fileChoose.showSaveDialog(getParent())== JFileChooser.APPROVE_OPTION) {
+			        File fileToSave = fileChoose.getSelectedFile();
+			        System.out.println("Path save: "+fileToSave.getAbsolutePath());
+					String filePath = ""+fileToSave.getAbsolutePath();
+			        try {
+						bm.saveToTextFile(filePath+".txt");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			        try {
+						bm.saveToBinaryFile(filePath+".bin");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			        try {
+						bm.saveToXMLFile(filePath+".xml");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
+			
+			//loads account data from files
 			if(load == event.getSource()){
-				//TODO:
+				//TODO: I don't know what the error is here.
+				fileChoose.setFileFilter(txtFilter);
+				fileChoose.setFileFilter(binFilter);
+				fileChoose.setFileFilter(xmlFilter); 	
+				
+			    if(fileChoose.showOpenDialog(getParent()) == JFileChooser.APPROVE_OPTION) {
+			    	File fileToSave = fileChoose.getSelectedFile();
+			    	System.out.println("Path load: "+fileToSave.getAbsolutePath());
+					String filePath = ""+fileToSave.getAbsolutePath();
+//				    try {
+//						bm.loadFromTextFile(filePath);
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//				    try {
+//						bm.loadFromBinaryFile(filePath);
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//				    try {
+//						bm.loadFromXMLFile(filePath);
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+			    } 
 			}
 			
 			//sorts JTable by account numbers
@@ -154,7 +197,6 @@ public class BankPanel extends JPanel {
 			
 			// adds a checking account to the JTable
 			if (addCheck == event.getSource()) {
-				// TODO: add a checking account
 				// User inputed account number
 				JTextField numField = new JTextField();
 				// User inputed owner name
@@ -173,7 +215,7 @@ public class BankPanel extends JPanel {
 				myPanel.add(numField);
 				myPanel.add(new JLabel("Owner Name:"));
 				myPanel.add(ownField);
-				myPanel.add(new JLabel("Date Created:"));
+				myPanel.add(new JLabel("Date Created(Month/Day/Year:"));
 				myPanel.add(dateField);
 				myPanel.add(new JLabel("Balance:"));
 				myPanel.add(balField);
@@ -197,21 +239,39 @@ public class BankPanel extends JPanel {
 							balField.getText());
 					System.out.println("monthly Fee value: " +
 							monField.getText());
+				
+					//information to put into JTable
+					String[] newAcct ={"Checking Account ",
+							ownField.getText(),
+							numField.getText(),
+							dateField.getText(),
+							balField.getText(),
+							"-","-",
+							monField.getText()};
+					
+					//putting info into JTable
+					model.addRow(newAcct);
+					
+					//converts dateField.gettext() to an integer array
+					String[] gcDates = dateField.getText().split("/");
+					int[] gcintDates = new int[3];
+					for (int i = 0; i < gcDates.length; i++) {
+						gcintDates[i] = Integer.parseInt(gcDates[i]);
+					}
+					
+					//makes a GC with the user date
+					GregorianCalendar gc= new GregorianCalendar(gcintDates[2],gcintDates[0],gcintDates[1]);
+					long temp = gc.getTimeInMillis();
+					
+					//makes a new account
+					CheckingAccount ca = new CheckingAccount();
+					String dataString = "CheckingAccount;"+numField.getText()+";"+ownField.getText()+";"+temp+";"
+							+balField.getText()+";"+monField.getText();
+					
+					//adds account to bank Model
+					bm.addAccount(ca);
+					ca.parseFromString(dataString);
 				}
-				
-				//information to put into JTable
-				String[] newAcct ={"Checking Account ",
-						ownField.getText(),
-						numField.getText(),
-						dateField.getText(),
-						balField.getText(),
-						"-","-",
-						monField.getText()};
-				
-				//putting info into JTable
-				model.addRow(newAcct);
-				
-				//TODO: Put this data into the account 
 			}
 
 			// adds a savings account to the JTable
@@ -264,22 +324,40 @@ public class BankPanel extends JPanel {
 							minField.getText());
 					System.out.println("Intrest Rate value: " + 
 							intField.getText());
+				
+					//information to put into JTable
+					String[] newAcct ={"Saving Account ",
+							ownField.getText(),
+							numField.getText(),
+							dateField.getText(),
+							balField.getText(),
+							minField.getText(),
+							intField.getText(),
+							"-"};
+					
+					//putting info into JTable
+					model.addRow(newAcct);
+					
+					//converts dateField.gettext() to an integer array
+					String[] gcDates = dateField.getText().split("/");
+					int[] gcintDates = new int[3];
+					for (int i = 0; i < gcDates.length; i++) {
+						gcintDates[i] = Integer.parseInt(gcDates[i]);
+					}
+					
+					//makes a GC with the user date
+					GregorianCalendar gc= new GregorianCalendar(gcintDates[2],gcintDates[0],gcintDates[1]);
+					long temp = gc.getTimeInMillis();
+					
+					//makes a new account
+					SavingsAccount sa = new SavingsAccount();
+					String dataString = "SavingsAccount;"+numField.getText()+";"+ownField.getText()+";"+temp+";"
+							+balField.getText()+";"+minField.getText()+";"+intField.getText();
+					
+					//adds account to bank Model
+					bm.addAccount(sa);
+					sa.parseFromString(dataString);
 				}
-				
-				//information to put into JTable
-				String[] newAcct ={"Saving Account ",
-						ownField.getText(),
-						numField.getText(),
-						dateField.getText(),
-						balField.getText(),
-						minField.getText(),
-						intField.getText(),
-						"-"};
-				
-				//putting info into JTable
-				model.addRow(newAcct);
-				
-				//TODO: Put this data into the account classes 
 			}
 		}
 	}	
