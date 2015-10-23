@@ -20,7 +20,7 @@ public class SavingsAccount extends Account implements Serializable {
     /*******************************************************************
      * Identifies the class for the toString() method
      ******************************************************************/
-    public static final String classIdentifier = "SavingsAccount";
+    private static final String classIdentifier = "SavingsAccount";
 
     /*******************************************************************
      * The number of items represented in the output of toString()
@@ -175,6 +175,23 @@ public class SavingsAccount extends Account implements Serializable {
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    /*******************************************************************
+    * Returns a unique identifying name for the account class
+    * @return A human readable unique class name
+    ******************************************************************/
+    public String getClassIdentifier(){
+        return classIdentifier;
+    }
+
+    //TODO: Sort out this mess
+    /*******************************************************************
+     * Returns a unique identifying name for the account class
+     * @return A human readable unique class name
+     ******************************************************************/
+    public static String getClassIdentifierStatic(){
+        return classIdentifier;
     }
 
     /*******************************************************************

@@ -2,6 +2,7 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import javax.swing.*;
 import java.io.*;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,13 +27,25 @@ public class BankModel extends AbstractListModel implements Serializable {
      * Stores all of this accounts for this bank
      ******************************************************************/
     private ArrayList<Account> accounts;
+    private ArrayList<Class> validAccountTypes;
 
     public BankModel(){
-        //Create an empty ArrayList of accounts
-        accounts = new ArrayList<Account>();
+        //Set with default valid Account Types
+        this(new Class[]{CheckingAccount.class, SavingsAccount.class});
     }
 
-    public BankModel(ArrayList<Account> accounts){
+    public BankModel(Class[] validAccountTypes){
+        //Create an empty ArrayList of accounts
+        accounts = new ArrayList<Account>();
+        this.validAccountTypes = new ArrayList<Class>();
+
+        //Set the valid validAccountTypes
+        for (Class accountType : validAccountTypes){
+            addValidAccountType(accountType);
+        }
+    }
+
+    public BankModel(Class[] validAccountTypes, ArrayList<Account> accounts){
         //Done this way so that we can encounter any invalid accounts
         for (Account account : accounts){
             addAccount(account);
@@ -60,10 +73,18 @@ public class BankModel extends AbstractListModel implements Serializable {
 
     /*******************************************************************
      * Adds an account to this model
-     * @param account The account to add
+     * @param account The account to add. Type must be
+     *                registered through addValidAccount()
+     * @throws IllegalArgumentException if there's already an account
+     *                                  with the same account number or
+     *                                  if Account.getClass() hasn't
+     *                                  been registered through
+     *                                  addValidAccount()
      ******************************************************************/
     public void addAccount(Account account){
         if (hasAccountNumber(account.getNumber()))
+            throw new IllegalArgumentException();
+        if (!validAccountTypes.contains(account.getClass()))
             throw new IllegalArgumentException();
         accounts.add(account);
         //TODO: Notify the fire thingy
@@ -82,12 +103,20 @@ public class BankModel extends AbstractListModel implements Serializable {
     /*******************************************************************
      * Replaces an account with a new one
      * @param index The index of the account to replace
-     * @param account The new account
-     * @throws IndexOutOfBoundsException if index >= this.getSize()
+     * @param account The new account. Type must be
+     *                registered through addValidAccount()
+     * @throws IllegalArgumentException if there's already an account
+     *                                  with the same account number or
+     *                                  if Account.getClass() hasn't
+     *                                  been registered through
+     *                                  addValidAccount() or if
+     *                                  index >= this.getSize()
      ******************************************************************/
     public void updateAccount(int index, Account account) {
         accounts.remove(index);
         if (hasAccountNumber(account.getOwnerName()))
+            throw new IllegalArgumentException();
+        if (!validAccountTypes.contains(account.getClass()))
             throw new IllegalArgumentException();
         accounts.add(index, account);
         //TODO: Notify the fire thingy
@@ -110,6 +139,32 @@ public class BankModel extends AbstractListModel implements Serializable {
     }
 
     /*******************************************************************
+     * Adds an accepted type for incoming accounts.
+     * Must be set at least once in order to add a class
+     * @param accountType The account type to add. Must extend Account
+     * @throws IllegalArgumentException if accountType
+     *                                  doesn't extend account
+     ******************************************************************/
+    public void addValidAccountType(Class accountType){
+        if (Account.class.isAssignableFrom(accountType)){
+            validAccountTypes.add(accountType);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /*******************************************************************
+     * Removes the accepted type for incoming accounts.
+     * @param accountType The account type to remove
+     * @throws IllegalArgumentException if accountType is not registered
+     ******************************************************************/
+    public void removeValidAccountType(Class accountType){
+        if (!validAccountTypes.remove(accountType)){
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /*******************************************************************
      * Sorts the accounts based on the account number
      * @param sortAscending If true, the accounts are sorted in
      *                      ascending order. If false, the accounts are
@@ -118,7 +173,7 @@ public class BankModel extends AbstractListModel implements Serializable {
     public void sortByAccountNumber(final boolean sortAscending){
         Collections.sort(accounts, new Comparator<Account>() {
             public int compare(Account a, Account b) {
-                if (!sortAscending){
+                if (!sortAscending) {
                     //Just flip-flop a and b to sort descending
                     Account temp = a;
                     a = b;
@@ -238,6 +293,15 @@ public class BankModel extends AbstractListModel implements Serializable {
                 new BufferedWriter(new FileWriter(filePath))
         );
 
+        //Add some lines at the beginning to represent the valid types
+        for (Class validAccountType : validAccountTypes){
+            String typeString = validAccountType.toGenericString();
+            out.println(typeString.replaceFirst("public class ", ""));
+        }
+
+        //Add a separator character on it's own line
+        out.println(Account.toStringSeparator);
+
         //Put each account on its own line
         for (Account account : accounts){
             //Write each account based on it's own toString()
@@ -255,29 +319,68 @@ public class BankModel extends AbstractListModel implements Serializable {
      ******************************************************************/
     public void loadFromTextFile(String filePath) throws IOException {
         accounts = new ArrayList<Account>();
+        validAccountTypes = new ArrayList<Class>();
+
+        //Used to transition from classes to accounts
+        boolean readingTypesStill = true;
 
         Scanner fileReader = new Scanner(new File(filePath));
         while (fileReader.hasNextLine()){
             String currentLine = fileReader.nextLine();
 
-            //Look at the first string in the toString() output
-            String accountType = currentLine
-                                   .split(Account.toStringSeparator)[0];
-
-            Account incomingAccount;
-            if (accountType.equals(CheckingAccount.classIdentifier)){
-                incomingAccount = new CheckingAccount();
-            } else if (accountType.equals(
-                                    SavingsAccount.classIdentifier)){
-                incomingAccount = new SavingsAccount();
+            if (readingTypesStill){
+                //We need to read this as a class object or separator
+                if (currentLine.equals(Account.toStringSeparator)){
+                    //This is just the separator
+                    readingTypesStill = false;
+                } else {
+                    //This is a class type to read
+                    try {
+                        Class newClass = Class.forName(currentLine);
+                        addValidAccountType(newClass);
+                    } catch (ClassNotFoundException e){
+                        //This is a problem with the format of the file
+                        throw new IllegalArgumentException();
+                    }
+                }
             } else {
-                throw new IllegalArgumentException();
+                //We need to read this as an account object
+
+                //Look at the first string in the toString() output
+                String incomingAccountTypeName = currentLine
+                        .split(Account.toStringSeparator)[0];
+
+                //Instantiate the account with the right type
+                Account incomingAccount = null;
+                for (Class validAccountType : validAccountTypes){
+                    String validAccountTypeName = Account
+                         .getClassIdentifierFromClass(validAccountType);
+
+                    if (incomingAccountTypeName
+                                         .equals(validAccountTypeName)){
+                        //This is a match
+                        incomingAccount = Account
+                           .getClassInstanceFromClass(validAccountType);
+                    }
+                }
+
+                if (incomingAccount == null){
+                    //This happens because the type identifier string
+                    //for this line doesn't match any of the specified
+                    //classes in this file. Therefore it's a file
+                    //format problem
+                    throw new IllegalArgumentException();
+                } else {
+                    //incomingAccount is instantiated, but needs to have
+                    //its data filled
+
+                    //Polymorphic
+                    incomingAccount.parseFromString(currentLine);
+                }
+
+                //Add incomingAccount to the ArrayList of accounts
+                addAccount(incomingAccount);
             }
-
-            //Polymorphic
-            incomingAccount.parseFromString(currentLine);
-
-            accounts.add(incomingAccount);
         }
 
     }
@@ -350,9 +453,9 @@ public class BankModel extends AbstractListModel implements Serializable {
             //This could be fixed with the right tag system
 
             NodeList savingsAccounts = doc
-                  .getElementsByTagName(SavingsAccount.classIdentifier);
+                  .getElementsByTagName(SavingsAccount.getClassIdentifierStatic());
             NodeList checkingAccounts = doc
-                 .getElementsByTagName(CheckingAccount.classIdentifier);
+                 .getElementsByTagName(CheckingAccount.getClassIdentifierStatic());
 
             for (int i = 0; i < savingsAccounts.getLength(); i++){
                 Element accountEl = (Element) savingsAccounts.item(i);

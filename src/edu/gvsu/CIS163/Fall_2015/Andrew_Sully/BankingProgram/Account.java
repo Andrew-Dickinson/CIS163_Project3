@@ -159,6 +159,12 @@ public abstract class Account implements Serializable{
 	}
 
     /*******************************************************************
+     * Returns a unique identifying name for the account class
+     * @return A human readable unique class name
+     ******************************************************************/
+    public abstract String getClassIdentifier();
+
+    /*******************************************************************
      * Generates a string representation of this account
      * @return A string in the format:
      *       "ID:NUMBER;NAME;DATE_OPENED;BALANCE;(Any other parameters)"
@@ -194,5 +200,44 @@ public abstract class Account implements Serializable{
         }
         //Other is not an Account
         return false;
+    }
+
+    /*******************************************************************
+     * Gets the class identifier from the class object for an account
+     * @param accountClass The account class object
+     * @return the class identifier
+     * @throws IllegalArgumentException if accountClass doesn't
+     *                                  extend account
+     ******************************************************************/
+    public static String getClassIdentifierFromClass(Class accountClass){
+        String validAccountTypeClassID;
+        try {
+            Account validAccountInstance = (Account) accountClass
+                                                .newInstance();
+            validAccountTypeClassID = validAccountInstance
+                                                .getClassIdentifier();
+        } catch (InstantiationException | ClassCastException |
+                IllegalAccessException e){
+            //accountClass is wrong
+            throw new IllegalArgumentException();
+        }
+
+        return validAccountTypeClassID;
+    }
+
+    /*******************************************************************
+     * Instantiates a valid accountClass with the default constructor
+     * @param accountClass a valid account class type
+     * @return An instance of the specified type
+     * @throws IllegalArgumentException if accountClass
+     *                                  doesn't extend account
+     ******************************************************************/
+    public static Account getClassInstanceFromClass(Class accountClass){
+        try {
+            return  (Account) accountClass.newInstance();
+        } catch (InstantiationException | ClassCastException
+                | IllegalAccessException e){
+            throw new IllegalArgumentException();
+        }
     }
 }
