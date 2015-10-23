@@ -45,6 +45,17 @@ public class BankModel extends AbstractListModel implements Serializable {
     }
 
     public BankModel(Class[] validAccountTypes, ArrayList<Account> accounts){
+        this(validAccountTypes);
+
+        //Done this way so that we can encounter any invalid accounts
+        for (Account account : accounts){
+            addAccount(account);
+        }
+    }
+
+    public BankModel(ArrayList<Account> accounts){
+        this();
+
         //Done this way so that we can encounter any invalid accounts
         for (Account account : accounts){
             addAccount(account);
