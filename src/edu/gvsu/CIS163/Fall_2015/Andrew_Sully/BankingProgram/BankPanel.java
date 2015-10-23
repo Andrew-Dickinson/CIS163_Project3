@@ -31,19 +31,12 @@ public class BankPanel extends JPanel {
     // Instance attributes
 	private JMenu file;
 	private JMenu sort;
+	private JMenu addAcct;
 	private JMenuItem quit;
 	//save to a Binary File
-	private JMenuItem saveToB;
+	private JMenuItem save;
 	//Load from a Binary FIle
-	private JMenuItem loadFromB;
-	//save to a Text file
-	private JMenuItem saveToT;
-	//load from a text file
-	private JMenuItem loadFromT;
-	//save to a XML document
-	private JMenuItem saveToX;
-	//load from an XML document
-	private JMenuItem loadFromX;
+	private JMenuItem load;
 	//sort by Account number
 	private JMenuItem byAcctNum;
 	//sort by account owner
@@ -63,6 +56,8 @@ public class BankPanel extends JPanel {
 	//this allows us to have any size window and we can scroll through data
 	private JScrollPane scrollPane;
 
+	private JFileChooser fileChoose;
+	
 	// Constructor of main frame
 	public BankPanel(JFrame frame){
 	    //a new button Listener
@@ -71,17 +66,15 @@ public class BankPanel extends JPanel {
 		file = new JMenu("File");
 		sort = new JMenu("Sort");
 		quit = new JMenuItem("Quit");
-		saveToB = new JMenuItem("Save To Binary");
-		loadFromB = new JMenuItem("Load From Binary");
-		saveToT = new JMenuItem("Save To Txt");
-		loadFromT = new JMenuItem("Load From Txt");
-		saveToX = new JMenuItem("Save To XML");
-		loadFromX = new JMenuItem("Load From XML");
+		save = new JMenuItem("Save");
+		load = new JMenuItem("Load");
+		addAcct = new JMenu("Add");
 		byAcctNum = new JMenuItem("By Account Number");
 		byAcctOwn = new JMenuItem("By Account Owner");
 		byDateOpen = new JMenuItem("By Date Opened");
 		addCheck = new JMenuItem("Add a Checking Account");
 		addSave = new JMenuItem("Add a Savings Account");
+		fileChoose = new JFileChooser();
 		
 		// Create columns names may want to change these, I don't know
 		// exactly how we want to output the data.
@@ -90,23 +83,19 @@ public class BankPanel extends JPanel {
 				"Minimum Balance","Intrest Rate","Monthly Fee"};
 		
 		// Create some data this is a test
-		Object dataValues[][] ={{"","","","","","","",""}};
+		Object dataValues[] ={"","","","","","","",""};
 		
 		// Create a new table instance
 		table = new JTable(new DefaultTableModel(columnNames, 0));
 		model = (DefaultTableModel) table.getModel();
-		
+		model.addRow(dataValues);
 		// Add the table to a scrolling pane
 		scrollPane = new JScrollPane( table );
 		
 		//adds actionListener butListener to objects
 		quit.addActionListener(butListener);
-		saveToB.addActionListener(butListener);
-		loadFromB.addActionListener(butListener);
-		saveToT.addActionListener(butListener);
-		loadFromT.addActionListener(butListener);
-		saveToX.addActionListener(butListener);
-		loadFromX.addActionListener(butListener);
+		save.addActionListener(butListener);
+		load.addActionListener(butListener);
 		byAcctNum.addActionListener(butListener);
 		byAcctOwn.addActionListener(butListener);
 		byDateOpen.addActionListener(butListener);
@@ -114,17 +103,12 @@ public class BankPanel extends JPanel {
 		addSave.addActionListener(butListener);
 		
 		//formats the file and sort drop-down menus
-		file.add(addCheck);
-		file.add(addSave);
+		file.add(save);
+		file.add(load);
 		file.addSeparator();
-		file.add(saveToB);
-		file.add(loadFromB);
-		file.addSeparator();
-		file.add(saveToT);
-		file.add(loadFromT);
-		file.addSeparator();
-		file.add(saveToX);
-		file.add(loadFromX);
+		file.add(addAcct);
+		addAcct.add(addCheck);
+		addAcct.add(addSave);
 		file.addSeparator();
 		file.add(quit);
 		sort.add(byAcctNum);
@@ -133,7 +117,7 @@ public class BankPanel extends JPanel {
 		menuBar.add(file);
 		menuBar.add(sort);
 		
-		add(table);
+		add(scrollPane);
 
 		frame.setJMenuBar(menuBar);
 	}
@@ -145,35 +129,12 @@ public class BankPanel extends JPanel {
 			if(quit == event.getSource()){
 				System.exit(0);
 			}
-			
-			//saves accounts to a binary file
-			if(saveToB == event.getSource()){
-				//TODO: save to binary
+			if(save == event.getSource()){
+				//TODO:
+				int returnVal = fileChoose.showOpenDialog(getParent());
 			}
-			
-			//loads accounts from a binary file
-			if(loadFromB == event.getSource()){
-				//TODO: load from binary
-			}
-			
-			//saves accounts to a Text file
-			if(saveToT == event.getSource()){
-				//TODO: save to text
-			}
-			
-			//loads accounts from a text file
-			if(loadFromT == event.getSource()){
-				//TODO: load from text
-			}
-			
-			//saves accounts to a XML file
-			if(saveToX == event.getSource()){
-				//TODO: save to XML
-			}
-			
-			//loads accounts from a XML file
-			if(loadFromX == event.getSource()){
-				//TODO: load from XML
+			if(load == event.getSource()){
+				//TODO:
 			}
 			
 			//sorts JTable by account numbers
