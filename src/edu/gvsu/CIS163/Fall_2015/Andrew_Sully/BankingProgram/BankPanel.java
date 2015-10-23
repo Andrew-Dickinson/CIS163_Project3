@@ -3,7 +3,6 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 //Imports
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,14 +26,11 @@ import java.awt.event.ActionListener;
 //		Also do you want to have the Jtable to say what type of account
 //		 it is or do you want a radio button to go between types of
 //		 accounts?
-
-
-public class BankPanel extends JFrame
-{
-	// Instance attributes
+    
+public class BankPanel extends JPanel {
+    // Instance attributes
 	private JMenu file;
 	private JMenu sort;
-	private JFrame frame; 	
 	private JMenuItem quit;
 	//save to a Binary File
 	private JMenuItem saveToB;
@@ -68,12 +64,9 @@ public class BankPanel extends JFrame
 	private JScrollPane scrollPane;
 
 	// Constructor of main frame
-	public BankPanel()
-	{
-		//a new button Listener
+	public BankPanel(JFrame frame){
+	    //a new button Listener
 		ButtonListener butListener = new ButtonListener();
-		//Initializes objects 
-		frame = new JFrame("Bank Application"); 
 		menuBar = new JMenuBar();
 		file = new JMenu("File");
 		sort = new JMenu("Sort");
@@ -140,18 +133,9 @@ public class BankPanel extends JFrame
 		menuBar.add(file);
 		menuBar.add(sort);
 		
-		//frame stuff
-		frame.add(scrollPane);
-		frame.setTitle("Bank Application");
-		frame.setJMenuBar(menuBar);
-		frame.setSize(600,600);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-	}
+		add(table);
 
-	public static void main(String args[])
-	{
-		new BankPanel();
+		frame.setJMenuBar(menuBar);
 	}
 	
 	private class ButtonListener implements ActionListener {
