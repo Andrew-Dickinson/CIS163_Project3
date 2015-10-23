@@ -86,7 +86,9 @@ public class BankModel extends AbstractListModel implements Serializable {
         if (!validAccountTypes.contains(account.getClass()))
             throw new IllegalArgumentException();
         accounts.add(account);
-        //TODO: Notify the fire thingy
+
+        //Tell the GUI we updated
+        fireIntervalAdded(this, accounts.size() - 1, accounts.size());
     }
 
     /*******************************************************************
@@ -96,7 +98,9 @@ public class BankModel extends AbstractListModel implements Serializable {
      ******************************************************************/
     public void removeAccount(int index){
         accounts.remove(index);
-        //TODO: Notify the fire thingy
+
+        //Tell the GUI we updated
+        fireIntervalRemoved(this, index, index);
     }
 
     /*******************************************************************
@@ -118,7 +122,9 @@ public class BankModel extends AbstractListModel implements Serializable {
         if (!validAccountTypes.contains(account.getClass()))
             throw new IllegalArgumentException();
         accounts.add(index, account);
-        //TODO: Notify the fire thingy
+
+        //Tell the GUI we updated
+        fireContentsChanged(this, index, index + 1);
     }
 
     /*******************************************************************
@@ -209,6 +215,9 @@ public class BankModel extends AbstractListModel implements Serializable {
                 return a.getOwnerName().compareTo(b.getOwnerName());
             }
         });
+
+        //Tell the GUI we updated
+        fireContentsChanged(this, 0, accounts.size());
     }
 
     /*******************************************************************
@@ -237,6 +246,9 @@ public class BankModel extends AbstractListModel implements Serializable {
                 return a.getDateOpened().compareTo(b.getDateOpened());
             }
         });
+
+        //Tell the GUI we updated
+        fireContentsChanged(this, 0, accounts.size());
     }
 
     /*******************************************************************
@@ -275,6 +287,9 @@ public class BankModel extends AbstractListModel implements Serializable {
             accounts = bm.accounts;
 
             fileIn.close();
+
+            //Tell the GUI we updated
+            fireContentsChanged(this, 0, accounts.size());
         } catch(ClassNotFoundException | ObjectStreamException c) {
             throw new IllegalArgumentException();
         }
@@ -382,6 +397,8 @@ public class BankModel extends AbstractListModel implements Serializable {
             }
         }
 
+        //Tell the GUI we updated
+        fireContentsChanged(this, 0, accounts.size());
     }
 
     /*******************************************************************
@@ -540,20 +557,12 @@ public class BankModel extends AbstractListModel implements Serializable {
                 addAccount(a);
             }
 
+            //Tell the GUI we updated
+            fireContentsChanged(this, 0, accounts.size());
         } catch (ParserConfigurationException | SAXException pce) {
             throw new IOException();
         }
     }
-
-    //TODO: Implement this:
-    //To make updates to the accounts in the model immediately visible
-    //in the JList on your GUI, it is important that the methods in the
-    //BankModel class that modify (add, delete, and update) the accounts
-    //notify the JList immediately after any changes. These notifications
-    //can be sent from BankModel class using one of these methods:
-    //fireIntervalAdded(), fireIntervalRemoved(), and fireContentsChanged()
-    //The BankModel class inherits these methods from the
-    //AbstractListModel class.
 
     /*******************************************************************
      * Test if other contains the same accounts sorted in the same way
