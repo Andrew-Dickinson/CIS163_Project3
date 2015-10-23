@@ -118,7 +118,7 @@ public class BankPanel extends JPanel {
 			FileNameExtensionFilter txtFilter = new FileNameExtensionFilter(
 			        "TXT files", "txt");
 			FileNameExtensionFilter binFilter = new FileNameExtensionFilter(
-			        "BIN files", "bin");
+			        "BNK files", "bnk");
 			FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter(
 			        "XML files", "xml");
 			
@@ -139,7 +139,7 @@ public class BankPanel extends JPanel {
 						e.printStackTrace();
 					}
 			        try {
-						bm.saveToBinaryFile(filePath+".bin");
+						bm.saveToBinaryFile(filePath+".bnk");
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
