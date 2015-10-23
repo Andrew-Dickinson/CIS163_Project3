@@ -7,10 +7,14 @@ import org.w3c.dom.Element;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 
 /***********************************************************************
  * A base account class with several
  * instance variables and getters and setters
+ *
+ * Sub classes MUST override the static methods:
+ *      getClassIdentifier() and getDataHeaders()
  * @author Sully
  **********************************************************************/
 public abstract class Account implements Serializable{	
@@ -18,6 +22,9 @@ public abstract class Account implements Serializable{
      * A unique identifier for this class
      ******************************************************************/
 	private static final long serialVersionUID = 959565410L;
+
+    public static final String[] defaultDataHeaders = {"Account Type",
+            "Account Number", "Owner Name", "Date Opened", "Balance"};
 
     /*******************************************************************
      * The character used to separate the values in toString()
@@ -159,11 +166,26 @@ public abstract class Account implements Serializable{
 	}
 
     /*******************************************************************
+     * Creates an array of the names of the data stored in the account.
+     * Example for this class:
+     *      {"Account Number", "Owner Name", "Date Opened", "Balance"}
+     * @return The array of data headers
+     ******************************************************************/
+    public static String[] getDataHeaders(){
+        //To force child classes to implement
+        throw new IllegalArgumentException("Child class did not " +
+                "declare an overridden getDataHeaders() method");
+    }
+
+    /*******************************************************************
      * Returns a unique identifying name for the account class
      * @return A human readable unique class name
      ******************************************************************/
-    public abstract String getClassIdentifier();
-    //TODO: This is stupid. This should be a static method (JAVA!)
+    public static String getClassIdentifier(){
+        //To force child classes to implement
+        throw new IllegalArgumentException("Child class did not " +
+                "declare an overridden getClassIdentifier() method");
+    }
 
     /*******************************************************************
      * Generates a string representation of this account
@@ -201,6 +223,26 @@ public abstract class Account implements Serializable{
         }
         //Other is not an Account
         return false;
+    }
+
+
+    /*******************************************************************
+     * Produces an identical copy of this account at a separate
+     * location in memory
+     * @return A reference to the clone
+     ******************************************************************/
+    @Override
+    public Account clone(){
+        try {
+            Account clone = (Account) super.clone();
+
+            //Will "clone" the gregorian calendar as required by super.clone()
+            clone.setDateOpenedInMillis(clone.getDateOpenedInMillis());
+
+            return clone;
+        } catch (CloneNotSupportedException | ClassCastException e){
+            return null;
+        }
     }
 
     /*******************************************************************

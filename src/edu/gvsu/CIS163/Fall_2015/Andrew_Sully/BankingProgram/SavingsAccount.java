@@ -17,6 +17,9 @@ public class SavingsAccount extends Account implements Serializable {
      ******************************************************************/
 	private static final long serialVersionUID = 996106642L;
 
+    public static final String[] uniqueHeaders =
+                                   {"Minimum Balance", "Interest Rate"};
+
     /*******************************************************************
      * Identifies the class for the toString() method
      ******************************************************************/
@@ -181,9 +184,32 @@ public class SavingsAccount extends Account implements Serializable {
     * Returns a unique identifying name for the account class
     * @return A human readable unique class name
     ******************************************************************/
-    public String getClassIdentifier(){
+    public static String getClassIdentifier(){
         return classIdentifier;
     }
+
+    /*******************************************************************
+     * Creates an array of the names of the data stored in the account.
+     * Adds unique fields from this class to the abstract fields
+     * @return The array of data headers
+     ******************************************************************/
+    public static String[] getDataHeaders() {
+        int size = Account.defaultDataHeaders.length +
+                uniqueHeaders.length;
+
+        //Join the two arrays:
+        // uniqueHeaders and Account.defaultDataHeaders
+        String[] array = new String[size];
+        for (int i = 0; i < size; i++){
+            if (i < Account.defaultDataHeaders.length){
+                array[i] = Account.defaultDataHeaders[i];
+            } else {
+                array[i] = uniqueHeaders[i - Account.defaultDataHeaders.length];
+            }
+        }
+        return array;
+    }
+
 
     /*******************************************************************
      * Generates a string representation of this account
