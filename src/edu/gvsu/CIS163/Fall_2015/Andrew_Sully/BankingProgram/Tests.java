@@ -25,13 +25,26 @@ public class Tests {
     }
 
     @Test
-    public void testGetSize() {
+    public void testGetRows() {
         BankModel bm = new BankModel();
         bm.addAccount(new SavingsAccount("1"));
         bm.addAccount(new SavingsAccount("2"));
         bm.addAccount(new CheckingAccount("3"));
-        assertTrue(bm.getSize() == 3);
+        assertTrue(bm.getRowCount() == 4);
     }
+
+    @Test
+    public void testGetAccount() {
+        BankModel bm = new BankModel();
+        Account a = new CheckingAccount("asldjf", "Andrew");
+        bm.addAccount(new SavingsAccount("1"));
+        bm.addAccount(new SavingsAccount("2"));
+        bm.addAccount(new CheckingAccount("3"));
+        bm.addAccount(a);
+
+        assertEquals(a, bm.getAccount(3));
+    }
+
 
     @Test
     public void testGetElementAt() {
@@ -39,16 +52,16 @@ public class Tests {
         Account a = new CheckingAccount("asldjf");
         bm.addAccount(new SavingsAccount("a"));
         bm.addAccount(new SavingsAccount("b"));
-        bm.addAccount(new CheckingAccount("c"));
+        bm.addAccount(new CheckingAccount("c", "Andrew"));
         bm.addAccount(a);
 
-        assertEquals(a, bm.getElementAt(3));
+        assertEquals("Andrew", bm.getValueAt(3, 2));
     }
 
     @Test
     public void testRemoveAccount() {
         BankModel bm = new BankModel();
-        Account a = new CheckingAccount("asldjf");
+        Account a = new CheckingAccount("asldjf", "Andrew");
         bm.addAccount(new SavingsAccount("a"));
         bm.addAccount(new SavingsAccount("b"));
         bm.addAccount(new CheckingAccount("c"));
@@ -57,13 +70,13 @@ public class Tests {
 
         bm.removeAccount(3);
 
-        assertEquals(a, bm.getElementAt(3));
+        assertEquals("Andrew", bm.getValueAt(4, 2));
     }
 
     @Test
     public void testUpdateAccount() {
         BankModel bm = new BankModel();
-        Account a = new SavingsAccount("asldjf");
+        Account a = new SavingsAccount("asldjf", "Andrew");
         bm.addAccount(new SavingsAccount("1"));
         bm.addAccount(new SavingsAccount("2"));
         bm.addAccount(new CheckingAccount("3"));
@@ -71,7 +84,7 @@ public class Tests {
 
         bm.updateAccount(2, a);
 
-        assertEquals(a, bm.getElementAt(2));
+        assertEquals("asldjf", bm.getValueAt(3, 1));
     }
 
     @Test
@@ -83,11 +96,11 @@ public class Tests {
         bm.addAccount(new SavingsAccount("a"));
 
         bm.sortByAccountNumber();
-        Account firstElem = (Account) bm.getElementAt(0);
+        Account firstElem = bm.getAccount(0);
         assertTrue(firstElem.getNumber().equals("a"));
 
         bm.sortByAccountNumber(false);
-        firstElem = (Account) bm.getElementAt(0);
+        firstElem = bm.getAccount(0);
         assertTrue(firstElem.getNumber().equals("d"));
     }
 
@@ -97,14 +110,14 @@ public class Tests {
         bm.addAccount(new SavingsAccount("h", "b"));
         bm.addAccount(new SavingsAccount("z", "c"));
         bm.addAccount(new CheckingAccount("f", "d"));
-        bm.addAccount(new SavingsAccount("m","a"));
+        bm.addAccount(new SavingsAccount("m", "a"));
 
         bm.sortByAccountName();
-        Account firstElem = (Account) bm.getElementAt(0);
+        Account firstElem = bm.getAccount(0);
         assertTrue(firstElem.getOwnerName().equals("a"));
 
         bm.sortByAccountName(false);
-        firstElem = (Account) bm.getElementAt(0);
+        firstElem = bm.getAccount(0);
         assertTrue(firstElem.getOwnerName().equals("d"));
     }
 
@@ -117,12 +130,43 @@ public class Tests {
         bm.addAccount(new SavingsAccount("m", "a", new GregorianCalendar(2015, 5, 1)));
 
         bm.sortByDateOpened();
-        Account firstElem = (Account) bm.getElementAt(0);
+        Account firstElem = bm.getAccount(0);
         assertTrue(firstElem.getNumber().equals("f"));
 
         bm.sortByDateOpened(false);
-        firstElem = (Account) bm.getElementAt(0);
+        firstElem = bm.getAccount(0);
         assertTrue(firstElem.getNumber().equals("z"));
+    }
+
+    @Test
+    public void testHeaderResolution(){
+        BankModel bm = new BankModel();
+        bm.addAccount(new SavingsAccount("a"));
+        bm.addAccount(new CheckingAccount("b"));
+        String[] headers = bm.getHeaders();
+
+        assertEquals(headers[0], Account.defaultDataHeaders[0]);
+        assertEquals(headers[1], Account.defaultDataHeaders[1]);
+        assertEquals(headers[2], Account.defaultDataHeaders[2]);
+        assertEquals(headers[3], Account.defaultDataHeaders[3]);
+
+        assertEquals(8, headers.length);
+    }
+
+    @Test
+    public void testResolveRecursive(){
+        String[][] h1 = {new String[]{"1","2", "4", "5", "7"},
+                new String[]{"3","4"}, new String[]{"5", "6", "7"}};
+        String[] resolved = BankModel.resolveHeadersRecurse(h1);
+
+        for (int i = 1; i < 7; i++){
+            boolean found = false;
+            for (int j = 0; j < 7; j++){
+                if (resolved[j].equals("" + i))
+                    found = true;
+            }
+            assertTrue(found);
+        }
     }
 
     @Test

@@ -2,11 +2,9 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import javax.swing.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Scanner;
+import java.util.*;
 
+import javax.swing.table.AbstractTableModel;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
@@ -21,12 +19,13 @@ import org.w3c.dom.*;
  * This class contains a collection of accounts that can be sorted in
  * various ways and saved to and read from disk in a variety of formats
  **********************************************************************/
-public class BankModel extends AbstractListModel implements Serializable {
+public class BankModel extends AbstractTableModel implements Serializable {
     /*******************************************************************
      * Stores all of this accounts for this bank
      ******************************************************************/
     private ArrayList<Account> accounts;
     private ArrayList<Class> validAccountTypes;
+    private String[] headers;
 
     public BankModel(){
         //Set with default valid Account Types
@@ -67,18 +66,41 @@ public class BankModel extends AbstractListModel implements Serializable {
      * @return The number of accounts
      ******************************************************************/
     @Override
-    public int getSize() {
-        return accounts.size();
+    public int getRowCount() {
+        return accounts.size() + 1;
+    }
+
+    /*******************************************************************
+     * Gets the number of columns of data in this bankmodel
+     * @return The number of columns
+     ******************************************************************/
+    @Override
+    public int getColumnCount() {
+        return getHeaders().length;
     }
 
     /*******************************************************************
      * Gets the element at a specified index
-     * @param index The index of the item to return
-     * @return The item
+     * @param row The row of the item to return
+     * @param col The column of the item to return
+     * @return The item at the specified position
      ******************************************************************/
     @Override
-    public Object getElementAt(int index) {
-        return accounts.get(index);
+    public Object getValueAt(int row, int col) {
+        if (row == 0){
+            return getHeaders()[col];
+        } else {
+            HashMap<String, String> dataMap = getAccount(row - 1)
+                                            .getClassDataAndHeaders();
+            String requestedData = getHeaders()[col];
+
+            String data = dataMap.get(requestedData);
+            if (data != null){
+                return data;
+            } else {
+                return  "N/A";
+            }
+        }
     }
 
     /*******************************************************************
@@ -99,7 +121,7 @@ public class BankModel extends AbstractListModel implements Serializable {
         accounts.add(account);
 
         //Tell the GUI we updated
-        fireIntervalAdded(this, accounts.size() - 1, accounts.size());
+        fireTableRowsInserted(accounts.size(), accounts.size());
     }
 
     /*******************************************************************
@@ -111,7 +133,7 @@ public class BankModel extends AbstractListModel implements Serializable {
         accounts.remove(index);
 
         //Tell the GUI we updated
-        fireIntervalRemoved(this, index, index);
+        fireTableRowsDeleted(index, index);
     }
 
     /*******************************************************************
@@ -135,7 +157,18 @@ public class BankModel extends AbstractListModel implements Serializable {
         accounts.add(index, account);
 
         //Tell the GUI we updated
-        fireContentsChanged(this, index, index + 1);
+        fireTableRowsUpdated(index, index);
+    }
+
+    /*******************************************************************
+     * Gets an account at a certain position
+     * @param index The index of the account to get
+     * @return  The account in the specified slot
+     * @throws IndexOutOfBoundsException if index >= this.getRowCount()
+     ******************************************************************/
+    public Account getAccount(int index){
+        //Use a clone for security this class's data
+        return accounts.get(index).clone();
     }
 
     /*******************************************************************
@@ -228,7 +261,7 @@ public class BankModel extends AbstractListModel implements Serializable {
         });
 
         //Tell the GUI we updated
-        fireContentsChanged(this, 0, accounts.size());
+        fireTableDataChanged();
     }
 
     /*******************************************************************
@@ -259,7 +292,7 @@ public class BankModel extends AbstractListModel implements Serializable {
         });
 
         //Tell the GUI we updated
-        fireContentsChanged(this, 0, accounts.size());
+        fireTableDataChanged();
     }
 
     /*******************************************************************
@@ -268,6 +301,54 @@ public class BankModel extends AbstractListModel implements Serializable {
     public void sortByDateOpened(){
         //If reverse is not specified, we sort ascending
         sortByDateOpened(true);
+    }
+
+    /*******************************************************************
+     * Reconcile the headers from all of the accounts in this class and
+     * store them in an array
+     ******************************************************************/
+    private void resolveHeaders(){
+        String[][] headerArrays = new String[accounts.size()][];
+
+        for (int i = 0; i < headerArrays.length; i++){
+            headerArrays[i] = getAccount(i).getDataHeaders();
+        }
+
+        if (headerArrays.length == 1) {
+            headers = headerArrays[0];
+            return;
+        }
+
+        headers = resolveHeadersRecurse(headerArrays);
+    }
+
+    /*******************************************************************
+     * Uses recursion to compute the combined header array
+     ******************************************************************/
+    public static String[] resolveHeadersRecurse(String h1[][]){
+        if (h1.length == 2){
+            return  Account.resolveHeaders(h1[0], h1[1]);
+        } else {
+
+            //Remove the last element from h1
+            String[][] newh1 = new String[h1.length - 1][];
+            for (int i = 0; i < newh1.length; i++){
+                newh1[i] = h1[i];
+            }
+
+            return Account.resolveHeaders(
+                    resolveHeadersRecurse(newh1),
+                    h1[h1.length - 1]);
+        }
+    }
+
+    /*******************************************************************
+     * Updates headers and returns the new array
+     * @return An up-to-date array of headers
+     ******************************************************************/
+    public String[] getHeaders(){
+        resolveHeaders();
+        return headers;
     }
 
     /*******************************************************************
@@ -300,7 +381,7 @@ public class BankModel extends AbstractListModel implements Serializable {
             fileIn.close();
 
             //Tell the GUI we updated
-            fireContentsChanged(this, 0, accounts.size());
+            fireTableDataChanged();
         } catch(ClassNotFoundException | ObjectStreamException c) {
             throw new IllegalArgumentException();
         }
@@ -409,7 +490,7 @@ public class BankModel extends AbstractListModel implements Serializable {
         }
 
         //Tell the GUI we updated
-        fireContentsChanged(this, 0, accounts.size());
+        fireTableDataChanged();
     }
 
     /*******************************************************************
@@ -492,7 +573,7 @@ public class BankModel extends AbstractListModel implements Serializable {
         try {
             // use the factory to take an instance of the document builder
             DocumentBuilder db = dbf.newDocumentBuilder();
-            // parse using the builder to get the DOM mapping of the    
+            // parse using the builder to get the DOM mapping of the
             // XML file
             dom = db.parse(filePath);
 
@@ -569,7 +650,7 @@ public class BankModel extends AbstractListModel implements Serializable {
             }
 
             //Tell the GUI we updated
-            fireContentsChanged(this, 0, accounts.size());
+            fireTableDataChanged();
         } catch (ParserConfigurationException | SAXException pce) {
             throw new IOException();
         }
@@ -590,14 +671,14 @@ public class BankModel extends AbstractListModel implements Serializable {
 
         //So we don't go out of bounds
         int minSize;
-        if (o.getSize() < getSize()){
-            minSize = o.getSize();
+        if (o.getRowCount() < getRowCount()){
+            minSize = o.getRowCount() - 1;
         } else {
-            minSize = getSize();
+            minSize = getRowCount() - 1;
         }
 
         for (int i = 0; i < minSize; i++){
-            if (!o.getElementAt(i).equals(getElementAt(i))){
+            if (!o.getAccount(i).equals(getAccount(i))){
                 //If any are unequal,
                 return false;
             }
