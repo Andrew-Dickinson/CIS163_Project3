@@ -452,9 +452,6 @@ public class BankModel extends AbstractListModel implements Serializable {
 
             Element doc = dom.getDocumentElement();
 
-            //TODO: This method looses the order of the xml elements
-            //This could be fixed with the right tag system
-
             NodeList savingsAccounts = doc
                   .getElementsByTagName(SavingsAccount.getClassIdentifierStatic());
             NodeList checkingAccounts = doc
