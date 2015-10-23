@@ -6,18 +6,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.Serializable;
-import java.util.GregorianCalendar;
-import java.util.Objects;
+import java.util.*;
 
 /***********************************************************************
  * A base account class with several
  * instance variables and getters and setters
- *
- * Sub classes MUST override the static methods:
- *      getClassIdentifier() and getDataHeaders()
  * @author Sully
  **********************************************************************/
-public abstract class Account implements Serializable{	
+public abstract class Account implements Serializable, Cloneable {
     /*******************************************************************
      * A unique identifier for this class
      ******************************************************************/
@@ -171,20 +167,65 @@ public abstract class Account implements Serializable{
      *      {"Account Number", "Owner Name", "Date Opened", "Balance"}
      * @return The array of data headers
      ******************************************************************/
-    public static String[] getDataHeaders(){
-        //To force child classes to implement
-        throw new IllegalArgumentException("Child class did not " +
-                "declare an overridden getDataHeaders() method");
-    }
+    public abstract String[] getDataHeaders();
+    //Isn't a static method because java doesn't support
+    // polymorphic static methods
 
     /*******************************************************************
      * Returns a unique identifying name for the account class
      * @return A human readable unique class name
      ******************************************************************/
-    public static String getClassIdentifier(){
-        //To force child classes to implement
-        throw new IllegalArgumentException("Child class did not " +
-                "declare an overridden getClassIdentifier() method");
+    public abstract String getClassIdentifier();
+    //Isn't a static method because java doesn't support
+    // polymorphic static methods
+
+    /*******************************************************************
+     * Generates a HashMap with the data headers as keys
+     * @return The generated hashmap
+     ******************************************************************/
+    public abstract HashMap<String, String> getClassDataAndHeaders();
+
+
+    /*******************************************************************
+     * Generates a HashMap with the data headers as keys for the
+     * components in this Account base class
+     * @return The generated hashmap
+     ******************************************************************/
+    protected HashMap<String, String> getBaseHashMap(){
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put(defaultDataHeaders[0], getClassIdentifier());
+        map.put(defaultDataHeaders[1], getNumber());
+        map.put(defaultDataHeaders[2], getOwnerName());
+        map.put(defaultDataHeaders[3],
+                Long.toString(getDateOpenedInMillis()));
+        map.put(defaultDataHeaders[4], Double.toString(getBalance()));
+        return map;
+    }
+
+    /*******************************************************************
+     * Given two conflicting sets of data headers, this function creates
+     * a properly sorted array with no duplicate elements. It's
+     * basically a dove-tail merge of two arrays
+     * @param h1 The headers from one Account class
+     * @param h2 The headers from another Account class
+     * @return The combined array
+     ******************************************************************/
+    public static String[] resolveHeaders(String[] h1, String[] h2){
+        ArrayList<String> computed = new ArrayList<String>();
+        for (String header : h1){
+            if (!computed.contains(header)){
+                computed.add(header);
+            }
+        }
+
+        for (String header : h2){
+            if (!computed.contains(header)){
+                computed.add(header);
+            }
+        }
+
+        String[] out = computed.toArray(new String[computed.size()]);
+        return out;
     }
 
     /*******************************************************************

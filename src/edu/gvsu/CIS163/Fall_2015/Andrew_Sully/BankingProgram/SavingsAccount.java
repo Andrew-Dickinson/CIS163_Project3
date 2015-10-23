@@ -7,6 +7,7 @@ import org.w3c.dom.NodeList;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 /***********************************************************************
  * An account that has a minimum balance and an interest rate
@@ -184,7 +185,7 @@ public class SavingsAccount extends Account implements Serializable {
     * Returns a unique identifying name for the account class
     * @return A human readable unique class name
     ******************************************************************/
-    public static String getClassIdentifier(){
+    public String getClassIdentifier(){
         return classIdentifier;
     }
 
@@ -193,7 +194,7 @@ public class SavingsAccount extends Account implements Serializable {
      * Adds unique fields from this class to the abstract fields
      * @return The array of data headers
      ******************************************************************/
-    public static String[] getDataHeaders() {
+    public String[] getDataHeaders() {
         int size = Account.defaultDataHeaders.length +
                 uniqueHeaders.length;
 
@@ -208,6 +209,17 @@ public class SavingsAccount extends Account implements Serializable {
             }
         }
         return array;
+    }
+
+    /*******************************************************************
+     * Generates a HashMap with the data headers as keys
+     * @return The generated hashmap
+     ******************************************************************/
+    public HashMap<String, String> getClassDataAndHeaders(){
+        HashMap<String, String> map = super.getBaseHashMap();
+        map.put(uniqueHeaders[0], Double.toString(getMinBalance()));
+        map.put(uniqueHeaders[1], Double.toString(getInterestRate()));
+        return map;
     }
 
 
