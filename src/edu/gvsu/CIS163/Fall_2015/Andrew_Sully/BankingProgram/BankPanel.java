@@ -9,26 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-//can i do this?
 import java.util.GregorianCalendar;
-
 
 /***********************************************************************
  * Displays the GUI for interacting with the banking program
  **********************************************************************/
 
-//TODO: 
-
-//README:
-//		Also need a way to delete/update accounts I am thinking that 
-//		 another tab on the dropdown menu called "modify" that asks the
-//		 user for the account number of the account they want to modify
-//		 then gives them the option to delete or change data.
-// if this is a viable solution, I would love to do it, because I 
-//  enjoy it :D thanks!
-//		Also do you want to have the Jtable to say what type of account
-//		 it is or do you want a radio button to go between types of
-//		 accounts?
+//TODO: the sorts and the remove I can do both i'm just really tired.
     
 public class BankPanel extends JPanel {
     // Instance attributes
@@ -71,7 +58,7 @@ public class BankPanel extends JPanel {
 		file = new JMenu("File");
 		sort = new JMenu("Sort");
 		quit = new JMenuItem("Quit");
-		save = new JMenuItem("Save");
+		save = new JMenuItem("Save As ");
 		load = new JMenuItem("Load");
 		addAcct = new JMenu("Add");
 		byAcctNum = new JMenuItem("By Account Number");
@@ -119,21 +106,14 @@ public class BankPanel extends JPanel {
 		menuBar.add(file);
 		menuBar.add(sort);
 		
-		add(scrollPane);
-
+		this.add(scrollPane);
 		frame.setJMenuBar(menuBar);
 	}
 	
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			//what happens when a button is pressed
-			
-			//tests
-//	        bm.addAccount(new SavingsAccount("b"));
-//	        bm.addAccount(new SavingsAccount("c"));
-//	        bm.addAccount(new CheckingAccount("d"));
-//	        bm.addAccount(new SavingsAccount("a"));
-	        
+
 	        //filters needed to determine which type of file
 			FileNameExtensionFilter txtFilter = new FileNameExtensionFilter(
 			        "TXT files", "txt");
@@ -148,11 +128,7 @@ public class BankPanel extends JPanel {
 			}
 			
 			//saves the account data to files
-			if(save == event.getSource()){
-				//TODO;			
-				fileChoose.setFileFilter(txtFilter);
-				fileChoose.setFileFilter(binFilter);
-				fileChoose.setFileFilter(xmlFilter); 	
+			if(save == event.getSource()){ 	
 				if (fileChoose.showSaveDialog(getParent())== JFileChooser.APPROVE_OPTION) {
 			        File fileToSave = fileChoose.getSelectedFile();
 			        System.out.println("Path save: "+fileToSave.getAbsolutePath());
@@ -175,9 +151,9 @@ public class BankPanel extends JPanel {
 				}
 			}
 			
-			
 			//loads account data from files
 			if(load == event.getSource()){
+				//TODO: I don't know what the error is here.
 				fileChoose.setFileFilter(txtFilter);
 				fileChoose.setFileFilter(binFilter);
 				fileChoose.setFileFilter(xmlFilter); 	
@@ -221,9 +197,6 @@ public class BankPanel extends JPanel {
 			
 			// adds a checking account to the JTable
 			if (addCheck == event.getSource()) {
-				// TODO: add a checking account
-				
-				
 				// User inputed account number
 				JTextField numField = new JTextField();
 				// User inputed owner name
@@ -297,12 +270,7 @@ public class BankPanel extends JPanel {
 					
 					//adds account to bank Model
 					bm.addAccount(ca);
-					
-					//outputs account 
-					//THIS IS A TEST
 					ca.parseFromString(dataString);
-					String temp1 = ca.toString();
-					System.out.println(temp1);
 				}
 			}
 
@@ -357,7 +325,6 @@ public class BankPanel extends JPanel {
 					System.out.println("Intrest Rate value: " + 
 							intField.getText());
 				
-				
 					//information to put into JTable
 					String[] newAcct ={"Saving Account ",
 							ownField.getText(),
@@ -389,14 +356,7 @@ public class BankPanel extends JPanel {
 					
 					//adds account to bank Model
 					bm.addAccount(sa);
-					
-					//outputs account 
-					//THIS IS A TEST
 					sa.parseFromString(dataString);
-					String temp1 = sa.toString();
-					System.out.println(temp1);
-					
-					
 				}
 			}
 		}
