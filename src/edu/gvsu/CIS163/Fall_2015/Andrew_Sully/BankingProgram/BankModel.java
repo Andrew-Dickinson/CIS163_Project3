@@ -405,8 +405,11 @@ public class BankModel extends AbstractListModel implements Serializable {
             Element rootEle = dom.createElement("accounts");
 
             //Add an element for each account
-            for (Account account : accounts){
-                Element e = account.getDOMNode(dom);
+            for (int i = 0; i < accounts.size(); i++){
+                Element e = accounts.get(i).getDOMNode(dom);
+                Element sortedNumber = dom.createElement("SortedNumber");
+                sortedNumber.appendChild(dom.createTextNode(Integer.toString(i)));
+                e.appendChild(sortedNumber);
                 rootEle.appendChild(e);
             }
 
@@ -457,12 +460,25 @@ public class BankModel extends AbstractListModel implements Serializable {
             NodeList checkingAccounts = doc
                  .getElementsByTagName(CheckingAccount.getClassIdentifierStatic());
 
+            int numberOfAccounts = savingsAccounts.getLength()
+                                    + checkingAccounts.getLength();
+            ArrayList<Account> temporaryList = new ArrayList<>();
+
+            //Set initial size (different from capacity. see Arraylist docs)
+            for (int i = 0; i < numberOfAccounts; i++){
+                temporaryList.add(null);
+            }
+
             for (int i = 0; i < savingsAccounts.getLength(); i++){
                 Element accountEl = (Element) savingsAccounts.item(i);
 
                 Account a = new SavingsAccount();
                 a.parseFromDOMElement(accountEl);
-                addAccount(a);
+                NodeList orderNumbers = accountEl.getElementsByTagName("SortedNumber");
+                int pos = Integer.parseInt(orderNumbers.item(0)
+                        .getFirstChild().getTextContent());
+
+                temporaryList.set(pos, a);
             }
 
             for (int i = 0; i < checkingAccounts.getLength(); i++){
@@ -470,6 +486,16 @@ public class BankModel extends AbstractListModel implements Serializable {
 
                 Account a = new CheckingAccount();
                 a.parseFromDOMElement(accountEl);
+
+                NodeList orderNumbers = accountEl.getElementsByTagName("SortedNumber");
+                int pos = Integer.parseInt(orderNumbers.item(0)
+                        .getFirstChild().getTextContent());
+
+                temporaryList.set(pos, a);
+            }
+
+            //This ensures the order is maintained
+            for (Account a : temporaryList){
                 addAccount(a);
             }
 
@@ -477,8 +503,6 @@ public class BankModel extends AbstractListModel implements Serializable {
             throw new IOException();
         }
     }
-
-    //TODO: add methods to load/save accounts from/to an XML file
 
     //TODO: Implement this:
     //To make updates to the accounts in the model immediately visible
