@@ -15,7 +15,6 @@ import java.util.Objects;
  *
  * Sub classes MUST override the static methods:
  *      getClassIdentifier() and getDataHeaders()
- * @author Sully
  **********************************************************************/
 public abstract class Account implements Serializable{	
     /*******************************************************************

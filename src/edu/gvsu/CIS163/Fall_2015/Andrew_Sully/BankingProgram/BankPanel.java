@@ -2,10 +2,13 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 //Imports
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 /***********************************************************************
  * Displays the GUI for interacting with the banking program
@@ -125,16 +128,83 @@ public class BankPanel extends JPanel {
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			//what happens when a button is pressed
+			
+			BankModel bm = new BankModel();
+			
+			//tests
+	        bm.addAccount(new SavingsAccount("b"));
+	        bm.addAccount(new SavingsAccount("c"));
+	        bm.addAccount(new CheckingAccount("d"));
+	        bm.addAccount(new SavingsAccount("a"));
+	        
+	        //filters needed to determine which type of file
+			FileNameExtensionFilter txtFilter = new FileNameExtensionFilter(
+			        "TXT files", "txt");
+			FileNameExtensionFilter binFilter = new FileNameExtensionFilter(
+			        "BIN files", "bin");
+			FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter(
+			        "XML files", "xml");
+			
 			//quits the program
 			if(quit == event.getSource()){
 				System.exit(0);
 			}
+			
+			//saves the account data to files
 			if(save == event.getSource()){
-				//TODO:
-				int returnVal = fileChoose.showOpenDialog(getParent());
+				//TODO;			
+				fileChoose.setFileFilter(txtFilter);
+				fileChoose.setFileFilter(binFilter);
+				fileChoose.setFileFilter(xmlFilter); 	
+				if (fileChoose.showSaveDialog(getParent())== JFileChooser.APPROVE_OPTION) {
+			        File fileToSave = fileChoose.getSelectedFile();
+			        System.out.println("Path save: "+fileToSave.getAbsolutePath());
+					String filePath = ""+fileToSave.getAbsolutePath();
+			        try {
+						bm.saveToTextFile(filePath+".txt");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			        try {
+						bm.saveToBinaryFile(filePath+".bin");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			        try {
+						bm.saveToXMLFile(filePath+".xml");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
+			
+			
+			//loads account data from files
 			if(load == event.getSource()){
-				//TODO:
+				fileChoose.setFileFilter(txtFilter);
+				fileChoose.setFileFilter(binFilter);
+				fileChoose.setFileFilter(xmlFilter); 	
+				
+			    if(fileChoose.showOpenDialog(getParent()) == JFileChooser.APPROVE_OPTION) {
+			    	File fileToSave = fileChoose.getSelectedFile();
+			    	System.out.println("Path load: "+fileToSave.getAbsolutePath());
+					String filePath = ""+fileToSave.getAbsolutePath();
+//				    try {
+//						bm.loadFromTextFile(filePath);
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//				    try {
+//						bm.loadFromBinaryFile(filePath);
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//				    try {
+//						bm.loadFromXMLFile(filePath);
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+			    } 
 			}
 			
 			//sorts JTable by account numbers
@@ -155,6 +225,8 @@ public class BankPanel extends JPanel {
 			// adds a checking account to the JTable
 			if (addCheck == event.getSource()) {
 				// TODO: add a checking account
+				
+				
 				// User inputed account number
 				JTextField numField = new JTextField();
 				// User inputed owner name
@@ -210,6 +282,7 @@ public class BankPanel extends JPanel {
 				
 				//putting info into JTable
 				model.addRow(newAcct);
+				
 				
 				//TODO: Put this data into the account 
 			}

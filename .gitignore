@@ -5,3 +5,5 @@
 *.iml
 *.prefs
 test.bnk
+test.txt
+*.xml
