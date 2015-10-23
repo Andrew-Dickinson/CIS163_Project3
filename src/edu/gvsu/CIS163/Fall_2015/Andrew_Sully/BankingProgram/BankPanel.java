@@ -17,10 +17,7 @@ import java.util.GregorianCalendar;
  * Displays the GUI for interacting with the banking program
  **********************************************************************/
 
-//TODO: in order, use a dialogue box to have user input account data
-//		then use the user input to make new Accounts 
-//		then add the new accounts into the Table probably make an 
-//		 add method in this class using fireback and TableModelEvent(GUI)
+//TODO: 
 
 //README:
 //		Also need a way to delete/update accounts I am thinking that 
@@ -61,9 +58,9 @@ public class BankPanel extends JPanel {
 	private JMenuBar menuBar;
 	//this allows us to have any size window and we can scroll through data
 	private JScrollPane scrollPane;
-
+	//This is for the save/load 
 	private JFileChooser fileChoose;
-	
+	//bankModel 
 	BankModel bm = new BankModel();
 	
 	// Constructor of main frame
@@ -90,13 +87,10 @@ public class BankPanel extends JPanel {
 				"Account Name","Date Opened","Balance",
 				"Minimum Balance","Intrest Rate","Monthly Fee"};
 		
-		// Create some data this is a test
-		Object dataValues[] ={"","","","","","","",""};
-		
 		// Create a new table instance
 		table = new JTable(new DefaultTableModel(columnNames, 0));
 		model = (DefaultTableModel) table.getModel();
-		model.addRow(dataValues);
+		
 		// Add the table to a scrolling pane
 		scrollPane = new JScrollPane( table );
 		
@@ -299,9 +293,11 @@ public class BankPanel extends JPanel {
 					//makes a new account
 					CheckingAccount ca = new CheckingAccount();
 					String dataString = "CheckingAccount;"+numField.getText()+";"+ownField.getText()+";"+temp+";"
-							+balField.getText()+";"+monField.getText()+";";
+							+balField.getText()+";"+monField.getText();
 					
+					//adds account to bank Model
 					bm.addAccount(ca);
+					
 					//outputs account 
 					//THIS IS A TEST
 					ca.parseFromString(dataString);
@@ -360,22 +356,48 @@ public class BankPanel extends JPanel {
 							minField.getText());
 					System.out.println("Intrest Rate value: " + 
 							intField.getText());
+				
+				
+					//information to put into JTable
+					String[] newAcct ={"Saving Account ",
+							ownField.getText(),
+							numField.getText(),
+							dateField.getText(),
+							balField.getText(),
+							minField.getText(),
+							intField.getText(),
+							"-"};
+					
+					//putting info into JTable
+					model.addRow(newAcct);
+					
+					//converts dateField.gettext() to an integer array
+					String[] gcDates = dateField.getText().split("/");
+					int[] gcintDates = new int[3];
+					for (int i = 0; i < gcDates.length; i++) {
+						gcintDates[i] = Integer.parseInt(gcDates[i]);
+					}
+					
+					//makes a GC with the user date
+					GregorianCalendar gc= new GregorianCalendar(gcintDates[2],gcintDates[0],gcintDates[1]);
+					long temp = gc.getTimeInMillis();
+					
+					//makes a new account
+					SavingsAccount sa = new SavingsAccount();
+					String dataString = "SavingsAccount;"+numField.getText()+";"+ownField.getText()+";"+temp+";"
+							+balField.getText()+";"+minField.getText()+";"+intField.getText();
+					
+					//adds account to bank Model
+					bm.addAccount(sa);
+					
+					//outputs account 
+					//THIS IS A TEST
+					sa.parseFromString(dataString);
+					String temp1 = sa.toString();
+					System.out.println(temp1);
+					
+					
 				}
-				
-				//information to put into JTable
-				String[] newAcct ={"Saving Account ",
-						ownField.getText(),
-						numField.getText(),
-						dateField.getText(),
-						balField.getText(),
-						minField.getText(),
-						intField.getText(),
-						"-"};
-				
-				//putting info into JTable
-				model.addRow(newAcct);
-				
-				//TODO: Put this data into the account classes 
 			}
 		}
 	}	
