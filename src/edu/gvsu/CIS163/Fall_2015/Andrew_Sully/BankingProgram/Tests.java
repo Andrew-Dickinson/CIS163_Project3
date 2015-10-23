@@ -18,6 +18,12 @@ public class Tests {
         bm.addAccount(new CheckingAccount("lasdjf"));
     }
 
+    @Test(expected=IllegalArgumentException.class)
+    public void testUnsupportedClass(){
+        BankModel bm = new BankModel(new Class[]{CheckingAccount.class});
+        bm.addAccount(new SavingsAccount());
+    }
+
     @Test
     public void testGetSize() {
         BankModel bm = new BankModel();
@@ -178,18 +184,15 @@ public class Tests {
 
     @Test
     public void testSaveToXMLFile() throws IOException {
-        //ANDREW IS AWARE THAT THIS TEST IS FAILING
         BankModel bm = new BankModel();
         bm.addAccount(new SavingsAccount("b", "Sully"));
         bm.addAccount(new SavingsAccount("c"));
         bm.addAccount(new CheckingAccount("d", "Andrew"));
         bm.addAccount(new SavingsAccount("a"));
 
-
         bm.saveToXMLFile("test.xml");
 
         BankModel newBM = new BankModel();
-        //SEE ABOVE
         newBM.loadFromXMLFile("test.xml");
 
         assertEquals(bm, newBM);
