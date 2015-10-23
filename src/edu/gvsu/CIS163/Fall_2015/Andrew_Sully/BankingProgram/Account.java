@@ -163,6 +163,7 @@ public abstract class Account implements Serializable{
      * @return A human readable unique class name
      ******************************************************************/
     public abstract String getClassIdentifier();
+    //TODO: This is stupid. This should be a static method (JAVA!)
 
     /*******************************************************************
      * Generates a string representation of this account
@@ -209,7 +210,7 @@ public abstract class Account implements Serializable{
      * @throws IllegalArgumentException if accountClass doesn't
      *                                  extend account
      ******************************************************************/
-    public static String getClassIdentifierFromClass(Class accountClass){
+    public static String getClassIDFromClass(Class accountClass){
         String validAccountTypeClassID;
         try {
             Account validAccountInstance = (Account) accountClass
@@ -232,7 +233,7 @@ public abstract class Account implements Serializable{
      * @throws IllegalArgumentException if accountClass
      *                                  doesn't extend account
      ******************************************************************/
-    public static Account getClassInstanceFromClass(Class accountClass){
+    public static Account getInstanceFromClass(Class accountClass){
         try {
             return  (Account) accountClass.newInstance();
         } catch (InstantiationException | ClassCastException

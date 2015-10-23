@@ -2,7 +2,6 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import javax.swing.*;
 import java.io.*;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -354,13 +353,13 @@ public class BankModel extends AbstractListModel implements Serializable {
                 Account incomingAccount = null;
                 for (Class validAccountType : validAccountTypes){
                     String validAccountTypeName = Account
-                         .getClassIdentifierFromClass(validAccountType);
+                         .getClassIDFromClass(validAccountType);
 
                     if (incomingAccountTypeName
                                          .equals(validAccountTypeName)){
                         //This is a match
                         incomingAccount = Account
-                           .getClassInstanceFromClass(validAccountType);
+                           .getInstanceFromClass(validAccountType);
                     }
                 }
 
@@ -401,8 +400,20 @@ public class BankModel extends AbstractListModel implements Serializable {
             // create instance of DOM
             dom = db.newDocument();
 
-            // create the root element
-            Element rootEle = dom.createElement("accounts");
+            //This element will be the parent to all of the account elements
+            Element acctElement = dom.createElement("Accounts");
+
+            //This element will be the parent to all of the accountType elements
+            Element typeElement = dom.createElement("AccountTypes");
+
+            //Add each accountType
+            for (Class accountType : validAccountTypes){
+                Element e = dom.createElement("AccountType");
+                String typeString = accountType.toGenericString();
+                typeString = typeString.replaceFirst("public class ", "");
+                e.appendChild(dom.createTextNode(typeString));
+                typeElement.appendChild(e);
+            }
 
             //Add an element for each account
             for (int i = 0; i < accounts.size(); i++){
@@ -410,8 +421,13 @@ public class BankModel extends AbstractListModel implements Serializable {
                 Element sortedNumber = dom.createElement("SortedNumber");
                 sortedNumber.appendChild(dom.createTextNode(Integer.toString(i)));
                 e.appendChild(sortedNumber);
-                rootEle.appendChild(e);
+                acctElement.appendChild(e);
             }
+
+            //House the account and type info in the same element
+            Element rootEle = dom.createElement("BankModel");
+            rootEle.appendChild(typeElement);
+            rootEle.appendChild(acctElement);
 
             //Add our root element to the main dom
             dom.appendChild(rootEle);
@@ -438,7 +454,9 @@ public class BankModel extends AbstractListModel implements Serializable {
      * @throws IOException If any kind of error occurs reading the file
      ******************************************************************/
     public void loadFromXMLFile(String filePath) throws IOException{
+        //Reset the values of the instance array lists
         accounts = new ArrayList<Account>();
+        validAccountTypes = new ArrayList<Class>();
 
         Document dom;
         // Make an  instance of the DocumentBuilderFactory
@@ -452,47 +470,73 @@ public class BankModel extends AbstractListModel implements Serializable {
 
             Element doc = dom.getDocumentElement();
 
-            NodeList savingsAccounts = doc
-                  .getElementsByTagName(SavingsAccount.getClassIdentifierStatic());
-            NodeList checkingAccounts = doc
-                 .getElementsByTagName(CheckingAccount.getClassIdentifierStatic());
+            //Query for all of the account types
+            NodeList accountTypesQuery = doc.getElementsByTagName("AccountType");
 
-            int numberOfAccounts = savingsAccounts.getLength()
-                                    + checkingAccounts.getLength();
-            ArrayList<Account> temporaryList = new ArrayList<>();
+            //For each of these types, add it to the
+            // valid account type list
+            for (int i = 0; i < accountTypesQuery.getLength(); i++){
+                Node accountTypeNode = accountTypesQuery.item(i);
+                Element accountTypeEle = (Element) accountTypeNode;
+                String accountTypeString = accountTypeEle.getTextContent();
+
+                try {
+                    Class accountType = Class.forName(accountTypeString);
+                    addValidAccountType(accountType);
+                } catch (ClassNotFoundException e){
+                    //There's a problem with the format of the file
+                    throw new IllegalArgumentException();
+                }
+            }
+
+            //Will hold all of the account elements of every type
+            ArrayList<Element> accountElements = new ArrayList<Element>();
+
+            //For each account type, we gather all accounts of that type
+            for (Class accountType : validAccountTypes){
+                String tagName = Account.getClassIDFromClass(accountType);
+
+                //This contains all of the accounts of this type
+                NodeList accounts = doc.getElementsByTagName(tagName);
+
+                //Add all the accounts of this type to the overall list
+                for (int i = 0; i < accounts.getLength(); i++){
+                    accountElements.add((Element) accounts.item(i));
+                }
+            }
+
+            //Will hold a correctly ordered list of Account objects
+            ArrayList<Account> orderedAccounts = new ArrayList<Account>();
 
             //Set initial size (different from capacity. see Arraylist docs)
-            for (int i = 0; i < numberOfAccounts; i++){
-                temporaryList.add(null);
+            for (int i = 0; i < accountElements.size(); i++){
+                orderedAccounts.add(null);
             }
 
-            for (int i = 0; i < savingsAccounts.getLength(); i++){
-                Element accountEl = (Element) savingsAccounts.item(i);
+            //For each of the account elements
+            for (Element accountEle : accountElements){
+                for (Class accountType : validAccountTypes){
+                    String typeName = Account.getClassIDFromClass(accountType);
+                    if (typeName.equals(accountEle.getTagName())) {
+                        //This is a match
 
-                Account a = new SavingsAccount();
-                a.parseFromDOMElement(accountEl);
-                NodeList orderNumbers = accountEl.getElementsByTagName("SortedNumber");
-                int pos = Integer.parseInt(orderNumbers.item(0)
-                        .getFirstChild().getTextContent());
+                        //Instantiate and populate the Account
+                        Account a = Account.getInstanceFromClass(accountType);
+                        a.parseFromDOMElement(accountEle); //Polymorphic
 
-                temporaryList.set(pos, a);
-            }
+                        //Figure out where it goes in the order
+                        NodeList orderNumbers = accountEle.getElementsByTagName("SortedNumber");
+                        int pos = Integer.parseInt(orderNumbers.item(0)
+                                .getFirstChild().getTextContent());
 
-            for (int i = 0; i < checkingAccounts.getLength(); i++){
-                Element accountEl = (Element) checkingAccounts.item(i);
-
-                Account a = new CheckingAccount();
-                a.parseFromDOMElement(accountEl);
-
-                NodeList orderNumbers = accountEl.getElementsByTagName("SortedNumber");
-                int pos = Integer.parseInt(orderNumbers.item(0)
-                        .getFirstChild().getTextContent());
-
-                temporaryList.set(pos, a);
+                        //Add this to the ordered list in the correct spot
+                        orderedAccounts.set(pos, a);
+                    }
+                }
             }
 
             //This ensures the order is maintained
-            for (Account a : temporaryList){
+            for (Account a : orderedAccounts){
                 addAccount(a);
             }
 

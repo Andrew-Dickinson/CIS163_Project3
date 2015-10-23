@@ -185,15 +185,6 @@ public class SavingsAccount extends Account implements Serializable {
         return classIdentifier;
     }
 
-    //TODO: Sort out this mess
-    /*******************************************************************
-     * Returns a unique identifying name for the account class
-     * @return A human readable unique class name
-     ******************************************************************/
-    public static String getClassIdentifierStatic(){
-        return classIdentifier;
-    }
-
     /*******************************************************************
      * Generates a string representation of this account
      * @return A string in the format:
