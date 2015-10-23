@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+//can i do this?
+import java.util.GregorianCalendar;
+
 
 /***********************************************************************
  * Displays the GUI for interacting with the banking program
@@ -60,6 +63,8 @@ public class BankPanel extends JPanel {
 	private JScrollPane scrollPane;
 
 	private JFileChooser fileChoose;
+	
+	BankModel bm = new BankModel();
 	
 	// Constructor of main frame
 	public BankPanel(JFrame frame){
@@ -129,13 +134,11 @@ public class BankPanel extends JPanel {
 		public void actionPerformed(ActionEvent event) {
 			//what happens when a button is pressed
 			
-			BankModel bm = new BankModel();
-			
 			//tests
-	        bm.addAccount(new SavingsAccount("b"));
-	        bm.addAccount(new SavingsAccount("c"));
-	        bm.addAccount(new CheckingAccount("d"));
-	        bm.addAccount(new SavingsAccount("a"));
+//	        bm.addAccount(new SavingsAccount("b"));
+//	        bm.addAccount(new SavingsAccount("c"));
+//	        bm.addAccount(new CheckingAccount("d"));
+//	        bm.addAccount(new SavingsAccount("a"));
 	        
 	        //filters needed to determine which type of file
 			FileNameExtensionFilter txtFilter = new FileNameExtensionFilter(
@@ -245,7 +248,7 @@ public class BankPanel extends JPanel {
 				myPanel.add(numField);
 				myPanel.add(new JLabel("Owner Name:"));
 				myPanel.add(ownField);
-				myPanel.add(new JLabel("Date Created:"));
+				myPanel.add(new JLabel("Date Created(Month/Day/Year:"));
 				myPanel.add(dateField);
 				myPanel.add(new JLabel("Balance:"));
 				myPanel.add(balField);
@@ -269,22 +272,42 @@ public class BankPanel extends JPanel {
 							balField.getText());
 					System.out.println("monthly Fee value: " +
 							monField.getText());
+				
+					//information to put into JTable
+					String[] newAcct ={"Checking Account ",
+							ownField.getText(),
+							numField.getText(),
+							dateField.getText(),
+							balField.getText(),
+							"-","-",
+							monField.getText()};
+					
+					//putting info into JTable
+					model.addRow(newAcct);
+					
+					//converts dateField.gettext() to an integer array
+					String[] gcDates = dateField.getText().split("/");
+					int[] gcintDates = new int[3];
+					for (int i = 0; i < gcDates.length; i++) {
+						gcintDates[i] = Integer.parseInt(gcDates[i]);
+					}
+					
+					//makes a GC with the user date
+					GregorianCalendar gc= new GregorianCalendar(gcintDates[2],gcintDates[0],gcintDates[1]);
+					long temp = gc.getTimeInMillis();
+					
+					//makes a new account
+					CheckingAccount ca = new CheckingAccount();
+					String dataString = "CheckingAccount;"+numField.getText()+";"+ownField.getText()+";"+temp+";"
+							+balField.getText()+";"+monField.getText()+";";
+					
+					bm.addAccount(ca);
+					//outputs account 
+					//THIS IS A TEST
+					ca.parseFromString(dataString);
+					String temp1 = ca.toString();
+					System.out.println(temp1);
 				}
-				
-				//information to put into JTable
-				String[] newAcct ={"Checking Account ",
-						ownField.getText(),
-						numField.getText(),
-						dateField.getText(),
-						balField.getText(),
-						"-","-",
-						monField.getText()};
-				
-				//putting info into JTable
-				model.addRow(newAcct);
-				
-				
-				//TODO: Put this data into the account 
 			}
 
 			// adds a savings account to the JTable
