@@ -375,19 +375,22 @@ public class BankModel extends DefaultTableModel implements Serializable {
      * @throws IllegalArgumentException If the file is formatted wrongly
      ******************************************************************/
     public void loadFromBinaryFile(String filePath) throws IOException {
+    	
+    	FileInputStream fileIn = new FileInputStream(filePath);
         try {
-            FileInputStream fileIn = new FileInputStream(filePath);
             ObjectInputStream in = new ObjectInputStream(fileIn);
 
             BankModel bm = (BankModel) in.readObject();
-            accounts = bm.accounts;
-
-            fileIn.close();
+            accounts = bm.accounts;     
 
             //Tell the GUI we updated
             fireTableDataChanged();
+            
         } catch(ClassNotFoundException | ObjectStreamException c) {
             throw new IllegalArgumentException();
+        }
+        finally{
+        	fileIn.close();
         }
     }
 
