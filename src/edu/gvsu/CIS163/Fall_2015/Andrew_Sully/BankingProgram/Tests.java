@@ -30,7 +30,7 @@ public class Tests {
         bm.addAccount(new SavingsAccount("1"));
         bm.addAccount(new SavingsAccount("2"));
         bm.addAccount(new CheckingAccount("3"));
-        assertTrue(bm.getRowCount() == 4);
+        assertTrue(bm.getRowCount() == 3);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class Tests {
         bm.addAccount(new CheckingAccount("c", "Andrew"));
         bm.addAccount(a);
 
-        assertEquals("Andrew", bm.getValueAt(3, 2));
+        assertEquals("Andrew", bm.getValueAt(2, 2));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class Tests {
 
         bm.removeAccount(3);
 
-        assertEquals("Andrew", bm.getValueAt(4, 2));
+        assertEquals("Andrew", bm.getValueAt(3, 2));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class Tests {
 
         bm.updateAccount(2, a);
 
-        assertEquals("asldjf", bm.getValueAt(3, 1));
+        assertEquals("asldjf", bm.getValueAt(2, 1));
     }
 
     @Test

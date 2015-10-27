@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.*;
 
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
@@ -19,7 +20,7 @@ import org.w3c.dom.*;
  * This class contains a collection of accounts that can be sorted in
  * various ways and saved to and read from disk in a variety of formats
  **********************************************************************/
-public class BankModel extends AbstractTableModel implements Serializable {
+public class BankModel extends DefaultTableModel implements Serializable {
     /*******************************************************************
      * Stores all of this accounts for this bank
      ******************************************************************/
@@ -67,7 +68,9 @@ public class BankModel extends AbstractTableModel implements Serializable {
      ******************************************************************/
     @Override
     public int getRowCount() {
-        return accounts.size() + 1;
+        if (accounts != null)
+            return accounts.size();
+        return 0;
     }
 
     /*******************************************************************
@@ -87,19 +90,15 @@ public class BankModel extends AbstractTableModel implements Serializable {
      ******************************************************************/
     @Override
     public Object getValueAt(int row, int col) {
-        if (row == 0){
-            return getHeaders()[col];
-        } else {
-            HashMap<String, String> dataMap = getAccount(row - 1)
-                                            .getClassDataAndHeaders();
-            String requestedData = getHeaders()[col];
+        HashMap<String, String> dataMap = getAccount(row)
+                                        .getClassDataAndHeaders();
+        String requestedData = getHeaders()[col];
 
-            String data = dataMap.get(requestedData);
-            if (data != null){
-                return data;
-            } else {
-                return  "N/A";
-            }
+        String data = dataMap.get(requestedData);
+        if (data != null){
+            return data;
+        } else {
+            return  "N/A";
         }
     }
 
@@ -344,11 +343,16 @@ public class BankModel extends AbstractTableModel implements Serializable {
 
     /*******************************************************************
      * Updates headers and returns the new array
-     * @return An up-to-date array of headers
+     * @return An up-to-date array of headers or null if
+     *         this has no Accounts
      ******************************************************************/
     public String[] getHeaders(){
-        resolveHeaders();
-        return headers;
+        if (getRowCount() > 0) {
+            resolveHeaders();
+            return headers;
+        }
+
+        return null;
     }
 
     /*******************************************************************
