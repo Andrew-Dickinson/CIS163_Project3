@@ -40,13 +40,12 @@ public class BankPanel extends JPanel {
 	//an array of the column names in the JTable
 	private JTable table;
 	//used to manipulate data in a JTable
-	private DefaultTableModel model;
+	private BankModel model;
 	//menu bar
 	private JMenuBar menuBar;
 	//this allows us to have any size window and we can scroll through data
 	private JScrollPane scrollPane;
-	//This is for the save/load 
-	private JFileChooser fileChoose;
+
 	//bankModel 
 	BankModel bm = new BankModel();
 	
@@ -66,18 +65,12 @@ public class BankPanel extends JPanel {
 		byDateOpen = new JMenuItem("By Date Opened");
 		addCheck = new JMenuItem("Add a Checking Account");
 		addSave = new JMenuItem("Add a Savings Account");
-		fileChoose = new JFileChooser();
-		
-		// Create columns names may want to change these, I don't know
-		// exactly how we want to output the data.
-		String columnNames[] = {"Account Type","Account Number",
-				"Account Name","Date Opened","Balance",
-				"Minimum Balance","Intrest Rate","Monthly Fee"};
-		
+
 		// Create a new table instance
-		table = new JTable(new DefaultTableModel(columnNames, 0));
-		model = (DefaultTableModel) table.getModel();
-		
+		model = new BankModel();
+        model.addAccount(new CheckingAccount("1", "Andrew"));
+		table = new JTable(new DefaultTableModel(model.getHeaders(), 0));
+
 		// Add the table to a scrolling pane
 		scrollPane = new JScrollPane( table );
 		
@@ -128,56 +121,29 @@ public class BankPanel extends JPanel {
 			}
 			
 			//saves the account data to files
-			if(save == event.getSource()){ 	
-				if (fileChoose.showSaveDialog(getParent())== JFileChooser.APPROVE_OPTION) {
-			        File fileToSave = fileChoose.getSelectedFile();
-			        System.out.println("Path save: "+fileToSave.getAbsolutePath());
-					String filePath = ""+fileToSave.getAbsolutePath();
-			        try {
-						bm.saveToTextFile(filePath+".txt");
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-			        try {
-						bm.saveToBinaryFile(filePath+".bnk");
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-			        try {
-						bm.saveToXMLFile(filePath+".xml");
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+			if(save == event.getSource()){
+                BankFileDialog bfd = new BankFileDialog(getParent());
+                if (bfd.saveDialog(model)
+                        .equals(DialogStatus.OPERATION_FAILED)){
+                    JOptionPane.showMessageDialog(getParent(),
+                            "An error occurred while writing this file",
+                            "Unknown Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
 			}
 			
 			//loads account data from files
 			if(load == event.getSource()){
-				//TODO: I don't know what the error is here.
-				fileChoose.setFileFilter(txtFilter);
-				fileChoose.setFileFilter(binFilter);
-				fileChoose.setFileFilter(xmlFilter); 	
-				
-			    if(fileChoose.showOpenDialog(getParent()) == JFileChooser.APPROVE_OPTION) {
-			    	File fileToSave = fileChoose.getSelectedFile();
-			    	System.out.println("Path load: "+fileToSave.getAbsolutePath());
-					String filePath = ""+fileToSave.getAbsolutePath();
-//				    try {
-//						bm.loadFromTextFile(filePath);
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
-//				    try {
-//						bm.loadFromBinaryFile(filePath);
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
-//				    try {
-//						bm.loadFromXMLFile(filePath);
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
-			    } 
+                BankFileDialog bfd = new BankFileDialog(getParent());
+                BankModel bm = bfd.openDialog();
+                if (bm == null){
+                    JOptionPane.showMessageDialog(getParent(),
+                            "An error occurred while loading this file",
+                            "Unknown Error",
+                            JOptionPane.ERROR_MESSAGE);
+                } else {
+                    table.setModel(bm);
+                }
 			}
 			
 			//sorts JTable by account numbers
@@ -318,11 +284,11 @@ public class BankPanel extends JPanel {
 							numField.getText());
 					System.out.println("date value: " +
 							dateField.getText());
-					System.out.println("Balance value: " + 
+					System.out.println("Balance value: " +
 							balField.getText());
 					System.out.println("minimum balance value: " +
 							minField.getText());
-					System.out.println("Intrest Rate value: " + 
+					System.out.println("Intrest Rate value: " +
 							intField.getText());
 				
 					//information to put into JTable
