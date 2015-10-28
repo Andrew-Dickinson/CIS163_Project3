@@ -22,7 +22,7 @@ public class CheckingAccount extends Account implements Serializable {
     /*******************************************************************
      * Identifies the class for the toString() method
      ******************************************************************/
-    private static final String classIdentifier = "CheckingAccount";
+    public static final String classIdentifier = "CheckingAccount";
 
     /*******************************************************************
      * The number of items represented in the output of toString()

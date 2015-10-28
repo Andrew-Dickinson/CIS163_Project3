@@ -24,7 +24,7 @@ public class SavingsAccount extends Account implements Serializable {
     /*******************************************************************
      * Identifies the class for the toString() method
      ******************************************************************/
-    private static final String classIdentifier = "SavingsAccount";
+    public static final String classIdentifier = "SavingsAccount";
 
     /*******************************************************************
      * The number of items represented in the output of toString()
@@ -148,13 +148,11 @@ public class SavingsAccount extends Account implements Serializable {
 	}
 	
 	/*******************************************************************
-     * Sets the minimum balance for this account
+     * Sets the minimum balance for this account. Doesn't check if
+     * minBalance > balance. You must handle this yourself
 	 * @param minBalance the new minimum balance to set
-     * @throws IllegalArgumentException if minBalance < this.balance
 	 ******************************************************************/
 	public void setMinBalance(double minBalance) {
-        if (minBalance > getBalance())
-            throw new IllegalArgumentException();
 		this.minBalance = minBalance;
 	}
 	

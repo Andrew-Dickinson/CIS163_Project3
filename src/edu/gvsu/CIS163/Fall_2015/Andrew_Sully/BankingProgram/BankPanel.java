@@ -2,14 +2,9 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 //Imports
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.GregorianCalendar;
 
 /***********************************************************************
  * Displays the GUI for interacting with the banking program
@@ -34,9 +29,7 @@ public class BankPanel extends JPanel {
 	//sort by date opened
 	private JMenuItem byDateOpen;
 	//add a savings account
-	private JMenuItem addCheck;
-	//add a checking account
-	private JMenuItem addSave;
+	private JMenuItem addAccount;
 	//an array of the column names in the JTable
 	private JTable table;
 	//used to manipulate data in a JTable
@@ -63,8 +56,7 @@ public class BankPanel extends JPanel {
 		byAcctNum = new JMenuItem("By Account Number");
 		byAcctOwn = new JMenuItem("By Account Owner");
 		byDateOpen = new JMenuItem("By Date Opened");
-		addCheck = new JMenuItem("Add a Checking Account");
-		addSave = new JMenuItem("Add a Savings Account");
+		addAccount = new JMenuItem("Add an Account");
 
 		// Create a new table instance
 		model = new BankModel();
@@ -81,16 +73,14 @@ public class BankPanel extends JPanel {
 		byAcctNum.addActionListener(butListener);
 		byAcctOwn.addActionListener(butListener);
 		byDateOpen.addActionListener(butListener);
-		addCheck.addActionListener(butListener);
-		addSave.addActionListener(butListener);
+		addAccount.addActionListener(butListener);
 		
 		//formats the file and sort drop-down menus
 		file.add(save);
 		file.add(load);
 		file.addSeparator();
 		file.add(addAcct);
-		addAcct.add(addCheck);
-		addAcct.add(addSave);
+		addAcct.add(addAccount);
 		file.addSeparator();
 		file.add(quit);
 		sort.add(byAcctNum);
@@ -107,14 +97,6 @@ public class BankPanel extends JPanel {
 		public void actionPerformed(ActionEvent event) {
 			//what happens when a button is pressed
 
-	        //filters needed to determine which type of file
-			FileNameExtensionFilter txtFilter = new FileNameExtensionFilter(
-			        "TXT files", "txt");
-			FileNameExtensionFilter binFilter = new FileNameExtensionFilter(
-			        "BNK files", "bnk");
-			FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter(
-			        "XML files", "xml");
-			
 			//quits the program
 			if(quit == event.getSource()){
 				System.exit(0);
@@ -162,168 +144,18 @@ public class BankPanel extends JPanel {
 			}
 			
 			// adds a checking account to the JTable
-			if (addCheck == event.getSource()) {
-				// User inputed account number
-				JTextField numField = new JTextField();
-				// User inputed owner name
-				JTextField ownField = new JTextField();
-				// User inputed date
-				JTextField dateField = new JTextField();
-				// User inputed balance
-				JTextField balField = new JTextField();
-				// User inputed monthly fee
-				JTextField monField = new JTextField();
+			if (addAccount == event.getSource()) {
+                AccountAddDialog dialog = new AccountAddDialog(getParent());
 
-				// popup menu that asks for input
-				JPanel myPanel = new JPanel();
-				myPanel.setLayout(new GridLayout(10, 2));
-				myPanel.add(new JLabel("Account Number:  "));
-				myPanel.add(numField);
-				myPanel.add(new JLabel("Owner Name:"));
-				myPanel.add(ownField);
-				myPanel.add(new JLabel("Date Created(Month/Day/Year:"));
-				myPanel.add(dateField);
-				myPanel.add(new JLabel("Balance:"));
-				myPanel.add(balField);
-				myPanel.add(new JLabel("Monthly Fee:"));
-				myPanel.add(monField);
+                //Null if canceled or invalid data
+                Account account = dialog.displayDialog();
 
-				// type of dialog box and if they hit okay or cancel
-				int result = JOptionPane.showConfirmDialog(null, 
-						myPanel, "Please Enter Checking Account Data",
-						JOptionPane.OK_CANCEL_OPTION);
-
-				// if the user hit okay
-				if (result == JOptionPane.OK_OPTION) {
-					System.out.println("owner value: " + 
-							ownField.getText());
-					System.out.println("Number value: " +
-							numField.getText());
-					System.out.println("date value: " + 
-							dateField.getText());
-					System.out.println("Balance value: " +
-							balField.getText());
-					System.out.println("monthly Fee value: " +
-							monField.getText());
-				
-					//information to put into JTable
-					String[] newAcct ={"Checking Account ",
-							ownField.getText(),
-							numField.getText(),
-							dateField.getText(),
-							balField.getText(),
-							"-","-",
-							monField.getText()};
-					
-					//putting info into JTable
-					model.addRow(newAcct);
-					
-					//converts dateField.gettext() to an integer array
-					String[] gcDates = dateField.getText().split("/");
-					int[] gcintDates = new int[3];
-					for (int i = 0; i < gcDates.length; i++) {
-						gcintDates[i] = Integer.parseInt(gcDates[i]);
-					}
-					
-					//makes a GC with the user date
-					GregorianCalendar gc= new GregorianCalendar(gcintDates[2],gcintDates[0],gcintDates[1]);
-					long temp = gc.getTimeInMillis();
-					
-					//makes a new account
-					CheckingAccount ca = new CheckingAccount();
-					String dataString = "CheckingAccount;"+numField.getText()+";"+ownField.getText()+";"+temp+";"
-							+balField.getText()+";"+monField.getText();
-					
-					//adds account to bank Model
-					bm.addAccount(ca);
-					ca.parseFromString(dataString);
-				}
-			}
-
-			// adds a savings account to the JTable
-			if (addSave == event.getSource()) {
-				// User inputed account number
-				JTextField numField = new JTextField();
-				// User inputed owner name
-				JTextField ownField = new JTextField();
-				// User inputed date
-				JTextField dateField = new JTextField();
-				// User inputed balance
-				JTextField balField = new JTextField();
-				// User inputed minimum balance
-				JTextField minField = new JTextField();
-				// User inputed intrest rate
-				JTextField intField = new JTextField();
-
-				// popup menu that asks for input
-				JPanel myPanel = new JPanel();
-				myPanel.setLayout(new GridLayout(12, 2));
-				myPanel.add(new JLabel("Account Number:"));
-				myPanel.add(numField);
-				myPanel.add(new JLabel("Owner Name:"));
-				myPanel.add(ownField);
-				myPanel.add(new JLabel("Date Created:"));
-				myPanel.add(dateField);
-				myPanel.add(new JLabel("Balance:"));
-				myPanel.add(balField);
-				myPanel.add(new JLabel("Minimum Balance:"));
-				myPanel.add(minField);
-				myPanel.add(new JLabel("Intrest Rate:"));
-				myPanel.add(intField);
-
-				// type of dialog box and if they hit okay or cancel
-				int result = JOptionPane.showConfirmDialog(null, 
-						myPanel,"Please Enter Savings Account Data",
-						JOptionPane.OK_CANCEL_OPTION);
-
-				// if the user hit okay
-				if (result == JOptionPane.OK_OPTION) {
-					System.out.println("owner value: " + 
-							ownField.getText());
-					System.out.println("Number value: " +
-							numField.getText());
-					System.out.println("date value: " +
-							dateField.getText());
-					System.out.println("Balance value: " +
-							balField.getText());
-					System.out.println("minimum balance value: " +
-							minField.getText());
-					System.out.println("Intrest Rate value: " +
-							intField.getText());
-				
-					//information to put into JTable
-					String[] newAcct ={"Saving Account ",
-							ownField.getText(),
-							numField.getText(),
-							dateField.getText(),
-							balField.getText(),
-							minField.getText(),
-							intField.getText(),
-							"-"};
-					
-					//putting info into JTable
-					model.addRow(newAcct);
-					
-					//converts dateField.gettext() to an integer array
-					String[] gcDates = dateField.getText().split("/");
-					int[] gcintDates = new int[3];
-					for (int i = 0; i < gcDates.length; i++) {
-						gcintDates[i] = Integer.parseInt(gcDates[i]);
-					}
-					
-					//makes a GC with the user date
-					GregorianCalendar gc= new GregorianCalendar(gcintDates[2],gcintDates[0],gcintDates[1]);
-					long temp = gc.getTimeInMillis();
-					
-					//makes a new account
-					SavingsAccount sa = new SavingsAccount();
-					String dataString = "SavingsAccount;"+numField.getText()+";"+ownField.getText()+";"+temp+";"
-							+balField.getText()+";"+minField.getText()+";"+intField.getText();
-					
-					//adds account to bank Model
-					bm.addAccount(sa);
-					sa.parseFromString(dataString);
-				}
+                //adds account to bank Model
+                if (account != null) {
+                    bm.addAccount(account);
+                } else {
+                    System.out.println("Err");
+                }
 			}
 		}
 	}	
