@@ -1,11 +1,9 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
-import javax.swing.*;
 import java.io.*;
 import java.util.*;
 
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
@@ -20,7 +18,7 @@ import org.w3c.dom.*;
  * This class contains a collection of accounts that can be sorted in
  * various ways and saved to and read from disk in a variety of formats
  **********************************************************************/
-public class BankModel extends DefaultTableModel implements Serializable {
+public class BankModel extends AbstractTableModel implements Serializable {
     /*******************************************************************
      * Stores all of this accounts for this bank
      ******************************************************************/

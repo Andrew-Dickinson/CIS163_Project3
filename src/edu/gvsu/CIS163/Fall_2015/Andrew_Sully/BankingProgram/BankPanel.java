@@ -61,7 +61,7 @@ public class BankPanel extends JPanel {
 		// Create a new table instance
 		model = new BankModel();
         model.addAccount(new CheckingAccount("1", "Andrew"));
-		table = new JTable(new DefaultTableModel(model.getHeaders(), 0));
+		table = new JTable(model);
 
 		// Add the table to a scrolling pane
 		scrollPane = new JScrollPane( table );
