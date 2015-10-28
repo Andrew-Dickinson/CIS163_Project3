@@ -39,9 +39,6 @@ public class BankPanel extends JPanel {
 	//this allows us to have any size window and we can scroll through data
 	private JScrollPane scrollPane;
 
-	//bankModel 
-	BankModel bm = new BankModel();
-	
 	// Constructor of main frame
 	public BankPanel(JFrame frame){
 	    //a new button Listener
@@ -130,17 +127,17 @@ public class BankPanel extends JPanel {
 			
 			//sorts JTable by account numbers
 			if(byAcctNum == event.getSource()){
-				//TODO: sort by account number
+				model.sortByAccountNumber();
 			}
 			
 			//sorts JTable by account owners names
 			if(byAcctOwn == event.getSource()){
-				//TODO: sort by owner name
+				model.sortByAccountName();
 			}
 			
 			//sorts JTable by the accounts date opened
 			if(byDateOpen == event.getSource()){
-				//TODO: sort by date opened
+				model.sortByDateOpened();
 			}
 			
 			// adds a checking account to the JTable
@@ -152,7 +149,7 @@ public class BankPanel extends JPanel {
 
                 //adds account to bank Model
                 if (account != null) {
-                    bm.addAccount(account);
+                    model.addAccount(account);
                 } else {
                     System.out.println("Err");
                 }
