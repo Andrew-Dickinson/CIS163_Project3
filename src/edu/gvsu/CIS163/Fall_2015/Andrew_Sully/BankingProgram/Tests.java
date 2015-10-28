@@ -241,4 +241,27 @@ public class Tests {
 
         assertEquals(bm, newBM);
     }
+
+    @Test
+    public void testEmptySaveToTextFile() throws IOException{
+        BankModel bm = new BankModel();
+
+        bm.saveToTextFile("test2.txt");
+
+        BankModel newBM = new BankModel();
+        newBM.loadFromTextFile("test2.txt");
+        assertEquals(bm, newBM);
+    }
+
+    @Test
+    public void testEmptySaveToXMLFile() throws IOException {
+        BankModel bm = new BankModel();
+
+        bm.saveToXMLFile("test2.xml");
+
+        BankModel newBM = new BankModel();
+        newBM.loadFromXMLFile("test2.xml");
+
+        assertEquals(bm, newBM);
+    }
 }
