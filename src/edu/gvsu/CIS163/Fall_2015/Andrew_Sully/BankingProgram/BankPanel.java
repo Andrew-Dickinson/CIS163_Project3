@@ -11,7 +11,14 @@ import java.io.IOException;
  * Displays the GUI for interacting with the banking program
  **********************************************************************/
 
-//TODO: the sorts and the remove I can do both i'm just really tired.
+//TODO: Java style guide all over. But mostly here
+//TODO: Double clicking an element pulls up the edit menu
+//TODO: Put nice calendar GUI in the AccountAddDialog
+//TODO: Add date validation and modification functionality to AccountAddDialog (Andrew)
+//TODO: Generalizable sorts (Andrew)
+//TODO: Clicking on the header should sort the column
+//TODO: XML/Hashtable namespace system (Andrew)
+//TODO: XML Definitions file (Andrew)
     
 public class BankPanel extends JPanel {
     // Instance attributes
@@ -261,9 +268,6 @@ public class BankPanel extends JPanel {
                                     "Duplicate Detected",
                                     JOptionPane.ERROR_MESSAGE);
                         }
-                    } else {
-                        //There was an error or the user canceled. We can't tell
-                        //TODO: ^ Fix
                     }
                 } else {
                     //No account was selected. Let's warn the user

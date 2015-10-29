@@ -280,6 +280,9 @@ public class BankModel extends AbstractTableModel implements Serializable {
                 return a.getNumber().compareTo(b.getNumber());
             }
         });
+
+        //Tell the GUI we updated
+        fireTableDataChanged();
     }
 
     /*******************************************************************
