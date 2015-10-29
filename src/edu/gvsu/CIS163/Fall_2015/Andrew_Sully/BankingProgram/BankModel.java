@@ -140,6 +140,22 @@ public class BankModel extends AbstractTableModel implements Serializable {
     }
 
     /*******************************************************************
+     * Removes an account from this model
+     * @param account The account to remove
+     ******************************************************************/
+    public void removeAccount(Account account){
+        int index = 0;
+        for (int i = 0; i < accounts.size(); i++){
+            if (account.equals(accounts.get(i))){
+                index = i;
+                break;
+            }
+        }
+
+        removeAccount(index);
+    }
+
+    /*******************************************************************
      * Replaces an account with a new one
      * @param index The index of the account to replace
      * @param account The new account. Type must be
