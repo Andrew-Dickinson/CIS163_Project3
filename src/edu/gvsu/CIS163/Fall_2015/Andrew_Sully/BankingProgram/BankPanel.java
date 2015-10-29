@@ -2,7 +2,6 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 //Imports
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,7 +29,7 @@ public class BankPanel extends JPanel {
 	//sort by date opened
 	private JMenuItem byDateOpen;
 	//add a savings account
-	private JMenuItem addAccount;
+	private JMenuItem addAccountMenuButton;
 	//an array of the column names in the JTable
 	private JTable table;
 	//used to manipulate data in a JTable
@@ -39,6 +38,12 @@ public class BankPanel extends JPanel {
 	private JMenuBar menuBar;
 	//this allows us to have any size window and we can scroll through data
 	private JScrollPane scrollPane;
+
+    //The buttons along the bottom of the panel
+    private JButton addAccountButton;
+    private JButton removeAccountButton;
+    private JButton editAccountButton;
+    private JButton cloneAccountButton;
 
 	// Constructor of main frame
 	public BankPanel(JFrame frame){
@@ -54,7 +59,7 @@ public class BankPanel extends JPanel {
 		byAcctNum = new JMenuItem("By Account Number");
 		byAcctOwn = new JMenuItem("By Account Owner");
 		byDateOpen = new JMenuItem("By Date Opened");
-		addAccount = new JMenuItem("Add an Account");
+		addAccountMenuButton = new JMenuItem("Add an Account");
 
 		// Create a new table instance
 		model = new BankModel();
@@ -75,14 +80,14 @@ public class BankPanel extends JPanel {
 		byAcctNum.addActionListener(butListener);
 		byAcctOwn.addActionListener(butListener);
 		byDateOpen.addActionListener(butListener);
-		addAccount.addActionListener(butListener);
+		addAccountMenuButton.addActionListener(butListener);
 		
 		//formats the file and sort drop-down menus
 		file.add(save);
 		file.add(load);
 		file.addSeparator();
 		file.add(addAcct);
-		addAcct.add(addAccount);
+		addAcct.add(addAccountMenuButton);
 		file.addSeparator();
 		file.add(quit);
 		sort.add(byAcctNum);
@@ -90,10 +95,71 @@ public class BankPanel extends JPanel {
 		sort.add(byDateOpen);
 		menuBar.add(file);
 		menuBar.add(sort);
+
+        JPanel buttonPanel = new JPanel();
+
+        addAccountButton = new JButton("New Account");
+        addAccountButton.addActionListener(butListener);
+        buttonPanel.add(addAccountButton);
+
+        removeAccountButton = new JButton("Delete Account");
+        removeAccountButton.addActionListener(butListener);
+        buttonPanel.add(removeAccountButton);
+
+        editAccountButton = new JButton("Edit Account");
+        editAccountButton.addActionListener(butListener);
+        buttonPanel.add(editAccountButton);
+
+        cloneAccountButton = new JButton("Clone Account");
+        cloneAccountButton.addActionListener(butListener);
+        buttonPanel.add(cloneAccountButton);
 		
 		this.add(scrollPane);
+        this.add(buttonPanel);
 		frame.setJMenuBar(menuBar);
 	}
+
+    /**
+     * Get the selected account from the JTable
+     * @return The currently selected account or null
+     */
+    private Account getSelectedAccount(){
+        int row = table.getSelectedRow();
+        if (row == -1){
+            return null;
+        } else {
+            return model.getAccount(row);
+        }
+    }
+
+    /**
+     * Displays a warning dialog to the user when they try to use a
+     * button that requires a selection and have nothing selected
+     */
+    private void warnNoAccountSelected(){
+        JOptionPane.showMessageDialog(getParent(),
+                "You didn't select an account to preform this action",
+                "Please select an account",
+                JOptionPane.WARNING_MESSAGE);
+    }
+
+    /**
+     * Displays the dialog from the AccountAddDialog class and adds the
+     * new account to the model as applicable
+     */
+    private void showAddAccountDialog(){
+        AccountAddDialog dialog = new AccountAddDialog(getParent());
+
+        //Null if canceled or invalid data
+        Account account = dialog.displayDialog();
+
+        //adds account to bank Model
+        if (account != null) {
+            model.addAccount(account);
+        } else {
+            System.out.println("Err");
+        }
+    }
 	
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
@@ -146,19 +212,56 @@ public class BankPanel extends JPanel {
 			}
 			
 			// adds a checking account to the JTable
-			if (addAccount == event.getSource()) {
-                AccountAddDialog dialog = new AccountAddDialog(getParent());
-
-                //Null if canceled or invalid data
-                Account account = dialog.displayDialog();
-
-                //adds account to bank Model
-                if (account != null) {
-                    model.addAccount(account);
-                } else {
-                    System.out.println("Err");
-                }
+			if (addAccountMenuButton == event.getSource()) {
+                showAddAccountDialog();
 			}
+
+            if (addAccountButton == event.getSource()){
+                showAddAccountDialog();
+            }
+
+            if (removeAccountButton == event.getSource()){
+                if (getSelectedAccount() != null) {
+                    model.removeAccount(getSelectedAccount());
+                } else {
+                    //No account was selected. Let's warn the user
+                    warnNoAccountSelected();
+                }
+            }
+
+            if (editAccountButton == event.getSource()){
+                Account account = getSelectedAccount();
+                if (account != null) {
+                    //TODO: Figure this one out
+                } else {
+                    //No account was selected. Let's warn the user
+                    warnNoAccountSelected();
+                }
+            }
+
+            if (cloneAccountButton == event.getSource()){
+                Account account = getSelectedAccount();
+                if (account != null) {
+                    String newNumber = JOptionPane.showInputDialog(
+                            getParent(),
+                            "Please enter a new account number: ",
+                            account.getNumber());
+                    if (newNumber != null){
+                        if (!model.hasAccountNumber(newNumber)) {
+                            account.setNumber(newNumber);
+                            model.addAccount(account);
+                        } else {
+                            JOptionPane.showMessageDialog(getParent(),
+                                    "Account number must be unique",
+                                    "Error while adding account",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } else {
+                    //No account was selected. Let's warn the user
+                    warnNoAccountSelected();
+                }
+            }
 		}
 	}	
 }
