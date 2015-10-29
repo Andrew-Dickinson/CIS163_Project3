@@ -20,6 +20,8 @@ import java.io.IOException;
 //TODO: Generalizable sorts (Andrew)
 //TODO: XML/Hashtable namespace system (Andrew)
 //TODO: XML Definitions file (Andrew)
+//TODO: add a deeper search? like all accounts that are opened on "10/23/2012" or all that have the name "Bob Smith"(sully)
+//TODO: sort by account type???
     
 public class BankPanel extends JPanel {
     // Instance attributes
