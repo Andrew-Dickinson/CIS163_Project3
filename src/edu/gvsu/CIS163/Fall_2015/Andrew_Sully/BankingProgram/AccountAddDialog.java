@@ -109,7 +109,7 @@ public class AccountAddDialog {
         }
 
         //Launch a dialog box with the options
-        int status = JOptionPane.showConfirmDialog(null,
+        int status = JOptionPane.showConfirmDialog(parent,
                 primaryDialogPanel, "Please Enter Account Data",
                 JOptionPane.OK_CANCEL_OPTION);
 
@@ -187,14 +187,14 @@ public class AccountAddDialog {
 
         //Set the minimum balance
         minimumBalField.setText(
-                preData.get(CheckingAccount.uniqueHeaders[0]));
+                preData.get(SavingsAccount.uniqueHeaders[0]));
 
         //Set the interest rate
         interestRateField.setText(
-                preData.get(CheckingAccount.uniqueHeaders[1]));
+                preData.get(SavingsAccount.uniqueHeaders[1]));
 
         //Set the monthly fee
         monthlyFeeField.setText(
-                preData.get(SavingsAccount.uniqueHeaders[0]));
+                preData.get(CheckingAccount.uniqueHeaders[0]));
     }
 }

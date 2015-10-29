@@ -77,7 +77,11 @@ public class BankModel extends AbstractTableModel implements Serializable {
      ******************************************************************/
     @Override
     public int getColumnCount() {
-        return getHeaders().length;
+        if (getHeaders() != null) {
+            return getHeaders().length;
+        }
+
+        return 0;
     }
 
     /*******************************************************************

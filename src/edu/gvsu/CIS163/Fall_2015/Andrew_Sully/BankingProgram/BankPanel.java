@@ -232,7 +232,18 @@ public class BankPanel extends JPanel {
             if (editAccountButton == event.getSource()){
                 Account account = getSelectedAccount();
                 if (account != null) {
-                    //TODO: Figure this one out
+                    AccountAddDialog dialog =
+                            new AccountAddDialog(getParent());
+
+                    //Null if canceled or invalid data
+                    Account editedAccount = dialog.displayDialog(account);
+
+                    //Updates account in the bank Model
+                    if (editedAccount != null) {
+                        model.updateAccount(account, editedAccount);
+                    } else {
+                        //There was an error or the user canceled. We can't tell
+                    }
                 } else {
                     //No account was selected. Let's warn the user
                     warnNoAccountSelected();
