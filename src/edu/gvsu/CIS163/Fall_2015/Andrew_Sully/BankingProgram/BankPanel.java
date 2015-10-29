@@ -16,7 +16,6 @@ public class BankPanel extends JPanel {
     // Instance attributes
 	private JMenu file;
 	private JMenu sort;
-	private JMenu addAcct;
 	private JMenuItem quit;
 	//save to a Binary File
 	private JMenuItem save;
@@ -55,11 +54,10 @@ public class BankPanel extends JPanel {
 		quit = new JMenuItem("Quit");
 		save = new JMenuItem("Save As ");
 		load = new JMenuItem("Load");
-		addAcct = new JMenu("Add");
 		byAcctNum = new JMenuItem("By Account Number");
 		byAcctOwn = new JMenuItem("By Account Owner");
 		byDateOpen = new JMenuItem("By Date Opened");
-		addAccountMenuButton = new JMenuItem("Add an Account");
+		addAccountMenuButton = new JMenuItem("Add Account");
 
 		// Create a new table instance
 		model = new BankModel();
@@ -86,8 +84,7 @@ public class BankPanel extends JPanel {
 		file.add(save);
 		file.add(load);
 		file.addSeparator();
-		file.add(addAcct);
-		addAcct.add(addAccountMenuButton);
+		file.add(addAccountMenuButton);
 		file.addSeparator();
 		file.add(quit);
 		sort.add(byAcctNum);
