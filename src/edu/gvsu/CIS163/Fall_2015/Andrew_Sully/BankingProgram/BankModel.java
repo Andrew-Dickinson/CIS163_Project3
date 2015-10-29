@@ -173,7 +173,7 @@ public class BankModel extends AbstractTableModel implements Serializable {
      ******************************************************************/
     public void updateAccount(int index, Account account) {
         accounts.remove(index);
-        if (hasAccountNumber(account.getOwnerName()))
+        if (hasAccountNumber(account.getNumber()))
             throw new IllegalArgumentException();
         if (!validAccountTypes.contains(account.getClass()))
             throw new IllegalArgumentException();
