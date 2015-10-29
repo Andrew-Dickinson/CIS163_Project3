@@ -153,12 +153,21 @@ public class BankPanel extends JPanel {
 
         //adds account to bank Model
         if (account != null) {
-            model.addAccount(account);
+            if (!model.hasAccountNumber(account.getNumber())){
+                //The new account's number is unique
+                model.addAccount(account);
+            } else {
+                //The account number is a duplicate. Alert the user
+                JOptionPane.showMessageDialog(getParent(),
+                        "Accounts must have unique account numbers",
+                        "Duplicate Detected",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         } else {
             System.out.println("Err");
         }
     }
-	
+
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			//what happens when a button is pressed
@@ -243,7 +252,15 @@ public class BankPanel extends JPanel {
 
                     //Updates account in the bank Model
                     if (editedAccount != null) {
-                        model.updateAccount(account, editedAccount);
+                        try {
+                            model.updateAccount(account, editedAccount);
+                        } catch (IllegalArgumentException e){
+                            //The account number is a duplicate. Alert the user
+                            JOptionPane.showMessageDialog(getParent(),
+                                    "Accounts must have unique account numbers",
+                                    "Duplicate Detected",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
                     } else {
                         //There was an error or the user canceled. We can't tell
                         //TODO: ^ Fix
