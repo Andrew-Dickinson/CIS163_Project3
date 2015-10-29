@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /***********************************************************************
@@ -21,6 +22,12 @@ public abstract class Account implements Serializable, Cloneable {
 
     public static final String[] defaultDataHeaders = {"Account Type",
             "Account Number", "Owner Name", "Date Opened", "Balance"};
+
+    /**
+     * The format to use for all string representations of Account dates
+     */
+    public static final SimpleDateFormat DATE_FORMAT =
+            new SimpleDateFormat("MM/dd/yyyy");
 
     /*******************************************************************
      * The character used to separate the values in toString()
@@ -199,8 +206,7 @@ public abstract class Account implements Serializable, Cloneable {
         map.put(defaultDataHeaders[0], getClassIdentifier());
         map.put(defaultDataHeaders[1], getNumber());
         map.put(defaultDataHeaders[2], getOwnerName());
-        map.put(defaultDataHeaders[3],
-                Long.toString(getDateOpenedInMillis()));
+        map.put(defaultDataHeaders[3], DATE_FORMAT.format(getDateOpened().getTime()));
         map.put(defaultDataHeaders[4], Double.toString(getBalance()));
         return map;
     }
