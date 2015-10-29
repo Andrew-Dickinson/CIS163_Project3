@@ -12,7 +12,7 @@ public class Driver {
         JPanel panel = new BankPanel(frame);
 
         frame.add(panel);
-        frame.setSize(500,500);
+        frame.setSize(950,550);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

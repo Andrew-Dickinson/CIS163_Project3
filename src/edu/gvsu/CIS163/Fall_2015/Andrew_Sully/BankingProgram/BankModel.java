@@ -117,6 +117,9 @@ public class BankModel extends AbstractTableModel implements Serializable {
             throw new IllegalArgumentException();
         accounts.add(account);
 
+        //The column headers could have changed
+        fireTableStructureChanged();
+
         //Tell the GUI we updated
         fireTableRowsInserted(accounts.size(), accounts.size());
     }
@@ -128,6 +131,9 @@ public class BankModel extends AbstractTableModel implements Serializable {
      ******************************************************************/
     public void removeAccount(int index){
         accounts.remove(index);
+
+        //The column headers could have changed
+        fireTableStructureChanged();
 
         //Tell the GUI we updated
         fireTableRowsDeleted(index, index);
@@ -152,6 +158,9 @@ public class BankModel extends AbstractTableModel implements Serializable {
         if (!validAccountTypes.contains(account.getClass()))
             throw new IllegalArgumentException();
         accounts.add(index, account);
+
+        //The column headers could have changed
+        fireTableStructureChanged();
 
         //Tell the GUI we updated
         fireTableRowsUpdated(index, index);
@@ -351,6 +360,16 @@ public class BankModel extends AbstractTableModel implements Serializable {
         }
 
         return null;
+    }
+
+    /*******************************************************************
+     * The the name of a specific column. A wrapper on getHeaders()
+     * @param column The index of the column to get the header for
+     * @return The column header
+     ******************************************************************/
+    @Override
+    public String getColumnName(int column) {
+        return getHeaders()[column];
     }
 
     /*******************************************************************

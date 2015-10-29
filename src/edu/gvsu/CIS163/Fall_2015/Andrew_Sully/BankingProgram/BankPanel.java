@@ -3,6 +3,7 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 //Imports
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -59,9 +60,13 @@ public class BankPanel extends JPanel {
 		model = new BankModel();
         model.addAccount(new CheckingAccount("1", "Andrew"));
 		table = new JTable(model);
+        table.setPreferredScrollableViewportSize(new Dimension(900, 400));
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-		// Add the table to a scrolling pane
-		scrollPane = new JScrollPane( table );
+        // Add the table to a scrolling pane
+		scrollPane = new JScrollPane(table);
+        table.setDragEnabled(false);
+        table.getTableHeader().setReorderingAllowed(false);
 		
 		//adds actionListener butListener to objects
 		quit.addActionListener(butListener);
