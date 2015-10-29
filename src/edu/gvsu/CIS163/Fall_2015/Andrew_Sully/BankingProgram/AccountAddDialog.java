@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 /**
@@ -67,7 +68,7 @@ public class AccountAddDialog {
         ownerNameField = new JTextField();
         fieldPanel.add(ownerNameField);
 
-        fieldPanel.add(new JLabel(Account.defaultDataHeaders[3] + " :"));
+        fieldPanel.add(new JLabel(Account.defaultDataHeaders[3] + "(mm/dd/yyyy):"));
         dateField = new JTextField();
         fieldPanel.add(dateField);
 
@@ -156,10 +157,22 @@ public class AccountAddDialog {
 
                     incomingAccount = incomingChecking;
                 }
-
-                incomingAccount.setNumber(accountNumber);
+                
+                String[] gcDates = date.split("/");
+				int[] gcintDates = new int[gcDates.length];
+				for (int i = 0; i < gcDates.length; i++) {
+						gcintDates[i] = Integer.parseInt(gcDates[i]);
+					}
+	            try {
+					//makes a GC with the user date
+					GregorianCalendar gc = new GregorianCalendar(gcintDates[2], gcintDates[0], gcintDates[1]);
+					incomingAccount.setDateOpened(gc);
+				} catch (Exception e) {
+					System.out.println(""+e);
+				}
+				incomingAccount.setNumber(accountNumber);
                 incomingAccount.setOwnerName(ownerName);
-
+                //incomingAccount.setDateOpened(ownerName);
                 incomingAccount.setBalance(Double.parseDouble(balance));
 
                 return incomingAccount;
