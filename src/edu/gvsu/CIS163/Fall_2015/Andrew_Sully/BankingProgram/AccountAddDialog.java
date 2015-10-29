@@ -1,6 +1,8 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +16,9 @@ public class AccountAddDialog {
      * The parent JPanel for this dialog
      */
     Component parent;
+
+    JButton dialogOkButton;
+    JButton dialogCancelButton;
 
     /**
      * The primary panel in the dialog box displayed
@@ -41,6 +46,8 @@ public class AccountAddDialog {
         primaryDialogPanel.setLayout(new BorderLayout());
 
         RadioButtonListener listener = new RadioButtonListener();
+        FieldUpdateListener fieldListener = new FieldUpdateListener();
+        DialogButtonsListener dialogListener = new DialogButtonsListener();
 
         JPanel radioPanel = new JPanel(new FlowLayout());
         ButtonGroup typeButtonGroup = new ButtonGroup();
@@ -61,33 +68,50 @@ public class AccountAddDialog {
 
         fieldPanel.add(new JLabel(Account.defaultDataHeaders[1] + " :"));
         accountNumberField = new JTextField();
+        accountNumberField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(accountNumberField);
 
         fieldPanel.add(new JLabel(Account.defaultDataHeaders[2] + " :"));
         ownerNameField = new JTextField();
+        ownerNameField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(ownerNameField);
 
         fieldPanel.add(new JLabel(Account.defaultDataHeaders[3] + " :"));
         dateField = new JTextField();
+        dateField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(dateField);
 
         fieldPanel.add(new JLabel(Account.defaultDataHeaders[4] + " :"));
         balanceField = new JTextField();
+        balanceField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(balanceField);
 
         fieldPanel.add(new JLabel(SavingsAccount.uniqueHeaders[0] + " :"));
         minimumBalField = new JTextField();
+        minimumBalField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(minimumBalField);
 
         fieldPanel.add(new JLabel(SavingsAccount.uniqueHeaders[1] + " :"));
         interestRateField = new JTextField();
+        interestRateField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(interestRateField);
 
         fieldPanel.add(new JLabel(CheckingAccount.uniqueHeaders[0] + " :"));
         monthlyFeeField = new JTextField();
+        monthlyFeeField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(monthlyFeeField);
 
         primaryDialogPanel.add(fieldPanel, BorderLayout.CENTER);
+
+        JPanel okCancelPanel = new JPanel();
+        dialogCancelButton = new JButton("Cancel");
+        dialogCancelButton.addActionListener(dialogListener);
+        okCancelPanel.add(dialogCancelButton);
+        dialogOkButton = new JButton("Ok");
+        dialogOkButton.addActionListener(dialogListener);
+        okCancelPanel.add(dialogOkButton);
+
+        primaryDialogPanel.add(okCancelPanel, BorderLayout.SOUTH);
 
         //Make sure the correct fields are enabled
         updateEnabledFields();
@@ -121,12 +145,14 @@ public class AccountAddDialog {
         }
 
         //Launch a dialog box with the options
-        int status = JOptionPane.showConfirmDialog(parent,
+        int status = JOptionPane.showOptionDialog(parent,
                 primaryDialogPanel, "Please Enter Account Data",
-                JOptionPane.OK_CANCEL_OPTION);
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, new Object[]{dialogOkButton, dialogCancelButton},
+                dialogOkButton);
 
         //If the user ended up hitting okay
-        if (status == JOptionPane.OK_OPTION) {
+        if (status == JOptionPane.YES_OPTION) {
             String accountNumber = accountNumberField.getText();
             String ownerName = ownerNameField.getText();
             String date = dateField.getText();
@@ -135,38 +161,33 @@ public class AccountAddDialog {
             String interestRate = interestRateField.getText();
             String monthlyFee = monthlyFeeField.getText();
 
-            try {
-                Account incomingAccount;
-                if (savingsButton.isSelected()) {
-                    //Savings account is selected
-                    Double minBal = Double.parseDouble(minimumBalance);
-                    Double intRate = Double.parseDouble(interestRate);
+            Account incomingAccount;
+            if (savingsButton.isSelected()) {
+                //Savings account is selected
+                Double minBal = Double.parseDouble(minimumBalance);
+                Double intRate = Double.parseDouble(interestRate);
 
-                    SavingsAccount incomingSavings = new SavingsAccount();
-                    incomingSavings.setMinBalance(minBal);
-                    incomingSavings.setInterestRate(intRate);
+                SavingsAccount incomingSavings = new SavingsAccount();
+                incomingSavings.setMinBalance(minBal);
+                incomingSavings.setInterestRate(intRate);
 
-                    incomingAccount = incomingSavings;
-                } else {
-                    //Checking account is selected
-                    Double monFee = Double.parseDouble(monthlyFee);
+                incomingAccount = incomingSavings;
+            } else {
+                //Checking account is selected
+                Double monFee = Double.parseDouble(monthlyFee);
 
-                    CheckingAccount incomingChecking = new CheckingAccount();
-                    incomingChecking.setMonthlyFee(monFee);
+                CheckingAccount incomingChecking = new CheckingAccount();
+                incomingChecking.setMonthlyFee(monFee);
 
-                    incomingAccount = incomingChecking;
-                }
-
-                incomingAccount.setNumber(accountNumber);
-                incomingAccount.setOwnerName(ownerName);
-
-                incomingAccount.setBalance(Double.parseDouble(balance));
-
-                return incomingAccount;
-            } catch (ClassCastException | NumberFormatException e){
-                //There was an invalid entry
-                return null;
+                incomingAccount = incomingChecking;
             }
+
+            incomingAccount.setNumber(accountNumber);
+            incomingAccount.setOwnerName(ownerName);
+
+            incomingAccount.setBalance(Double.parseDouble(balance));
+
+            return incomingAccount;
         }
 
         //The dialog box was likely canceled
@@ -210,6 +231,10 @@ public class AccountAddDialog {
                 preData.get(CheckingAccount.uniqueHeaders[0]));
     }
 
+    /**
+     * Enable and disable text fields based on the current
+     * radio button state
+     */
     private void updateEnabledFields(){
         if (checkingButton.isSelected()){
             //Checking account selected
@@ -223,12 +248,175 @@ public class AccountAddDialog {
             monthlyFeeField.setEnabled(false);
         }
 
+        //Make sure the correct fields have errors displayed
+        updateErrorIndication();
+    }
+
+    /**
+     * Indicates an error in the field. Undoes showGood()
+     * @param field The field to modify
+     */
+    private void showError(JTextField field){
+        field.setBackground(Color.PINK);
+    }
+
+    /**
+     * Indicates no error in the field. Undoes showError()
+     * @param field The field to modify
+     */
+    private void showGood(JTextField field){
+        field.setBackground(Color.WHITE);
+    }
+
+    /**
+     * Turns some of the text red and disables the ok button if the
+     * entered data is invalid
+     */
+    private void updateErrorIndication(){
+        int problems = 0;
+
+        String accountNumber = accountNumberField.getText();
+        String ownerName = ownerNameField.getText();
+        String date = dateField.getText();
+        String balance = balanceField.getText();
+        String minimumBalance = minimumBalField.getText();
+        String interestRate = interestRateField.getText();
+        String monthlyFee = monthlyFeeField.getText();
+
+        if (accountNumber.equals("")){
+            showError(accountNumberField);
+            problems += 1;
+        } else {
+            showGood(accountNumberField);
+        }
+
+        if (ownerName.equals("")){
+            showError(ownerNameField);
+            problems += 1;
+        } else {
+            showGood(ownerNameField);
+        }
+
+        //If balance is invalid, or minimumBalance is enabled and
+        // minBal > bal, then we make balance error
+        if (!validDouble(balance)
+                || (validDouble(minimumBalance) && validDouble(balance)
+                && minimumBalField.isEnabled()
+                && Double.parseDouble(minimumBalance)
+                > Double.parseDouble(balance))){
+            showError(balanceField);
+            problems += 1;
+        } else {
+            showGood(balanceField);
+        }
+
+        if (!validDouble(minimumBalance) && minimumBalField.isEnabled()){
+            showError(minimumBalField);
+            problems += 1;
+        } else {
+            showGood(minimumBalField);
+        }
+
+        if (validDouble(minimumBalance) && validDouble(balance)
+                && minimumBalField.isEnabled()){
+
+        }
+
+        if (!validDouble(interestRate) && interestRateField.isEnabled()){
+            showError(interestRateField);
+            problems += 1;
+        } else {
+            showGood(interestRateField);
+        }
+
+        if (!validDouble(monthlyFee) && monthlyFeeField.isEnabled()){
+            showError(monthlyFeeField);
+            problems += 1;
+        } else {
+            showGood(monthlyFeeField);
+        }
+
+
+        if (problems == 0){
+            //No problems. Enable the "Ok" button'
+            dialogOkButton.setEnabled(true);
+        } else {
+            //We got problems, disable the "Ok" button
+            dialogOkButton.setEnabled(false);
+        }
+    }
+
+    /**
+     * Determine whether a given string is a valid double
+     * @return True if the string is valid. False if it's invalid
+     */
+    private boolean validDouble(String doubleVal){
+        try {
+            Double.parseDouble(doubleVal);
+        } catch (NumberFormatException e){
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Gets the optionPane instance from a component directly inside it
+     * @param parent The component
+     * @return The jOptionPane instance
+     */
+    private JOptionPane getOptionPane(JComponent parent) {
+        JOptionPane pane;
+        if (!(parent instanceof JOptionPane)) {
+            pane = getOptionPane((JComponent)parent.getParent());
+        } else {
+            pane = (JOptionPane) parent;
+        }
+        return pane;
     }
 
     private class RadioButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             updateEnabledFields();
+        }
+    }
+
+    /**
+     * DocumentListener to call updateErrorIndication() any
+     * time anything happens
+     */
+    private class FieldUpdateListener implements DocumentListener {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            updateErrorIndication();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            updateErrorIndication();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            updateErrorIndication();
+        }
+    }
+
+    private class DialogButtonsListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //The parent jOptionPane for these buttons
+            JOptionPane pane = getOptionPane((JComponent) e.getSource());
+
+            if (e.getSource() == dialogCancelButton){
+                pane.setValue(dialogCancelButton);
+                //((JDialog) pane.getParent()).dispose();
+            }
+
+            if (e.getSource() == dialogOkButton){
+                pane.setValue(dialogOkButton);
+            }
         }
     }
 }
