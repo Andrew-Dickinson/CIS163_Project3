@@ -2,6 +2,8 @@ package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 
 /**
@@ -38,10 +40,14 @@ public class AccountAddDialog {
         primaryDialogPanel = new JPanel();
         primaryDialogPanel.setLayout(new BorderLayout());
 
+        RadioButtonListener listener = new RadioButtonListener();
+
         JPanel radioPanel = new JPanel(new FlowLayout());
         ButtonGroup typeButtonGroup = new ButtonGroup();
         savingsButton = new JRadioButton(SavingsAccount.classIdentifier, true);
+        savingsButton.addActionListener(listener);
         checkingButton = new JRadioButton(CheckingAccount.classIdentifier);
+        checkingButton.addActionListener(listener);
 
         typeButtonGroup.add(savingsButton);
         typeButtonGroup.add(checkingButton);
@@ -82,6 +88,9 @@ public class AccountAddDialog {
         fieldPanel.add(monthlyFeeField);
 
         primaryDialogPanel.add(fieldPanel, BorderLayout.CENTER);
+
+        //Make sure the correct fields are enabled
+        updateEnabledFields();
     }
 
     /*******************************************************************
@@ -106,6 +115,9 @@ public class AccountAddDialog {
 
             //Call our private helper to fill in the data
             setFieldData(preData);
+
+            //Make sure the correct fields are enabled
+            updateEnabledFields();
         }
 
         //Launch a dialog box with the options
@@ -196,5 +208,27 @@ public class AccountAddDialog {
         //Set the monthly fee
         monthlyFeeField.setText(
                 preData.get(CheckingAccount.uniqueHeaders[0]));
+    }
+
+    private void updateEnabledFields(){
+        if (checkingButton.isSelected()){
+            //Checking account selected
+            minimumBalField.setEnabled(false);
+            interestRateField.setEnabled(false);
+            monthlyFeeField.setEnabled(true);
+        } else {
+            //Savings account selected
+            minimumBalField.setEnabled(true);
+            interestRateField.setEnabled(true);
+            monthlyFeeField.setEnabled(false);
+        }
+
+    }
+
+    private class RadioButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            updateEnabledFields();
+        }
     }
 }
