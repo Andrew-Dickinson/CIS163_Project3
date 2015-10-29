@@ -5,17 +5,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 /***********************************************************************
  * Displays the GUI for interacting with the banking program
  **********************************************************************/
 
-//TODO: Java style guide all over. But mostly here
-//TODO: Double clicking an element pulls up the edit menu
+//TODO: Java style guide all over. But mostly here (Sully)
+//TODO: Double clicking an element pulls up the edit menu(Sully)
 //TODO: Put nice calendar GUI in the AccountAddDialog
 //TODO: Generalizable sorts (Andrew)
-//TODO: Clicking on the header should sort the column
 //TODO: XML/Hashtable namespace system (Andrew)
 //TODO: XML Definitions file (Andrew)
     
@@ -55,6 +57,7 @@ public class BankPanel extends JPanel {
 	public BankPanel(JFrame frame){
 	    //a new button Listener
 		ButtonListener butListener = new ButtonListener();
+		MouseList ML = new MouseList();
 		menuBar = new JMenuBar();
 		file = new JMenu("File");
 		sort = new JMenu("Sort");
@@ -69,6 +72,7 @@ public class BankPanel extends JPanel {
 		// Create a new table instance
 		model = new BankModel();
         model.addAccount(new CheckingAccount("1", "Andrew"));
+        
 		table = new JTable(model);
         table.setPreferredScrollableViewportSize(new Dimension(900, 400));
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -77,7 +81,9 @@ public class BankPanel extends JPanel {
 		scrollPane = new JScrollPane(table);
         table.setDragEnabled(false);
         table.getTableHeader().setReorderingAllowed(false);
-		
+        
+    	table.getTableHeader().addMouseListener(ML);
+
 		//adds actionListener butListener to objects
 		quit.addActionListener(butListener);
 		save.addActionListener(butListener);
@@ -200,7 +206,6 @@ public class BankPanel extends JPanel {
                 BankFileDialog bfd = new BankFileDialog(getParent());
                 try {
                     BankModel bm = bfd.openDialog();
-
                     if (bm != null){
                         table.setModel(bm);
                     }
@@ -211,7 +216,6 @@ public class BankPanel extends JPanel {
                             "Unknown Error",
                             JOptionPane.ERROR_MESSAGE);
                 }
-
 			}
 			
 			//sorts JTable by account numbers
@@ -267,6 +271,9 @@ public class BankPanel extends JPanel {
                                     "Duplicate Detected",
                                     JOptionPane.ERROR_MESSAGE);
                         }
+                    } else {
+                        //There was an error or the user canceled. We can't tell
+                        //TODO: ^ Fix
                     }
                 } else {
                     //No account was selected. Let's warn the user
@@ -298,5 +305,56 @@ public class BankPanel extends JPanel {
                 }
             }
 		}
-	}	
+	}
+	
+	private class MouseList implements MouseListener{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+//			if(e.getButton()==MouseEvent.BUTTON3)
+//			{
+//  	        	System.out.println("here");	
+//			}
+			
+			int col = table.columnAtPoint(e.getPoint());
+			//int row = table.rowAtPoint(e.getPoint());   
+  	        String name = table.getColumnName(col);
+  	        if(name.equals("Account Number"))
+  	        {
+  	        	model.sortByAccountNumber();
+  	        }
+  	        else if(name.equals("Owner Name"))
+  	        {
+  	        	model.sortByAccountName();
+  	        }
+  	        else if(name.equals("Date Opened"))
+  	        {
+  	        	model.sortByDateOpened();
+  	        } 		
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
 }
