@@ -39,7 +39,7 @@ public class BankFileDialog extends JFileChooser {
      * BankModel to import
      * @return The imported BankModel or null if canceled
      ******************************************************************/
-    public BankModel openDialog() {
+    public BankModel openDialog() throws IOException {
         int status = super.showOpenDialog(parent);
 
         if (status == JFileChooser.APPROVE_OPTION) {
@@ -47,38 +47,33 @@ public class BankFileDialog extends JFileChooser {
             FileFilter extFilter = super.getFileFilter();
             String filePath = "" + fileToSave.getAbsolutePath();
 
-            try {
-                if (extFilter.equals(txtFilter)) {
-                    if (!filePath.endsWith(txtFilter.getExtensions()[0])) {
-                        filePath += txtFilter.getExtensions()[0];
-                    }
-
-                    //Generate and return the appropriate BankModel
-                    BankModel bm = new BankModel();
-                    bm.loadFromTextFile(filePath);
-                    return bm;
-                } else if (extFilter.equals(bnkFilter)) {
-                    if (!filePath.endsWith(bnkFilter.getExtensions()[0])) {
-                        filePath += bnkFilter.getExtensions()[0];
-                    }
-
-                    //Generate and return the appropriate BankModel
-                    BankModel bm = new BankModel();
-                    bm.loadFromBinaryFile(filePath);
-                    return bm;
-                } else if (extFilter.equals(xmlFilter)) {
-                    if (!filePath.endsWith(xmlFilter.getExtensions()[0])) {
-                        filePath += xmlFilter.getExtensions()[0];
-                    }
-
-                    //Generate and return the appropriate BankModel
-                    BankModel bm = new BankModel();
-                    bm.loadFromXMLFile(filePath);
-                    return bm;
+            if (extFilter.equals(txtFilter)) {
+                if (!filePath.endsWith(txtFilter.getExtensions()[0])) {
+                    filePath += txtFilter.getExtensions()[0];
                 }
-            } catch (IOException | IllegalArgumentException e){
-                //There was a problem with loading the file
-                return null;
+
+                //Generate and return the appropriate BankModel
+                BankModel bm = new BankModel();
+                bm.loadFromTextFile(filePath);
+                return bm;
+            } else if (extFilter.equals(bnkFilter)) {
+                if (!filePath.endsWith(bnkFilter.getExtensions()[0])) {
+                    filePath += bnkFilter.getExtensions()[0];
+                }
+
+                //Generate and return the appropriate BankModel
+                BankModel bm = new BankModel();
+                bm.loadFromBinaryFile(filePath);
+                return bm;
+            } else if (extFilter.equals(xmlFilter)) {
+                if (!filePath.endsWith(xmlFilter.getExtensions()[0])) {
+                    filePath += xmlFilter.getExtensions()[0];
+                }
+
+                //Generate and return the appropriate BankModel
+                BankModel bm = new BankModel();
+                bm.loadFromXMLFile(filePath);
+                return bm;
             }
         }
 

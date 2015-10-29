@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /***********************************************************************
  * Displays the GUI for interacting with the banking program
@@ -53,7 +54,7 @@ public class BankPanel extends JPanel {
 		sort = new JMenu("Sort");
 		quit = new JMenuItem("Quit");
 		save = new JMenuItem("Save As ");
-		load = new JMenuItem("Load");
+		load = new JMenuItem("Open");
 		byAcctNum = new JMenuItem("By Account Number");
 		byAcctOwn = new JMenuItem("By Account Owner");
 		byDateOpen = new JMenuItem("By Date Opened");
@@ -182,15 +183,20 @@ public class BankPanel extends JPanel {
 			//loads account data from files
 			if(load == event.getSource()){
                 BankFileDialog bfd = new BankFileDialog(getParent());
-                BankModel bm = bfd.openDialog();
-                if (bm == null){
+                try {
+                    BankModel bm = bfd.openDialog();
+
+                    if (bm != null){
+                        table.setModel(bm);
+                    }
+                } catch (IOException | IllegalArgumentException e){
+                    //There was a problem with loading the file
                     JOptionPane.showMessageDialog(getParent(),
                             "An error occurred while loading this file",
                             "Unknown Error",
                             JOptionPane.ERROR_MESSAGE);
-                } else {
-                    table.setModel(bm);
                 }
+
 			}
 			
 			//sorts JTable by account numbers
@@ -240,6 +246,7 @@ public class BankPanel extends JPanel {
                         model.updateAccount(account, editedAccount);
                     } else {
                         //There was an error or the user canceled. We can't tell
+                        //TODO: ^ Fix
                     }
                 } else {
                     //No account was selected. Let's warn the user
