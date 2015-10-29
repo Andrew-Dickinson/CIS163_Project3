@@ -6,6 +6,10 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -79,6 +83,9 @@ public class AccountAddDialog {
 
         fieldPanel.add(new JLabel(Account.defaultDataHeaders[3] + "(mm/dd/yyyy):"));
         dateField = new JTextField();
+        //Fill it with today's date
+
+        dateField.setText(Account.DATE_FORMAT.format(new GregorianCalendar().getTime()));
         dateField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(dateField);
 
@@ -184,17 +191,16 @@ public class AccountAddDialog {
             }
 
             //TODO: Incorporate this validation into the dialog box
-            String[] gcDates = date.split("/");
-            int[] gcintDates = new int[gcDates.length];
-            for (int i = 0; i < gcDates.length; i++) {
-                    gcintDates[i] = Integer.parseInt(gcDates[i]);
-                }
             try {
+                Date entered = Account.DATE_FORMAT.parse(date);
                 //makes a GC with the user date
-                GregorianCalendar gc = new GregorianCalendar(gcintDates[2], gcintDates[0], gcintDates[1]);
+                GregorianCalendar gc = new GregorianCalendar();
+                gc.setTime(entered);
                 incomingAccount.setDateOpened(gc);
-            } catch (Exception e) {
-                System.out.println(""+e);
+            } catch (ParseException e) {
+                //This should never happen, this is what we have
+                // dialog validation for. So let's make some noise
+                throw new IllegalArgumentException();
             }
 
             incomingAccount.setNumber(accountNumber);
@@ -312,6 +318,13 @@ public class AccountAddDialog {
             showGood(ownerNameField);
         }
 
+        if (!validDate(date)){
+            showError(dateField);
+            problems += 1;
+        } else {
+            showGood(dateField);
+        }
+
         //If balance is invalid, or minimumBalance is enabled and
         // minBal > bal, then we make balance error
         if (!validDouble(balance)
@@ -369,6 +382,20 @@ public class AccountAddDialog {
         try {
             Double.parseDouble(doubleVal);
         } catch (NumberFormatException e){
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Determine whether a given string is a valid date
+     * @return True if the string is valid. False if it's invalid
+     */
+    private boolean validDate(String dateVal){
+        try {
+            Account.DATE_FORMAT.parse(dateVal);
+        } catch (ParseException e) {
             return false;
         }
 

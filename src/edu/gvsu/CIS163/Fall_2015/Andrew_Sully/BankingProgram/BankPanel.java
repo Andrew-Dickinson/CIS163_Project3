@@ -14,7 +14,6 @@ import java.io.IOException;
 //TODO: Java style guide all over. But mostly here
 //TODO: Double clicking an element pulls up the edit menu
 //TODO: Put nice calendar GUI in the AccountAddDialog
-//TODO: Add date validation and modification functionality to AccountAddDialog (Andrew)
 //TODO: Generalizable sorts (Andrew)
 //TODO: Clicking on the header should sort the column
 //TODO: XML/Hashtable namespace system (Andrew)
