@@ -183,6 +183,29 @@ public class BankModel extends AbstractTableModel implements Serializable {
     }
 
     /*******************************************************************
+     * Replaces an account with a new one
+     * @param oldAccount The account to replace
+     * @param newAccount The new account. Type must be
+     *                registered through addValidAccount()
+     * @throws IllegalArgumentException if there's already an account
+     *                                  with the same account number or
+     *                                  if Account.getClass() hasn't
+     *                                  been registered through
+     *                                  addValidAccount()
+     ******************************************************************/
+    public void updateAccount(Account oldAccount, Account newAccount) {
+        int index = 0;
+        for (int i = 0; i < accounts.size(); i++){
+            if (oldAccount.equals(accounts.get(i))){
+                index = i;
+                break;
+            }
+        }
+
+        updateAccount(index, newAccount);
+    }
+
+    /*******************************************************************
      * Gets an account at a certain position
      * @param index The index of the account to get
      * @return  The account in the specified slot
