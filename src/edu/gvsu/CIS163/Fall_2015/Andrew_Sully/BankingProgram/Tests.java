@@ -18,6 +18,19 @@ public class Tests {
         bm.addAccount(new CheckingAccount("lasdjf"));
     }
 
+    @Test(expected=java.lang.IllegalArgumentException.class)
+    public void testUniqueIDWithUpdate(){
+        BankModel bm = new BankModel();
+        bm.addAccount(new SavingsAccount("2"));
+
+        Account secondAccount = new SavingsAccount("blah");
+        bm.addAccount(secondAccount);
+
+        Account thirdAccount = secondAccount.clone();
+        thirdAccount.setNumber("2");
+        bm.updateAccount(secondAccount, thirdAccount);
+    }
+
     @Test(expected=IllegalArgumentException.class)
     public void testUnsupportedClass(){
         BankModel bm = new BankModel(new Class[]{CheckingAccount.class});
