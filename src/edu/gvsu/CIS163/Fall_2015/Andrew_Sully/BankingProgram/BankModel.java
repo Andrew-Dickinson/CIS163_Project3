@@ -356,6 +356,17 @@ public class BankModel extends AbstractTableModel implements Serializable {
     }
 
     /*******************************************************************
+     * Sort the accounts based on the provided comparator
+     * @param comparator The comparator to sort based on
+     ******************************************************************/
+    public void sortByComparator(Comparator<Account> comparator){
+        Collections.sort(accounts, comparator);
+
+        //Tell the GUI we updated
+        fireTableDataChanged();
+    }
+
+    /*******************************************************************
      * Reconcile the headers from all of the accounts in this class and
      * store them in an array
      ******************************************************************/
