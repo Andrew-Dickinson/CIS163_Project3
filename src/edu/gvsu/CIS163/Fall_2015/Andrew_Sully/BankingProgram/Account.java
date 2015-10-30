@@ -195,6 +195,63 @@ public abstract class Account implements Serializable, Cloneable {
      ******************************************************************/
     public abstract HashMap<String, String> getClassDataAndHeaders();
 
+    /*******************************************************************
+     * Gets a comparator based on the name of the header
+     * @param header The header to look up
+     * @return The appropriate comparator or null if none is found
+     ******************************************************************/
+    public Comparator<Account> getComparatorFromHeader(String header) {
+        return getComparatorFromHeader(header, true);
+    }
+
+    /*******************************************************************
+     * Gets a comparator based on the name of the header
+     * @param header The header to look up
+     * @param ascending If true, the comparator will sort ascending
+     * @return The appropriate comparator or null if none is found
+     ******************************************************************/
+    public abstract Comparator<Account>
+                getComparatorFromHeader(String header, boolean ascending);
+
+    /*******************************************************************
+     * Gets a comparator based on the name of the header if the header
+     * corresponds to a base account header
+     * @param header The header to look up
+     * @param ascending If true, the comparator will sort ascending
+     * @return The appropriate comparator or null if none is found
+     ******************************************************************/
+    public Comparator<Account> getBaseComparator(String header,
+                                                 boolean ascending){
+        //Gets multiplied at each compareTo so that
+        // we can reverse the sort if specified
+        int reverse;
+        if (ascending){
+            reverse = 1;
+        } else {
+            reverse = -1;
+        }
+
+        //Uses lambda expressions to simplify the syntax
+        if (header.equals(defaultDataHeaders[0])){
+            return (Account a1, Account a2) -> reverse *
+             a1.getClassIdentifier().compareTo(a2.getClassIdentifier());
+        } else if (header.equals(defaultDataHeaders[1])){
+            return (Account a1, Account a2) -> reverse *
+                    a1.getNumber().compareTo(a2.getNumber());
+        } else if (header.equals(defaultDataHeaders[2])){
+            return (Account a1, Account a2) -> reverse *
+                    a1.getOwnerName().compareTo(a2.getOwnerName());
+        } else if (header.equals(defaultDataHeaders[3])){
+            return (Account a1, Account a2) -> reverse *
+                    a1.getDateOpened().compareTo(a2.getDateOpened());
+        } else if (header.equals(defaultDataHeaders[4])){
+            return (Account a1, Account a2) -> reverse *
+                    Double.compare(a1.getBalance(), a2.getBalance());
+        }
+
+        //We didn't find the specified header
+        return null;
+    }
 
     /*******************************************************************
      * Generates a HashMap with the data headers as keys for the

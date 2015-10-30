@@ -5,6 +5,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -147,6 +148,65 @@ public class CheckingAccount extends Account implements Serializable {
             }
         }
         return array;
+    }
+
+    /*******************************************************************
+     * Gets a comparator based on the name of the header
+     * @param header The header to look up
+     * @param ascending If true, the comparator will sort ascending
+     * @return The appropriate comparator or null if none is found
+     ******************************************************************/
+    @Override
+    public Comparator<Account> getComparatorFromHeader(
+            String header, boolean ascending){
+        Comparator<Account> base = getBaseComparator(header, ascending);
+
+        if (base != null)
+            return base;
+
+        //Gets multiplied at each compareTo so that
+        // we can reverse the sort if specified
+        int reverse;
+        if (ascending){
+            reverse = 1;
+        } else {
+            reverse = -1;
+        }
+
+        //Uses lambda expressions to simplify the syntax
+        if (header.equals(uniqueHeaders[0])){
+            return (Account a1, Account a2) -> {
+                if (a1 instanceof CheckingAccount &&
+                    a2 instanceof CheckingAccount){
+
+                    //They're both Checking accounts
+                    CheckingAccount c1 = (CheckingAccount) a1;
+                    CheckingAccount c2 = (CheckingAccount) a2;
+
+                    return reverse * Double.compare(c1.getMonthlyFee(),
+                                          c2.getMonthlyFee());
+                }
+
+                if (!(a1 instanceof CheckingAccount) &&
+                    !(a2 instanceof CheckingAccount)){
+                    //They're both not checking accounts.
+                    //According to this comparator, they're equal
+                    return 0;
+                }
+
+                //The only cases left are one of each
+                if (a1 instanceof CheckingAccount){
+                    //a1 is the checking account
+                    return reverse * -1;
+                } else {
+                    //a2 is the checking account
+                    return reverse * 1;
+                }
+            };
+        }
+
+        //We didn't find it
+        return null;
     }
 
     /*******************************************************************

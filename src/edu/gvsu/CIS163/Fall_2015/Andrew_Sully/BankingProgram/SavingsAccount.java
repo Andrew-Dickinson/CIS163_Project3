@@ -6,6 +6,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -207,6 +208,70 @@ public class SavingsAccount extends Account implements Serializable {
             }
         }
         return array;
+    }
+
+    /*******************************************************************
+     * Gets a comparator based on the name of the header
+     * @param header The header to look up
+     * @param ascending If true, the comparator will sort ascending
+     * @return The appropriate comparator or null if none is found
+     ******************************************************************/
+    @Override
+    public Comparator<Account> getComparatorFromHeader(
+            String header, boolean ascending){
+        Comparator<Account> base = getBaseComparator(header, ascending);
+
+        if (base != null)
+            return base;
+
+        //Gets multiplied at each compareTo so that
+        // we can reverse the sort if specified
+        int reverse;
+        if (ascending){
+            reverse = 1;
+        } else {
+            reverse = -1;
+        }
+
+        //Uses lambda expressions to simplify the syntax
+        if (header.equals(uniqueHeaders[0]) || header.equals(uniqueHeaders[1])){
+            return (Account a1, Account a2) -> {
+                if (a1 instanceof SavingsAccount &&
+                    a2 instanceof SavingsAccount){
+
+                    //They're both savings accounts
+                    SavingsAccount s1 = (SavingsAccount) a1;
+                    SavingsAccount s2 = (SavingsAccount) a2;
+
+                    if (header.equals(uniqueHeaders[0])) {
+                        return reverse * Double.compare(s1.getMinBalance(),
+                                s2.getMinBalance());
+                    } else {
+                        return reverse * Double.compare(s1.getInterestRate(),
+                                s2.getInterestRate());
+                    }
+                }
+
+                if (!(a1 instanceof SavingsAccount) &&
+                        !(a2 instanceof SavingsAccount)){
+                    //They're both not savings accounts.
+                    //According to this comparator, they're equal
+                    return 0;
+                }
+
+                //The only cases left are one of each
+                if (a1 instanceof SavingsAccount){
+                    //a1 is the savings account
+                    return reverse * -1;
+                } else {
+                    //a2 is the savings account
+                    return reverse * 1;
+                }
+            };
+        }
+
+        //We didn't find it
+        return null;
     }
 
     /*******************************************************************
