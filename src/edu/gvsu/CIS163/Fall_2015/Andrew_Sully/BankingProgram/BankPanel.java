@@ -18,7 +18,6 @@ import java.util.Comparator;
 //TODO: Java style guide all over. But mostly here (Sully)
 //TODO: Double clicking an element pulls up the edit menu(Sully)
 //TODO: Put nice calendar GUI in the AccountAddDialog
-//TODO: File loading is broken
 //TODO: XML/Hashtable namespace system (Andrew)
 //TODO: XML Definitions file (Andrew)
 //TODO: add a deeper search? like all accounts that are opened on "10/23/2012" or all that have the name "Bob Smith"(sully)
