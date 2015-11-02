@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.Comparator;
 
 /***********************************************************************
  * Displays the GUI for interacting with the banking program
@@ -18,6 +19,7 @@ import java.io.IOException;
 //TODO: Double clicking an element pulls up the edit menu(Sully)
 //TODO: Put nice calendar GUI in the AccountAddDialog
 //TODO: Generalizable sorts (Andrew)
+//TODO: File loading is broken
 //TODO: XML/Hashtable namespace system (Andrew)
 //TODO: XML Definitions file (Andrew)
 //TODO: add a deeper search? like all accounts that are opened on "10/23/2012" or all that have the name "Bob Smith"(sully)
@@ -59,7 +61,7 @@ public class BankPanel extends JPanel {
 	public BankPanel(JFrame frame){
 	    //a new button Listener
 		ButtonListener butListener = new ButtonListener();
-		MouseList ML = new MouseList();
+		ColumnSortListener sortListener = new ColumnSortListener();
 		menuBar = new JMenuBar();
 		file = new JMenu("File");
 		sort = new JMenu("Sort");
@@ -84,7 +86,7 @@ public class BankPanel extends JPanel {
         table.setDragEnabled(false);
         table.getTableHeader().setReorderingAllowed(false);
         
-    	table.getTableHeader().addMouseListener(ML);
+    	table.getTableHeader().addMouseListener(sortListener);
 
 		//adds actionListener butListener to objects
 		quit.addActionListener(butListener);
@@ -211,7 +213,7 @@ public class BankPanel extends JPanel {
                     if (bm != null){
                         table.setModel(bm);
                     }
-                } catch (IOException | IllegalArgumentException e){
+                } catch (IOException e){
                     //There was a problem with loading the file
                     JOptionPane.showMessageDialog(getParent(),
                             "An error occurred while loading this file",
@@ -309,54 +311,18 @@ public class BankPanel extends JPanel {
 		}
 	}
 	
-	private class MouseList implements MouseListener{
-
+	private class ColumnSortListener extends MouseClickListener {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-//			if(e.getButton()==MouseEvent.BUTTON3)
-//			{
-//  	        	System.out.println("here");	
-//			}
-			
 			int col = table.columnAtPoint(e.getPoint());
-			//int row = table.rowAtPoint(e.getPoint());   
   	        String name = table.getColumnName(col);
-  	        if(name.equals("Account Number"))
-  	        {
-  	        	model.sortByAccountNumber();
-  	        }
-  	        else if(name.equals("Owner Name"))
-  	        {
-  	        	model.sortByAccountName();
-  	        }
-  	        else if(name.equals("Date Opened"))
-  	        {
-  	        	model.sortByDateOpened();
-  	        } 		
-		}
 
-		@Override
-		public void mouseEntered(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
+            Comparator<Account> comp = model.getComparatorFromHeader(name);
 
-		@Override
-		public void mouseExited(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mousePressed(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
+            //If comp is null, something is very bad
+            //That should never happen
+            if (comp != null)
+                model.sortByComparator(comp);
 		}
 	}
 }

@@ -263,6 +263,39 @@ public class BankModel extends AbstractTableModel implements Serializable {
     }
 
     /*******************************************************************
+     * Gets a comparator based on the name of the header
+     * @param header The header to look up
+     * @return The appropriate comparator or null if none is found
+     ******************************************************************/
+    public Comparator<Account> getComparatorFromHeader(String header){
+        return getComparatorFromHeader(header, true);
+    }
+
+    /*******************************************************************
+     * Gets a comparator based on the name of the header
+     * @param header The header to look up
+     * @param ascending If true, the comparator will sort ascending
+     * @return The appropriate comparator or null if none is found
+     ******************************************************************/
+    public Comparator<Account> getComparatorFromHeader(String header,
+                                                 boolean ascending){
+        //For each type, try to create the comparator.
+        //If we find one that works, return it
+        for (Class accountType : validAccountTypes){
+            Account accountOfType = Account.getInstanceFromClass(accountType);
+            Comparator<Account> comp = accountOfType
+                    .getComparatorFromHeader(header, ascending);
+
+            if (comp != null){
+                return comp;
+            }
+        }
+
+        //We didn't find it
+        return null;
+    }
+
+    /*******************************************************************
      * Sorts the accounts based on the account number
      * @param sortAscending If true, the accounts are sorted in
      *                      ascending order. If false, the accounts are
@@ -449,23 +482,25 @@ public class BankModel extends AbstractTableModel implements Serializable {
      * @throws IllegalArgumentException If the file is formatted wrongly
      ******************************************************************/
     public void loadFromBinaryFile(String filePath) throws IOException {
+        accounts.clear();
+        validAccountTypes.clear();
     	
     	FileInputStream fileIn = new FileInputStream(filePath);
         try {
             ObjectInputStream in = new ObjectInputStream(fileIn);
 
             BankModel bm = (BankModel) in.readObject();
-            accounts = bm.accounts;     
-
-            //Tell the GUI we updated
-            fireTableDataChanged();
-            
+            accounts = bm.accounts;
+            validAccountTypes = bm.validAccountTypes;
         } catch(ClassNotFoundException | ObjectStreamException c) {
             throw new IllegalArgumentException();
         }
         finally{
         	fileIn.close();
         }
+
+        //Tell the GUI we updated
+        fireTableDataChanged();
     }
 
     /*******************************************************************
