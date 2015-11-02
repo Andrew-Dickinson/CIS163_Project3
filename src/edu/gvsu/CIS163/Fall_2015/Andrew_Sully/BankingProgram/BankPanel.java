@@ -17,7 +17,6 @@ import java.util.Comparator;
 //TODO: Right clicking / double clicking an element pulls up the edit menu(Sully)
 //TODO: Put nice calendar GUI in the AccountAddDialog (Andrew)
 //TODO: XML Definitions file (Andrew)
-//TODO: Nothing should have some default text (Andrew)
 //TODO: a clear all button??(Sully)
     
 public class BankPanel extends JPanel {
@@ -46,6 +45,8 @@ public class BankPanel extends JPanel {
 	//this allows us to have any size window and we can scroll through data
 	private JScrollPane scrollPane;
 
+    private JLabel nothingTextLabel;
+
     //The buttons along the bottom of the panel
     private JButton addAccountButton;
     private JButton removeAccountButton;
@@ -70,7 +71,6 @@ public class BankPanel extends JPanel {
 
 		// Create a new table instance
 		model = new BankModel();
-        model.addAccount(new CheckingAccount("1", "Andrew"));
         
 		table = new JTable(model);
         table.setPreferredScrollableViewportSize(new Dimension(900, 400));
@@ -122,8 +122,17 @@ public class BankPanel extends JPanel {
         cloneAccountButton = new JButton("Clone Account");
         cloneAccountButton.addActionListener(butListener);
         buttonPanel.add(cloneAccountButton);
-		
-		this.add(scrollPane);
+
+        JLayeredPane primaryDisplayArea = new JLayeredPane();
+        primaryDisplayArea.setPreferredSize(new Dimension(900, 400));
+        primaryDisplayArea.add(scrollPane, 0, 0);
+        scrollPane.setBounds(0, 0, 900, 400);
+
+        nothingTextLabel = new JLabel("No accounts yet...");
+        primaryDisplayArea.add(nothingTextLabel, 1, 0);
+        nothingTextLabel.setBounds(375, 190, 300, 20);
+
+		this.add(primaryDisplayArea);
         this.add(buttonPanel);
 		frame.setJMenuBar(menuBar);
 	}
@@ -177,6 +186,12 @@ public class BankPanel extends JPanel {
         } else {
             System.out.println("Err");
         }
+
+        checkIfNoAccountTextIsNeeded();
+    }
+
+    private void checkIfNoAccountTextIsNeeded(){
+        nothingTextLabel.setVisible(model.getRowCount() == 0);
     }
 
 	private class ButtonListener implements ActionListener {
@@ -216,6 +231,8 @@ public class BankPanel extends JPanel {
                             "Unknown Error",
                             JOptionPane.ERROR_MESSAGE);
                 }
+
+                checkIfNoAccountTextIsNeeded();
 			}
 			
 			//sorts JTable by account numbers
@@ -249,6 +266,8 @@ public class BankPanel extends JPanel {
                     //No account was selected. Let's warn the user
                     warnNoAccountSelected();
                 }
+
+                checkIfNoAccountTextIsNeeded();
             }
 
             if (editAccountButton == event.getSource()){
