@@ -18,7 +18,6 @@ import java.util.Comparator;
 //TODO: Java style guide all over. But mostly here (Sully)
 //TODO: Double clicking an element pulls up the edit menu(Sully)
 //TODO: Put nice calendar GUI in the AccountAddDialog
-//TODO: Generalizable sorts (Andrew)
 //TODO: File loading is broken
 //TODO: XML/Hashtable namespace system (Andrew)
 //TODO: XML Definitions file (Andrew)
