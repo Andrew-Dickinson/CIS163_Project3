@@ -1,5 +1,7 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
+import org.jbundle.thin.base.screen.jcalendarbutton.JCalendarButton;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -92,8 +94,9 @@ public class AccountAddDialog {
         dateButtonAndFieldPanel.setPreferredSize(new Dimension(200, 20));
         fieldPanel.add(dateButtonAndFieldPanel);
 
-        //TODO: Make this button actually create a calendar dialog
-        JButton calendarPopButton = new JButton("...");
+        //TODO: Process the input from the calendar button
+
+        JCalendarButton calendarPopButton = new JCalendarButton();
         calendarPopButton.setPreferredSize(new Dimension(35, 20));
         dateField.setPreferredSize(new Dimension(165, 20));
         dateButtonAndFieldPanel.add(calendarPopButton);
