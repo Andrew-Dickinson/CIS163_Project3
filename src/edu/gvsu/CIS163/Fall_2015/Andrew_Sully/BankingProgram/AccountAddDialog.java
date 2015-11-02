@@ -71,17 +71,17 @@ public class AccountAddDialog {
 
         JPanel fieldPanel = new JPanel(new GridLayout(7, 2));
 
-        fieldPanel.add(new JLabel(Account.defaultDataHeaders[1] + " :"));
+        fieldPanel.add(new JLabel(Account.defaultDataHeaders[1].getFieldName() + " :"));
         accountNumberField = new JTextField();
         accountNumberField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(accountNumberField);
 
-        fieldPanel.add(new JLabel(Account.defaultDataHeaders[2] + " :"));
+        fieldPanel.add(new JLabel(Account.defaultDataHeaders[2].getFieldName() + " :"));
         ownerNameField = new JTextField();
         ownerNameField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(ownerNameField);
 
-        fieldPanel.add(new JLabel(Account.defaultDataHeaders[3] + "(mm/dd/yyyy):"));
+        fieldPanel.add(new JLabel(Account.defaultDataHeaders[3].getFieldName() + "(mm/dd/yyyy):"));
         dateField = new JTextField();
         //Fill it with today's date
 
@@ -89,22 +89,22 @@ public class AccountAddDialog {
         dateField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(dateField);
 
-        fieldPanel.add(new JLabel(Account.defaultDataHeaders[4] + " :"));
+        fieldPanel.add(new JLabel(Account.defaultDataHeaders[4].getFieldName() + " :"));
         balanceField = new JTextField();
         balanceField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(balanceField);
 
-        fieldPanel.add(new JLabel(SavingsAccount.uniqueHeaders[0] + " :"));
+        fieldPanel.add(new JLabel(SavingsAccount.uniqueHeaders[0].getFieldName() + " :"));
         minimumBalField = new JTextField();
         minimumBalField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(minimumBalField);
 
-        fieldPanel.add(new JLabel(SavingsAccount.uniqueHeaders[1] + " :"));
+        fieldPanel.add(new JLabel(SavingsAccount.uniqueHeaders[1].getFieldName() + " :"));
         interestRateField = new JTextField();
         interestRateField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(interestRateField);
 
-        fieldPanel.add(new JLabel(CheckingAccount.uniqueHeaders[0] + " :"));
+        fieldPanel.add(new JLabel(CheckingAccount.uniqueHeaders[0].getFieldName() + " :"));
         monthlyFeeField = new JTextField();
         monthlyFeeField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(monthlyFeeField);
@@ -142,7 +142,7 @@ public class AccountAddDialog {
     public Account displayDialog(Account account) {
         //If we specify a pre-created account, fill in the previous details
         if (account != null) {
-            HashMap<String, String> preData;
+            HashMap<HeaderName, String> preData;
             preData = account.getClassDataAndHeaders();
 
             //Call our private helper to fill in the data
@@ -215,7 +215,7 @@ public class AccountAddDialog {
         return null;
     }
 
-    private void setFieldData(HashMap<String, String> preData){
+    private void setFieldData(HashMap<HeaderName, String> preData){
         //Set the radio buttons correctly
         boolean checking = preData.get(Account.defaultDataHeaders[0])
                 .equals(CheckingAccount.classIdentifier);

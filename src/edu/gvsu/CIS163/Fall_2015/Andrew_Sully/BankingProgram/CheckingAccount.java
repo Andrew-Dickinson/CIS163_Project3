@@ -18,7 +18,9 @@ public class CheckingAccount extends Account implements Serializable {
      ******************************************************************/
 	private static final long serialVersionUID = 920560622L;
 
-    public static final String[] uniqueHeaders = {"Monthly Fee"};
+    public static final HeaderName[] uniqueHeaders = {
+            new HeaderName(CheckingAccount.class, "Monthly Fee")
+    };
 
     /*******************************************************************
      * Identifies the class for the toString() method
@@ -133,13 +135,13 @@ public class CheckingAccount extends Account implements Serializable {
      * Adds unique fields from this class to the abstract fields
      * @return The array of data headers
      ******************************************************************/
-    public String[] getDataHeaders() {
+    public HeaderName[] getDataHeaders() {
         int size = Account.defaultDataHeaders.length +
                     uniqueHeaders.length;
 
         //Join the two arrays:
         // uniqueHeaders and Account.defaultDataHeaders
-        String[] array = new String[size];
+        HeaderName[] array = new HeaderName[size];
         for (int i = 0; i < size; i++){
             if (i < Account.defaultDataHeaders.length){
                 array[i] = Account.defaultDataHeaders[i];
@@ -158,7 +160,7 @@ public class CheckingAccount extends Account implements Serializable {
      ******************************************************************/
     @Override
     public Comparator<Account> getComparatorFromHeader(
-            String header, boolean ascending){
+            HeaderName header, boolean ascending){
         Comparator<Account> base = getBaseComparator(header, ascending);
 
         if (base != null)
@@ -213,8 +215,8 @@ public class CheckingAccount extends Account implements Serializable {
      * Generates a HashMap with the data headers as keys
      * @return The generated hashmap
      ******************************************************************/
-    public HashMap<String, String> getClassDataAndHeaders(){
-        HashMap<String, String> map = super.getBaseHashMap();
+    public HashMap<HeaderName, String> getClassDataAndHeaders(){
+        HashMap<HeaderName, String> map = super.getBaseHashMap();
         map.put(uniqueHeaders[0], Double.toString(getMonthlyFee()));
         return map;
     }

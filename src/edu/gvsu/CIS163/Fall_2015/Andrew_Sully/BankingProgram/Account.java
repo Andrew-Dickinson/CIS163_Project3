@@ -20,8 +20,13 @@ public abstract class Account implements Serializable, Cloneable {
      ******************************************************************/
 	private static final long serialVersionUID = 959565410L;
 
-    public static final String[] defaultDataHeaders = {"Account Type",
-            "Account Number", "Owner Name", "Date Opened", "Balance"};
+    public static final HeaderName[] defaultDataHeaders = {
+            new HeaderName(Account.class, "Account Type"),
+            new HeaderName(Account.class, "Account Number"),
+            new HeaderName(Account.class, "Owner Name"),
+            new HeaderName(Account.class, "Date Opened"),
+            new HeaderName(Account.class, "Balance")
+    };
 
     /**
      * The format to use for all string representations of Account dates
@@ -174,9 +179,9 @@ public abstract class Account implements Serializable, Cloneable {
      *      {"Account Number", "Owner Name", "Date Opened", "Balance"}
      * @return The array of data headers
      ******************************************************************/
-    public String[] getDataHeaders(){
+    public HeaderName[] getDataHeaders(){
         return getClassDataAndHeaders().keySet().toArray(
-                new String[getClassDataAndHeaders().keySet().size()]);
+                new HeaderName[getClassDataAndHeaders().keySet().size()]);
     }
     //Isn't a static method because java doesn't support
     // polymorphic static methods
@@ -193,14 +198,14 @@ public abstract class Account implements Serializable, Cloneable {
      * Generates a HashMap with the data headers as keys
      * @return The generated hashmap
      ******************************************************************/
-    public abstract HashMap<String, String> getClassDataAndHeaders();
+    public abstract HashMap<HeaderName, String> getClassDataAndHeaders();
 
     /*******************************************************************
      * Gets a comparator based on the name of the header
      * @param header The header to look up
      * @return The appropriate comparator or null if none is found
      ******************************************************************/
-    public Comparator<Account> getComparatorFromHeader(String header) {
+    public Comparator<Account> getComparatorFromHeader(HeaderName header) {
         return getComparatorFromHeader(header, true);
     }
 
@@ -211,7 +216,7 @@ public abstract class Account implements Serializable, Cloneable {
      * @return The appropriate comparator or null if none is found
      ******************************************************************/
     public abstract Comparator<Account>
-                getComparatorFromHeader(String header, boolean ascending);
+                getComparatorFromHeader(HeaderName header, boolean ascending);
 
     /*******************************************************************
      * Gets a comparator based on the name of the header if the header
@@ -220,7 +225,7 @@ public abstract class Account implements Serializable, Cloneable {
      * @param ascending If true, the comparator will sort ascending
      * @return The appropriate comparator or null if none is found
      ******************************************************************/
-    public Comparator<Account> getBaseComparator(String header,
+    public Comparator<Account> getBaseComparator(HeaderName header,
                                                  boolean ascending){
         //Gets multiplied at each compareTo so that
         // we can reverse the sort if specified
@@ -258,8 +263,8 @@ public abstract class Account implements Serializable, Cloneable {
      * components in this Account base class
      * @return The generated hashmap
      ******************************************************************/
-    protected HashMap<String, String> getBaseHashMap(){
-        HashMap<String, String> map = new HashMap<String, String>();
+    protected HashMap<HeaderName, String> getBaseHashMap(){
+        HashMap<HeaderName, String> map = new HashMap<>();
         map.put(defaultDataHeaders[0], getClassIdentifier());
         map.put(defaultDataHeaders[1], getNumber());
         map.put(defaultDataHeaders[2], getOwnerName());
@@ -276,21 +281,21 @@ public abstract class Account implements Serializable, Cloneable {
      * @param h2 The headers from another Account class
      * @return The combined array
      ******************************************************************/
-    public static String[] resolveHeaders(String[] h1, String[] h2){
-        ArrayList<String> computed = new ArrayList<String>();
-        for (String header : h1){
+    public static HeaderName[] resolveHeaders(HeaderName[] h1, HeaderName[] h2){
+        ArrayList<HeaderName> computed = new ArrayList<>();
+        for (HeaderName header : h1){
             if (!computed.contains(header)){
                 computed.add(header);
             }
         }
 
-        for (String header : h2){
+        for (HeaderName header : h2){
             if (!computed.contains(header)){
                 computed.add(header);
             }
         }
 
-        String[] out = computed.toArray(new String[computed.size()]);
+        HeaderName[] out = computed.toArray(new HeaderName[computed.size()]);
         return out;
     }
 

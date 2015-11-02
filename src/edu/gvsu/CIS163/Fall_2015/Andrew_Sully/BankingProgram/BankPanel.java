@@ -18,8 +18,8 @@ import java.util.Comparator;
 //TODO: Java style guide all over. But mostly here (Sully)
 //TODO: Right clicking an element pulls up the edit menu(Sully)
 //TODO: Put nice calendar GUI in the AccountAddDialog
-//TODO: XML/Hashtable namespace system (Andrew)
 //TODO: XML Definitions file (Andrew)
+//TODO: Nothing should have some default text (Andrew)
 //TODO: add a deeper search? like all accounts that are opened on "10/23/2012" or all that have the name "Bob Smith"(sully)
 //TODO: a clear all button??(Sully)
     
@@ -314,7 +314,7 @@ public class BankPanel extends JPanel {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			int col = table.columnAtPoint(e.getPoint());
-  	        String name = table.getColumnName(col);
+  	        HeaderName name = model.getHeaders()[col];
 
             Comparator<Account> comp = model.getComparatorFromHeader(name);
 

@@ -24,7 +24,7 @@ public class BankModel extends AbstractTableModel implements Serializable {
      ******************************************************************/
     private ArrayList<Account> accounts;
     private ArrayList<Class> validAccountTypes;
-    private String[] headers;
+    private HeaderName[] headers;
 
     public BankModel(){
         //Set with default valid Account Types
@@ -92,9 +92,9 @@ public class BankModel extends AbstractTableModel implements Serializable {
      ******************************************************************/
     @Override
     public Object getValueAt(int row, int col) {
-        HashMap<String, String> dataMap = getAccount(row)
+        HashMap<HeaderName, String> dataMap = getAccount(row)
                                         .getClassDataAndHeaders();
-        String requestedData = getHeaders()[col];
+        HeaderName requestedData = getHeaders()[col];
 
         String data = dataMap.get(requestedData);
         if (data != null){
@@ -123,9 +123,6 @@ public class BankModel extends AbstractTableModel implements Serializable {
 
         //The column headers could have changed
         fireTableStructureChanged();
-
-        //Tell the GUI we updated
-        fireTableRowsInserted(accounts.size(), accounts.size());
     }
 
     /*******************************************************************
@@ -138,9 +135,6 @@ public class BankModel extends AbstractTableModel implements Serializable {
 
         //The column headers could have changed
         fireTableStructureChanged();
-
-        //Tell the GUI we updated
-        fireTableRowsDeleted(index, index);
     }
 
     /*******************************************************************
@@ -181,9 +175,6 @@ public class BankModel extends AbstractTableModel implements Serializable {
 
         //The column headers could have changed
         fireTableStructureChanged();
-
-        //Tell the GUI we updated
-        fireTableRowsUpdated(index, index);
     }
 
     /*******************************************************************
@@ -267,7 +258,7 @@ public class BankModel extends AbstractTableModel implements Serializable {
      * @param header The header to look up
      * @return The appropriate comparator or null if none is found
      ******************************************************************/
-    public Comparator<Account> getComparatorFromHeader(String header){
+    public Comparator<Account> getComparatorFromHeader(HeaderName header){
         return getComparatorFromHeader(header, true);
     }
 
@@ -277,7 +268,7 @@ public class BankModel extends AbstractTableModel implements Serializable {
      * @param ascending If true, the comparator will sort ascending
      * @return The appropriate comparator or null if none is found
      ******************************************************************/
-    public Comparator<Account> getComparatorFromHeader(String header,
+    public Comparator<Account> getComparatorFromHeader(HeaderName header,
                                                  boolean ascending){
         //For each type, try to create the comparator.
         //If we find one that works, return it
@@ -404,7 +395,7 @@ public class BankModel extends AbstractTableModel implements Serializable {
      * store them in an array
      ******************************************************************/
     private void resolveHeaders(){
-        String[][] headerArrays = new String[accounts.size()][];
+        HeaderName[][] headerArrays = new HeaderName[accounts.size()][];
 
         ArrayList<Account> cloned = (ArrayList<Account>) accounts.clone();
 
@@ -429,13 +420,13 @@ public class BankModel extends AbstractTableModel implements Serializable {
     /*******************************************************************
      * Uses recursion to compute the combined header array
      ******************************************************************/
-    public static String[] resolveHeadersRecurse(String h1[][]){
+    public static HeaderName[] resolveHeadersRecurse(HeaderName h1[][]){
         if (h1.length == 2){
             return  Account.resolveHeaders(h1[0], h1[1]);
         } else {
 
             //Remove the last element from h1
-            String[][] newh1 = new String[h1.length - 1][];
+            HeaderName[][] newh1 = new HeaderName[h1.length - 1][];
             for (int i = 0; i < newh1.length; i++){
                 newh1[i] = h1[i];
             }
@@ -451,7 +442,7 @@ public class BankModel extends AbstractTableModel implements Serializable {
      * @return An up-to-date array of headers or null if
      *         this has no Accounts
      ******************************************************************/
-    public String[] getHeaders(){
+    public HeaderName[] getHeaders(){
         if (getRowCount() > 0) {
             resolveHeaders();
             return headers;
@@ -467,7 +458,7 @@ public class BankModel extends AbstractTableModel implements Serializable {
      ******************************************************************/
     @Override
     public String getColumnName(int column) {
-        return getHeaders()[column];
+        return getHeaders()[column].getFieldName();
     }
 
     /*******************************************************************

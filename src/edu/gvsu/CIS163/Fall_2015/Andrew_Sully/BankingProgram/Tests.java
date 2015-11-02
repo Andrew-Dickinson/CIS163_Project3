@@ -156,10 +156,12 @@ public class Tests {
         BankModel bm = new BankModel();
         bm.addAccount(new SavingsAccount("a"));
         bm.addAccount(new CheckingAccount("b"));
-        String[] headers = bm.getHeaders();
+        HeaderName[] headers = bm.getHeaders();
 
-        assertEquals(headers[0], Account.defaultDataHeaders[0]);
-        assertEquals(headers[1], Account.defaultDataHeaders[1]);
+        assertEquals(headers[0].getFieldName(),
+                    Account.defaultDataHeaders[0].getFieldName());
+        assertEquals(headers[1].getFullName(),
+                    Account.defaultDataHeaders[1].getFullName());
         assertEquals(headers[2], Account.defaultDataHeaders[2]);
         assertEquals(headers[3], Account.defaultDataHeaders[3]);
 
@@ -168,14 +170,27 @@ public class Tests {
 
     @Test
     public void testResolveRecursive(){
-        String[][] h1 = {new String[]{"1","2", "4", "5", "7"},
-                new String[]{"3","4"}, new String[]{"5", "6", "7"}};
-        String[] resolved = BankModel.resolveHeadersRecurse(h1);
+        HeaderName[][] h1 = {
+            new HeaderName[]{
+                new HeaderName(Account.class, "1"),
+                new HeaderName(Account.class, "2"),
+                new HeaderName(Account.class, "4"),
+                new HeaderName(Account.class, "5"),
+                new HeaderName(Account.class, "7")},
+            new HeaderName[]{
+                new HeaderName(Account.class, "3"),
+                new HeaderName(Account.class, "4")},
+            new HeaderName[]{
+                new HeaderName(Account.class, "5"),
+                new HeaderName(Account.class, "6"),
+                new HeaderName(Account.class, "7")}
+        };
+        HeaderName[] resolved = BankModel.resolveHeadersRecurse(h1);
 
         for (int i = 1; i < 7; i++){
             boolean found = false;
             for (int j = 0; j < 7; j++){
-                if (resolved[j].equals("" + i))
+                if (resolved[j].getFieldName().equals("" + i))
                     found = true;
             }
             assertTrue(found);
