@@ -8,9 +8,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DateFormat;
+import java.beans.PropertyChangeEvent;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -94,9 +93,18 @@ public class AccountAddDialog {
         dateButtonAndFieldPanel.setPreferredSize(new Dimension(200, 20));
         fieldPanel.add(dateButtonAndFieldPanel);
 
-        //TODO: Process the input from the calendar button
-
         JCalendarButton calendarPopButton = new JCalendarButton();
+        calendarPopButton.addPropertyChangeListener(
+                (PropertyChangeEvent evt) -> {
+                    if (evt.getNewValue() instanceof Date)
+                        dateField.setText(
+                                Account.DATE_FORMAT.format(
+                                        (Date) evt.getNewValue()
+                                )
+                        );
+                }
+        );
+
         calendarPopButton.setPreferredSize(new Dimension(35, 20));
         dateField.setPreferredSize(new Dimension(165, 20));
         dateButtonAndFieldPanel.add(calendarPopButton);
