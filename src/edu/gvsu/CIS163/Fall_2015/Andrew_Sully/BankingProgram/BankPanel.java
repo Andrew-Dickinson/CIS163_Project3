@@ -209,7 +209,7 @@ public class BankPanel extends JPanel {
                         table.setModel(bm);
                         model = bm;
                     }
-                } catch (IOException e){
+                } catch (IOException | IllegalArgumentException e){
                     //There was a problem with loading the file
                     JOptionPane.showMessageDialog(getParent(),
                             "An error occurred while loading this file",
