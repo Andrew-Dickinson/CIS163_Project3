@@ -97,19 +97,19 @@ public class BankFileDialog extends JFileChooser {
 
             try {
                 if (extFilter.equals(txtFilter)) {
-                    if (!filePath.endsWith(txtFilter.getExtensions()[0])) {
+                    if (!filePath.endsWith("." + txtFilter.getExtensions()[0])) {
                         filePath += "." + txtFilter.getExtensions()[0];
                     }
 
                     bm.saveToTextFile(filePath);
                 } else if (extFilter.equals(bnkFilter)) {
-                    if (!filePath.endsWith(bnkFilter.getExtensions()[0])) {
+                    if (!filePath.endsWith("." + bnkFilter.getExtensions()[0])) {
                         filePath += "." + bnkFilter.getExtensions()[0];
                     }
 
                     bm.saveToBinaryFile(filePath);
                 } else if (extFilter.equals(xmlFilter)) {
-                    if (!filePath.endsWith(xmlFilter.getExtensions()[0])) {
+                    if (!filePath.endsWith("." + xmlFilter.getExtensions()[0])) {
                         filePath += "." + xmlFilter.getExtensions()[0];
                     }
 
