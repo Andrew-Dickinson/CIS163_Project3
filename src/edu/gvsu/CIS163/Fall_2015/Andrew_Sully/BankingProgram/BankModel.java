@@ -406,8 +406,16 @@ public class BankModel extends AbstractTableModel implements Serializable {
     private void resolveHeaders(){
         String[][] headerArrays = new String[accounts.size()][];
 
+        ArrayList<Account> cloned = (ArrayList<Account>) accounts.clone();
+
+        //Sort in a standardized way. Based on ID Number
+        //Solves a weird sorting bug where the headers are out of
+        // sync across the program
+        Collections.sort(cloned,
+                getComparatorFromHeader(Account.defaultDataHeaders[1]));
+
         for (int i = 0; i < headerArrays.length; i++){
-            headerArrays[i] = getAccount(i).getDataHeaders();
+            headerArrays[i] = cloned.get(i).getDataHeaders();
         }
 
         if (headerArrays.length == 1) {
