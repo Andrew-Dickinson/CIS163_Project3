@@ -5,9 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.Comparator;
 
@@ -16,11 +14,10 @@ import java.util.Comparator;
  **********************************************************************/
 
 //TODO: Java style guide all over. But mostly here (Sully)
-//TODO: Right clicking an element pulls up the edit menu(Sully)
-//TODO: Put nice calendar GUI in the AccountAddDialog
+//TODO: Right clicking / double clicking an element pulls up the edit menu(Sully)
+//TODO: Put nice calendar GUI in the AccountAddDialog (Andrew)
 //TODO: XML Definitions file (Andrew)
 //TODO: Nothing should have some default text (Andrew)
-//TODO: add a deeper search? like all accounts that are opened on "10/23/2012" or all that have the name "Bob Smith"(sully)
 //TODO: a clear all button??(Sully)
     
 public class BankPanel extends JPanel {
