@@ -70,6 +70,7 @@ public class AccountAddDialog {
         primaryDialogPanel.add(radioPanel, BorderLayout.NORTH);
 
         JPanel fieldPanel = new JPanel(new GridLayout(7, 2));
+        fieldPanel.setPreferredSize(new Dimension(400, 140));
 
         fieldPanel.add(new JLabel(Account.defaultDataHeaders[1].getFieldName() + " :"));
         accountNumberField = new JTextField();
@@ -83,11 +84,20 @@ public class AccountAddDialog {
 
         fieldPanel.add(new JLabel(Account.defaultDataHeaders[3].getFieldName() + "(mm/dd/yyyy):"));
         dateField = new JTextField();
-        //Fill it with today's date
 
+        //Fill it with today's date
         dateField.setText(Account.DATE_FORMAT.format(new GregorianCalendar().getTime()));
         dateField.getDocument().addDocumentListener(fieldListener);
-        fieldPanel.add(dateField);
+        JPanel dateButtonAndFieldPanel = new JPanel(new GridBagLayout());
+        dateButtonAndFieldPanel.setPreferredSize(new Dimension(200, 20));
+        fieldPanel.add(dateButtonAndFieldPanel);
+
+        //TODO: Make this button actually create a calendar dialog
+        JButton calendarPopButton = new JButton("...");
+        calendarPopButton.setPreferredSize(new Dimension(35, 20));
+        dateField.setPreferredSize(new Dimension(165, 20));
+        dateButtonAndFieldPanel.add(calendarPopButton);
+        dateButtonAndFieldPanel.add(dateField);
 
         fieldPanel.add(new JLabel(Account.defaultDataHeaders[4].getFieldName() + " :"));
         balanceField = new JTextField();
@@ -189,8 +199,6 @@ public class AccountAddDialog {
 
                 incomingAccount = incomingChecking;
             }
-
-            //TODO: Incorporate this validation into the dialog box
             try {
                 Date entered = Account.DATE_FORMAT.parse(date);
                 //makes a GC with the user date
