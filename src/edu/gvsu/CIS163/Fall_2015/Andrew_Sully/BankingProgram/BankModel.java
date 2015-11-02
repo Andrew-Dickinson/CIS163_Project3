@@ -508,7 +508,7 @@ public class BankModel extends AbstractTableModel implements Serializable {
         }
 
         //Tell the GUI we updated
-        fireTableDataChanged();
+        fireTableStructureChanged();
     }
 
     /*******************************************************************
@@ -614,7 +614,7 @@ public class BankModel extends AbstractTableModel implements Serializable {
         }
 
         //Tell the GUI we updated
-        fireTableDataChanged();
+        fireTableStructureChanged();
     }
 
     /*******************************************************************
@@ -774,7 +774,7 @@ public class BankModel extends AbstractTableModel implements Serializable {
             }
 
             //Tell the GUI we updated
-            fireTableDataChanged();
+            fireTableStructureChanged();
         } catch (ParserConfigurationException | SAXException pce) {
             throw new IOException();
         }

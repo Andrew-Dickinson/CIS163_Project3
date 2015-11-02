@@ -211,6 +211,7 @@ public class BankPanel extends JPanel {
                     BankModel bm = bfd.openDialog();
                     if (bm != null){
                         table.setModel(bm);
+                        model = bm;
                     }
                 } catch (IOException e){
                     //There was a problem with loading the file
