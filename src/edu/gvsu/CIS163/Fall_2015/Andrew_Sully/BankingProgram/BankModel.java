@@ -166,6 +166,16 @@ public class BankModel extends AbstractTableModel implements Serializable{
         //The column headers could have changed
         fireTableStructureChanged();
     }
+    
+    /*******************************************************************
+     * Removes all accounts from this model
+     ******************************************************************/
+    public void removeAllAccounts(){
+        accounts.removeAll(accounts);
+
+        //The column headers could have changed
+        fireTableStructureChanged();
+    }
 
     /*******************************************************************
      * Removes an account from this model

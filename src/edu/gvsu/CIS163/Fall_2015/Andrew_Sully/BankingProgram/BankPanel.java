@@ -14,12 +14,10 @@ import java.util.Comparator;
  * Displays the GUI for interacting with the banking program
  **********************************************************************/
 
-//TODO: a clear all button??(Sully)
-//TODO: Javadoc this class thoroughly
+//TODO: Finish Javadocing this class.(sully)
 
 public class BankPanel extends JPanel {
 
-	
 	/** JMenu that gives you options on how to manipulate the file.*/
 	private JMenu file;
 	
@@ -69,6 +67,9 @@ public class BankPanel extends JPanel {
     /** Remove an account from the JTable. */
     private JButton removeAccountButton;
     
+    /** Remove all accounts from the JTable. */
+    private JButton removeAllAccountButton;
+    
     /** Allows the user to edit the selected account. */
     private JButton editAccountButton;
     
@@ -105,6 +106,7 @@ public class BankPanel extends JPanel {
 		buttonPanel = new JPanel();
 		addAccountButton = new JButton("New Account");
 		removeAccountButton = new JButton("Delete Account");
+		removeAllAccountButton = new JButton("Delete All Accounts");
 		cloneAccountButton = new JButton("Clone Account");
 		editAccountButton = new JButton("Edit Account");
 		primaryDisplayArea = new JLayeredPane();
@@ -133,6 +135,7 @@ public class BankPanel extends JPanel {
 		addAccountMenuButton.addActionListener(butListener);
 		addAccountButton.addActionListener(butListener);
         removeAccountButton.addActionListener(butListener);
+        removeAllAccountButton.addActionListener(butListener);
         editAccountButton.addActionListener(butListener);
         cloneAccountButton.addActionListener(butListener);
         
@@ -152,6 +155,7 @@ public class BankPanel extends JPanel {
 		/** Add Buttons to buttonPanel. */
         buttonPanel.add(addAccountButton);
         buttonPanel.add(removeAccountButton);
+        buttonPanel.add(removeAllAccountButton);
         buttonPanel.add(editAccountButton);
         buttonPanel.add(cloneAccountButton);
         
@@ -186,6 +190,7 @@ public class BankPanel extends JPanel {
      * Displays a warning dialog to the user when they try to use a
      * button that requires a selection and have nothing selected
      ******************************************************************/
+    
     private void warnNoAccountSelected(){
         JOptionPane.showMessageDialog(getParent(),
                 "You didn't select an account to preform this action",
@@ -378,6 +383,9 @@ public class BankPanel extends JPanel {
             /** Clones the selected account. */
             if (cloneAccountButton == event.getSource())
                 cloneAccount();
+            
+            if (removeAllAccountButton == event.getSource())
+            	model.removeAllAccounts();
 		}
 	}
 	
