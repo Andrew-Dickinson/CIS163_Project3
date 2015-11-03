@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  * Contains basic tests for this package
  **********************************************************************/
 public class Tests {
-
+    //Test that two overlapping account numbers throws an error
     @Test(expected=java.lang.IllegalArgumentException.class)
     public void testUniqueID(){
         BankModel bm = new BankModel();
@@ -18,6 +18,7 @@ public class Tests {
         bm.addAccount(new CheckingAccount("lasdjf"));
     }
 
+    //Test that even in an update, account numbers stay unique
     @Test(expected=java.lang.IllegalArgumentException.class)
     public void testUniqueIDWithUpdate(){
         BankModel bm = new BankModel();
@@ -31,12 +32,14 @@ public class Tests {
         bm.updateAccount(secondAccount, thirdAccount);
     }
 
+    //Test that added an unsupported class throws an error
     @Test(expected=IllegalArgumentException.class)
     public void testUnsupportedClass(){
         BankModel bm = new BankModel(new Class[]{CheckingAccount.class});
         bm.addAccount(new SavingsAccount());
     }
 
+    //Test the getRows() function
     @Test
     public void testGetRows() {
         BankModel bm = new BankModel();
@@ -46,6 +49,7 @@ public class Tests {
         assertTrue(bm.getRowCount() == 3);
     }
 
+    //Test getting an account at a specific index
     @Test
     public void testGetAccount() {
         BankModel bm = new BankModel();
@@ -58,7 +62,7 @@ public class Tests {
         assertEquals(a, bm.getAccount(3));
     }
 
-
+    //Test the getValueAt() function for the model
     @Test
     public void testGetElementAt() {
         BankModel bm = new BankModel();
@@ -71,6 +75,7 @@ public class Tests {
         assertEquals("Andrew", bm.getValueAt(2, 2));
     }
 
+    //Test the removal of an account from the model
     @Test
     public void testRemoveAccount() {
         BankModel bm = new BankModel();
@@ -86,6 +91,7 @@ public class Tests {
         assertEquals("Andrew", bm.getValueAt(3, 2));
     }
 
+    //Test the updating of an account in the model
     @Test
     public void testUpdateAccount() {
         BankModel bm = new BankModel();
@@ -100,6 +106,7 @@ public class Tests {
         assertEquals("asldjf", bm.getValueAt(2, 1));
     }
 
+    //Test sorting based on account number
     @Test
     public void testSortByAccountNumber() {
         BankModel bm = new BankModel();
@@ -117,6 +124,7 @@ public class Tests {
         assertTrue(firstElem.getNumber().equals("d"));
     }
 
+    //Test sorting based on owner name
     @Test
     public void testSortByAccountName() {
         BankModel bm = new BankModel();
@@ -134,6 +142,7 @@ public class Tests {
         assertTrue(firstElem.getOwnerName().equals("d"));
     }
 
+    //Test sorting based on the date opened
     @Test
     public void testSortByDateOpened() {
         BankModel bm = new BankModel();
@@ -151,6 +160,7 @@ public class Tests {
         assertTrue(firstElem.getNumber().equals("z"));
     }
 
+    //Test the header resolving functionality of the BankModel
     @Test
     public void testHeaderResolution(){
         BankModel bm = new BankModel();
@@ -168,6 +178,7 @@ public class Tests {
         assertEquals(8, headers.length);
     }
 
+    //Test the recursive header resolving method
     @Test
     public void testResolveRecursive(){
         HeaderName[][] h1 = {
@@ -197,6 +208,7 @@ public class Tests {
         }
     }
 
+    //Test the equals() method of BankModel
     @Test
     public void testBankModelEquals(){
         BankModel bm = new BankModel();
@@ -223,6 +235,7 @@ public class Tests {
         assertNotEquals(bm, bm2);
     }
 
+    //Test saving and loading to a binary file
     @Test
     public void testSaveToBinaryFile() throws IOException{
         BankModel bm = new BankModel();
@@ -239,6 +252,7 @@ public class Tests {
         assertEquals(bm, newBM);
     }
 
+    //Test saving and loading to a text file
     @Test
     public void testSaveToTextFile() throws IOException{
         BankModel bm = new BankModel();
@@ -254,6 +268,7 @@ public class Tests {
         assertEquals(bm, newBM);
     }
 
+    //Test saving and loading to an XML file
     @Test
     public void testSaveToXMLFile() throws IOException {
         BankModel bm = new BankModel();
@@ -270,6 +285,7 @@ public class Tests {
         assertEquals(bm, newBM);
     }
 
+    //Test saving and loading a blank model to a text file
     @Test
     public void testEmptySaveToTextFile() throws IOException{
         BankModel bm = new BankModel();
@@ -281,6 +297,7 @@ public class Tests {
         assertEquals(bm, newBM);
     }
 
+    //Test saving and loading a blank model to an XML file
     @Test
     public void testEmptySaveToXMLFile() throws IOException {
         BankModel bm = new BankModel();
