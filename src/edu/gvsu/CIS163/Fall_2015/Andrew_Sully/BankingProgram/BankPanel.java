@@ -13,7 +13,7 @@ import java.util.Comparator;
  * Displays the GUI for interacting with the banking program
  **********************************************************************/
 
-//TODO: Java style guide all over. But mostly here (Sully)
+//TODO: Java style guide all over. But mostly here (Andrew)
 //TODO: Right clicking / double clicking an element pulls up the edit menu(Sully)
 //TODO: a clear all button??(Sully)
     
