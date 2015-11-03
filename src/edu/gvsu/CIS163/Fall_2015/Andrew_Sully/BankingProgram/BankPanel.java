@@ -229,7 +229,7 @@ public class BankPanel extends JPanel {
     }
     
     /*******************************************************************
-     * TODO:
+     * TODO: (sully)
      ******************************************************************/
     private void checkIfNoAccountTextIsNeeded(){
         nothingTextLabel.setVisible(model.getRowCount() == 0);
@@ -384,8 +384,10 @@ public class BankPanel extends JPanel {
             if (cloneAccountButton == event.getSource())
                 cloneAccount();
             
-            if (removeAllAccountButton == event.getSource())
+            if (removeAllAccountButton == event.getSource()){
             	model.removeAllAccounts();
+            	checkIfNoAccountTextIsNeeded();
+            }
 		}
 	}
 	
