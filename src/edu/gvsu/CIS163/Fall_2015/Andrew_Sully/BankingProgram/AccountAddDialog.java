@@ -14,25 +14,33 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-/**
- * Created by Andrew on 10/27/15.
- */
+/***********************************************************************
+ * A dialog that allows the user to enter information for the creation
+ * and editing of CheckingAccounts and SavingsAccounts. Can be displayed
+ * with pre-populated data or with blank fields. Includes live error
+ * checking so that when something invalid is typed, the field turns red
+ * and the "Ok" button is disabled until the error is corrected
+ **********************************************************************/
 public class AccountAddDialog {
     /**
      * The parent JPanel for this dialog
      */
     Component parent;
 
+    /**
+     * The Ok and Cancel buttons that will respectively,
+     * advance or cancel the data entry process
+     */
     JButton dialogOkButton;
     JButton dialogCancelButton;
 
     /**
-     * The primary panel in the dialog box displayed
+     * The primary panel that will be displayed in the dialog box
      */
     JPanel primaryDialogPanel;
 
     /**
-     * The fields in this dialog
+     * The fields in this dialog box
      */
     JTextField accountNumberField;
     JTextField ownerNameField;
@@ -42,10 +50,20 @@ public class AccountAddDialog {
     JTextField interestRateField;
     JTextField monthlyFeeField;
 
+    /**
+     * The radio buttons to select a type of account
+     */
     JRadioButton savingsButton;
     JRadioButton checkingButton;
 
+    /*******************************************************************
+     * Instantiates (but does not display) this dialog with a
+     * parent component
+     * @param parent The component that this dialog is the child of
+     ******************************************************************/
     public AccountAddDialog(Component parent){
+        //TODO: Break into helper methods
+        //TODO: Internal comments
         this.parent = parent;
 
         primaryDialogPanel = new JPanel();
@@ -53,13 +71,18 @@ public class AccountAddDialog {
 
         RadioButtonListener listener = new RadioButtonListener();
         FieldUpdateListener fieldListener = new FieldUpdateListener();
-        DialogButtonsListener dialogListener = new DialogButtonsListener();
+        DialogButtonsListener dialogListener =
+                                            new DialogButtonsListener();
 
         JPanel radioPanel = new JPanel(new FlowLayout());
         ButtonGroup typeButtonGroup = new ButtonGroup();
-        savingsButton = new JRadioButton(SavingsAccount.classIdentifier, true);
+        savingsButton = new JRadioButton(
+                SavingsAccount.classIdentifier, true
+        );
         savingsButton.addActionListener(listener);
-        checkingButton = new JRadioButton(CheckingAccount.classIdentifier);
+        checkingButton = new JRadioButton(
+                CheckingAccount.classIdentifier
+        );
         checkingButton.addActionListener(listener);
 
         typeButtonGroup.add(savingsButton);
@@ -73,21 +96,31 @@ public class AccountAddDialog {
         JPanel fieldPanel = new JPanel(new GridLayout(7, 2));
         fieldPanel.setPreferredSize(new Dimension(400, 140));
 
-        fieldPanel.add(new JLabel(Account.defaultDataHeaders[1].getFieldName() + " :"));
+        fieldPanel.add(new JLabel(
+                Account.defaultDataHeaders[1].getFieldName() + " :")
+        );
         accountNumberField = new JTextField();
-        accountNumberField.getDocument().addDocumentListener(fieldListener);
+        accountNumberField.getDocument()
+                                    .addDocumentListener(fieldListener);
         fieldPanel.add(accountNumberField);
 
-        fieldPanel.add(new JLabel(Account.defaultDataHeaders[2].getFieldName() + " :"));
+        fieldPanel.add(new JLabel(
+                Account.defaultDataHeaders[2].getFieldName() + " :")
+        );
         ownerNameField = new JTextField();
         ownerNameField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(ownerNameField);
 
-        fieldPanel.add(new JLabel(Account.defaultDataHeaders[3].getFieldName() + "(mm/dd/yyyy):"));
+        fieldPanel.add(new JLabel(
+                Account.defaultDataHeaders[3].getFieldName()
+                + "(mm/dd/yyyy):")
+        );
         dateField = new JTextField();
 
         //Fill it with today's date
-        dateField.setText(Account.DATE_FORMAT.format(new GregorianCalendar().getTime()));
+        dateField.setText(Account.DATE_FORMAT.format(
+                new GregorianCalendar().getTime()
+        ));
         dateField.getDocument().addDocumentListener(fieldListener);
         JPanel dateButtonAndFieldPanel = new JPanel(new GridBagLayout());
         dateButtonAndFieldPanel.setPreferredSize(new Dimension(200, 20));
@@ -110,22 +143,31 @@ public class AccountAddDialog {
         dateButtonAndFieldPanel.add(calendarPopButton);
         dateButtonAndFieldPanel.add(dateField);
 
-        fieldPanel.add(new JLabel(Account.defaultDataHeaders[4].getFieldName() + " :"));
+        fieldPanel.add(new JLabel(
+                Account.defaultDataHeaders[4].getFieldName() + " :")
+        );
         balanceField = new JTextField();
         balanceField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(balanceField);
 
-        fieldPanel.add(new JLabel(SavingsAccount.uniqueHeaders[0].getFieldName() + " :"));
+        fieldPanel.add(new JLabel(
+                SavingsAccount.uniqueHeaders[0].getFieldName() + " :")
+        );
         minimumBalField = new JTextField();
         minimumBalField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(minimumBalField);
 
-        fieldPanel.add(new JLabel(SavingsAccount.uniqueHeaders[1].getFieldName() + " :"));
+        fieldPanel.add(new JLabel(
+                SavingsAccount.uniqueHeaders[1].getFieldName() + " :")
+        );
         interestRateField = new JTextField();
-        interestRateField.getDocument().addDocumentListener(fieldListener);
+        interestRateField.getDocument()
+                                    .addDocumentListener(fieldListener);
         fieldPanel.add(interestRateField);
 
-        fieldPanel.add(new JLabel(CheckingAccount.uniqueHeaders[0].getFieldName() + " :"));
+        fieldPanel.add(new JLabel(
+                CheckingAccount.uniqueHeaders[0].getFieldName() + " :")
+        );
         monthlyFeeField = new JTextField();
         monthlyFeeField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(monthlyFeeField);
@@ -147,7 +189,8 @@ public class AccountAddDialog {
     }
 
     /*******************************************************************
-     * Display a dialog for the purpose of creating an account
+     * Display a dialog for the purpose of creating an account with
+     * blank default fields
      * @return The created account or null if canceled
      ******************************************************************/
     public Account displayDialog() {
@@ -155,13 +198,14 @@ public class AccountAddDialog {
     }
 
     /*******************************************************************
-     * Display a dialog for the purpose of creating or editing an
-     * account
-     * @param account The account to update
+     * Display a dialog for the purpose of editing an account.
+     * Populates the entry fields based on the given account
+     * @param account The account to update or null for new account
      * @return The created account or null if canceled
      ******************************************************************/
     public Account displayDialog(Account account) {
-        //If we specify a pre-created account, fill in the previous details
+        //If we specify a pre-created account then
+        //fill in the previous details
         if (account != null) {
             HashMap<HeaderName, String> preData;
             preData = account.getClassDataAndHeaders();
@@ -182,6 +226,7 @@ public class AccountAddDialog {
 
         //If the user ended up hitting okay
         if (status == JOptionPane.YES_OPTION) {
+            //Set some local strings to keep syntax manageable
             String accountNumber = accountNumberField.getText();
             String ownerName = ownerNameField.getText();
             String date = dateField.getText();
@@ -190,9 +235,12 @@ public class AccountAddDialog {
             String interestRate = interestRateField.getText();
             String monthlyFee = monthlyFeeField.getText();
 
+            //Define a variable for the new account
             Account incomingAccount;
             if (savingsButton.isSelected()) {
                 //Savings account is selected
+
+                //Populate the savings account specific fields
                 Double minBal = Double.parseDouble(minimumBalance);
                 Double intRate = Double.parseDouble(interestRate);
 
@@ -200,21 +248,30 @@ public class AccountAddDialog {
                 incomingSavings.setMinBalance(minBal);
                 incomingSavings.setInterestRate(intRate);
 
+                //Set the incomingAccount variable
                 incomingAccount = incomingSavings;
             } else {
                 //Checking account is selected
+
+                //Populate the checking account specific fields
                 Double monFee = Double.parseDouble(monthlyFee);
 
                 CheckingAccount incomingChecking = new CheckingAccount();
                 incomingChecking.setMonthlyFee(monFee);
 
+                //Set the incomingAccount Variable
                 incomingAccount = incomingChecking;
             }
+
+            //Parse the date entered
+            //Should already be in a valid format because of the
+            //dialog's built in error checking
             try {
                 Date entered = Account.DATE_FORMAT.parse(date);
                 //makes a GC with the user date
                 GregorianCalendar gc = new GregorianCalendar();
                 gc.setTime(entered);
+                //Apply it to the account
                 incomingAccount.setDateOpened(gc);
             } catch (ParseException e) {
                 //This should never happen, this is what we have
@@ -222,23 +279,33 @@ public class AccountAddDialog {
                 throw new IllegalArgumentException();
             }
 
+            //Set the number and OwnerName fields. They already have
+            //been validated by the dialog's error checker
             incomingAccount.setNumber(accountNumber);
             incomingAccount.setOwnerName(ownerName);
 
+            //Set the balance. Again, it was validated by the dialog
             incomingAccount.setBalance(Double.parseDouble(balance));
 
+            //Return the generated account
             return incomingAccount;
         }
 
-        //The dialog box was likely canceled
+        //The dialog box was canceled
         return null;
     }
 
+    /*******************************************************************
+     * Sets the default data in the fields according to preData
+     * @param preData A HashMap generated by the
+     *                Account.getClassDataAndHeaders() method
+     ******************************************************************/
     private void setFieldData(HashMap<HeaderName, String> preData){
-        //Set the radio buttons correctly
+        //Get the correct type from the provided data
         boolean checking = preData.get(Account.defaultDataHeaders[0])
                 .equals(CheckingAccount.classIdentifier);
 
+        //Set the radio buttons according to the computed type
         checkingButton.setSelected(checking);
         savingsButton.setSelected(!checking);
 
@@ -271,10 +338,10 @@ public class AccountAddDialog {
                 preData.get(CheckingAccount.uniqueHeaders[0]));
     }
 
-    /**
-     * Enable and disable text fields based on the current
-     * radio button state
-     */
+    /*******************************************************************
+     * Enable and disable the appropriate text fields based on the
+     * current radio button state
+     ******************************************************************/
     private void updateEnabledFields(){
         if (checkingButton.isSelected()){
             //Checking account selected
@@ -292,29 +359,32 @@ public class AccountAddDialog {
         updateErrorIndication();
     }
 
-    /**
+    /*******************************************************************
      * Indicates an error in the field. Undoes showGood()
      * @param field The field to modify
-     */
+     ******************************************************************/
     private void showError(JTextField field){
         field.setBackground(Color.PINK);
     }
 
-    /**
+    /*******************************************************************
      * Indicates no error in the field. Undoes showError()
      * @param field The field to modify
-     */
+     ******************************************************************/
     private void showGood(JTextField field){
         field.setBackground(Color.WHITE);
     }
 
-    /**
-     * Turns some of the text red and disables the ok button if the
-     * entered data is invalid
-     */
+    /*******************************************************************
+     * Checks the entered data for errors and then calls showError() for
+     * the appropriate fields and disables the ok button if any of the
+     * entered data is invalid.
+     ******************************************************************/
     private void updateErrorIndication(){
+        //Counts the total number of fields with problem
         int problems = 0;
 
+        //Get the data into string form for cleaner syntax
         String accountNumber = accountNumberField.getText();
         String ownerName = ownerNameField.getText();
         String date = dateField.getText();
@@ -323,6 +393,8 @@ public class AccountAddDialog {
         String interestRate = interestRateField.getText();
         String monthlyFee = monthlyFeeField.getText();
 
+        //Validate the entered account number. Checks for: account
+        // number being equal to "" or having a ";" in it
         if (accountNumber.equals("") || accountNumber.contains(";")){
             showError(accountNumberField);
             problems += 1;
@@ -330,6 +402,8 @@ public class AccountAddDialog {
             showGood(accountNumberField);
         }
 
+        //Validate the entered owner name. Checks for: owner name being
+        // equal to "" or having a ";" in it
         if (ownerName.equals("")|| ownerName.contains(";")){
             showError(ownerNameField);
             problems += 1;
@@ -337,6 +411,7 @@ public class AccountAddDialog {
             showGood(ownerNameField);
         }
 
+        //Validates the entered date
         if (!validDate(date)){
             showError(dateField);
             problems += 1;
@@ -359,6 +434,7 @@ public class AccountAddDialog {
             showGood(balanceField);
         }
 
+        //Validate minimum balance, but only if it's enabled
         if (    (
                     !validDouble(minimumBalance) ||
                     Double.parseDouble(minimumBalance) < 0
@@ -370,6 +446,7 @@ public class AccountAddDialog {
             showGood(minimumBalField);
         }
 
+        //Validate interest rate, but only if it's enabled
         if (    (
                 !validDouble(interestRate) ||
                         Double.parseDouble(interestRate) < 0
@@ -380,6 +457,7 @@ public class AccountAddDialog {
             showGood(interestRateField);
         }
 
+        //Validate monthly fee, but only if it's enabled
         if (    (
                 !validDouble(monthlyFee) ||
                         Double.parseDouble(monthlyFee) < 0
@@ -390,7 +468,7 @@ public class AccountAddDialog {
             showGood(monthlyFeeField);
         }
 
-
+        //Check the total problems
         if (problems == 0){
             //No problems. Enable the "Ok" button'
             dialogOkButton.setEnabled(true);
@@ -400,10 +478,10 @@ public class AccountAddDialog {
         }
     }
 
-    /**
+    /*******************************************************************
      * Determine whether a given string is a valid double
      * @return True if the string is valid. False if it's invalid
-     */
+     ******************************************************************/
     private boolean validDouble(String doubleVal){
         try {
             Double.parseDouble(doubleVal);
@@ -414,10 +492,11 @@ public class AccountAddDialog {
         return true;
     }
 
-    /**
-     * Determine whether a given string is a valid date
+    /*******************************************************************
+     * Determine whether a given string is a valid date according to the
+     * format: Account.DATE_FORMAT
      * @return True if the string is valid. False if it's invalid
-     */
+     ******************************************************************/
     private boolean validDate(String dateVal){
         try {
             Account.DATE_FORMAT.parse(dateVal);
@@ -428,12 +507,13 @@ public class AccountAddDialog {
         return true;
     }
 
-    /**
-     * Gets the optionPane instance from a component directly inside it
+    /*******************************************************************
+     * Gets the optionPane instance from a component directly inside it.
+     * A static method used in the listener below
      * @param parent The component
      * @return The jOptionPane instance
-     */
-    private JOptionPane getOptionPane(JComponent parent) {
+     ******************************************************************/
+    private static JOptionPane getOptionPane(JComponent parent) {
         JOptionPane pane;
         if (!(parent instanceof JOptionPane)) {
             pane = getOptionPane((JComponent)parent.getParent());
@@ -443,6 +523,10 @@ public class AccountAddDialog {
         return pane;
     }
 
+    /*******************************************************************
+     * The listener for the AccountType radio buttons
+     * Just calls the update method to hide or show appropriate fields
+     ******************************************************************/
     private class RadioButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -450,10 +534,10 @@ public class AccountAddDialog {
         }
     }
 
-    /**
+    /*******************************************************************
      * DocumentListener to call updateErrorIndication() any
-     * time anything happens
-     */
+     * time anything happens to the text fields
+     ******************************************************************/
     private class FieldUpdateListener implements DocumentListener {
         @Override
         public void insertUpdate(DocumentEvent e) {
@@ -471,6 +555,10 @@ public class AccountAddDialog {
         }
     }
 
+    /*******************************************************************
+     * Process the OK and Cancel button clicks by passing the clicks on
+     * to the appropriate methods in the enclosing JOptionPane
+     ******************************************************************/
     private class DialogButtonsListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -479,7 +567,6 @@ public class AccountAddDialog {
 
             if (e.getSource() == dialogCancelButton){
                 pane.setValue(dialogCancelButton);
-                //((JDialog) pane.getParent()).dispose();
             }
 
             if (e.getSource() == dialogOkButton){
