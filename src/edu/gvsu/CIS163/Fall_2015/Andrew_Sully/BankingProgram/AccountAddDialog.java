@@ -78,6 +78,9 @@ public class AccountAddDialog {
 
         //Set up the ok and cancel buttons
         setUpOkCancelButtons();
+
+        //Make sure the correct fields are enabled
+        updateEnabledFields();
     }
 
     /*******************************************************************
@@ -155,9 +158,6 @@ public class AccountAddDialog {
 
         //Add the fieldPanel to the primary panel
         primaryDialogPanel.add(fieldPanel, BorderLayout.CENTER);
-
-        //Make sure the correct fields are enabled
-        updateEnabledFields();
     }
 
     /*******************************************************************
