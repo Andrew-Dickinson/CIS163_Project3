@@ -288,9 +288,6 @@ public class BankPanel extends JPanel {
                                     "Duplicate Detected",
                                     JOptionPane.ERROR_MESSAGE);
                         }
-                    } else {
-                        //There was an error or the user canceled. We can't tell
-                        //TODO: ^ Fix
                     }
                 } else {
                     //No account was selected. Let's warn the user
