@@ -107,6 +107,7 @@ public class BankPanel extends JPanel {
 		addAccountButton = new JButton("New Account");
 		removeAccountButton = new JButton("Delete Account");
 		removeAllAccountButton = new JButton("Delete All Accounts");
+        removeAllAccountButton.setForeground(Color.RED);
 		cloneAccountButton = new JButton("Clone Account");
 		editAccountButton = new JButton("Edit Account");
 		primaryDisplayArea = new JLayeredPane();
@@ -115,7 +116,7 @@ public class BankPanel extends JPanel {
 		model = new BankModel();
 		table = new JTable(model);
         table.setPreferredScrollableViewportSize
-        	(new Dimension(900, 400));
+                (new Dimension(900, 400));
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
         /** Adds the table to a scrolling pane. */
@@ -155,9 +156,10 @@ public class BankPanel extends JPanel {
 		/** Add Buttons to buttonPanel. */
         buttonPanel.add(addAccountButton);
         buttonPanel.add(removeAccountButton);
-        buttonPanel.add(removeAllAccountButton);
         buttonPanel.add(editAccountButton);
         buttonPanel.add(cloneAccountButton);
+
+
         
         /** Formats primaryDisplayArea. */
         primaryDisplayArea.setPreferredSize(new Dimension(900, 400));
@@ -166,10 +168,17 @@ public class BankPanel extends JPanel {
         nothingTextLabel = new JLabel("No accounts yet...");
         primaryDisplayArea.add(nothingTextLabel, 1, 0);
         nothingTextLabel.setBounds(375, 190, 300, 20);
-             	
-		this.add(primaryDisplayArea);
-        this.add(buttonPanel);
+
+        JPanel overallPanel = new JPanel();
+        overallPanel.setLayout(new BorderLayout());
+        overallPanel.add(primaryDisplayArea, BorderLayout.NORTH);
+        overallPanel.add(buttonPanel, BorderLayout.CENTER);
+        JPanel housingFlowPanel = new JPanel();
+        housingFlowPanel.add(removeAllAccountButton);
+        overallPanel.add(housingFlowPanel, BorderLayout.SOUTH);
 		frame.setJMenuBar(menuBar);
+
+        this.add(overallPanel);
 	}
 
     /*******************************************************************
@@ -221,8 +230,6 @@ public class BankPanel extends JPanel {
                         "Duplicate Detected",
                         JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            System.out.println("Err");
         }
 
         checkIfNoAccountTextIsNeeded();
