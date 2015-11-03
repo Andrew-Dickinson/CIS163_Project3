@@ -14,6 +14,6 @@ public class Driver {
         frame.add(panel);
         frame.setSize(950,550);
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 }
