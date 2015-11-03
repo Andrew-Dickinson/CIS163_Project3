@@ -7,10 +7,9 @@ import javax.swing.*;
  **********************************************************************/
 public class Driver {
     public static void main(String[] args){
+    	
         JFrame frame = new JFrame("Bank Application");
-
         JPanel panel = new BankPanel(frame);
-
         frame.add(panel);
         frame.setSize(950,550);
         frame.setVisible(true);
