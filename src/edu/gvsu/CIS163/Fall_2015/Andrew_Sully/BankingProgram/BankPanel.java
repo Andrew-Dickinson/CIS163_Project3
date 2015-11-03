@@ -391,10 +391,27 @@ public class BankPanel extends JPanel {
             if (cloneAccountButton == event.getSource())
                 cloneAccount();
             
-            if (removeAllAccountButton == event.getSource())
-            	model.removeAllAccounts();
+            if (removeAllAccountButton == event.getSource()) {
+                if (model.getRowCount() > 0) {
+                    int n = JOptionPane.showConfirmDialog(getParent(),
+                            "Are you sure you would like to delete " +
+                                    "all accounts?",
+                            "Confirm Erase All",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
 
-                checkIfNoAccountTextIsNeeded();
+                    if (n == JOptionPane.YES_OPTION) {
+                        model.removeAllAccounts();
+
+                        checkIfNoAccountTextIsNeeded();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(getParent(),
+                            "There are no accounts to delete",
+                            "No Accounts Here",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+            }
 		}
 	}
 	
