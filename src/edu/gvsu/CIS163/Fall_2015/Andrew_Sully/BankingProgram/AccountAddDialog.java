@@ -62,18 +62,32 @@ public class AccountAddDialog {
      * @param parent The component that this dialog is the child of
      ******************************************************************/
     public AccountAddDialog(Component parent){
-        //TODO: Break into helper methods
-        //TODO: Internal comments
+        //Set the parent property to be queried later and provided to
+        //the launched dialog
         this.parent = parent;
 
+        //Instantiate the primary panel for this dialog
         primaryDialogPanel = new JPanel();
         primaryDialogPanel.setLayout(new BorderLayout());
 
-        RadioButtonListener listener = new RadioButtonListener();
-        FieldUpdateListener fieldListener = new FieldUpdateListener();
-        DialogButtonsListener dialogListener =
-                                            new DialogButtonsListener();
+        //Instantiate and initialize the radio buttons
+        setupRadioButtons();
 
+        //Instantiate and initialize the fields
+        setUpFields();
+
+        //Set up the ok and cancel buttons
+        setUpOkCancelButtons();
+    }
+
+    /*******************************************************************
+     * Sets up the radio buttons and adds them to the primary panel
+     ******************************************************************/
+    private void setupRadioButtons(){
+        //Create a new listener
+        RadioButtonListener listener = new RadioButtonListener();
+
+        //Create and group the buttons appropriately
         JPanel radioPanel = new JPanel(new FlowLayout());
         ButtonGroup typeButtonGroup = new ButtonGroup();
         savingsButton = new JRadioButton(
@@ -85,23 +99,80 @@ public class AccountAddDialog {
         );
         checkingButton.addActionListener(listener);
 
+        //Add the buttons to the group
         typeButtonGroup.add(savingsButton);
         typeButtonGroup.add(checkingButton);
 
+        //Add the buttons to the radioPanel
         radioPanel.add(savingsButton);
         radioPanel.add(checkingButton);
 
+        //Add the radioPanel to the primary panel
         primaryDialogPanel.add(radioPanel, BorderLayout.NORTH);
+    }
 
+    /*******************************************************************
+     * Create Ok an Cancel buttons and add them to the primary panel
+     ******************************************************************/
+    private void setUpOkCancelButtons(){
+        //Create the button listener
+        DialogButtonsListener dialogListener =
+                new DialogButtonsListener();
+
+        //Create a housing panel
+        JPanel okCancelPanel = new JPanel();
+
+        //Create the cancel button
+        dialogCancelButton = new JButton("Cancel");
+        dialogCancelButton.addActionListener(dialogListener);
+        okCancelPanel.add(dialogCancelButton);
+
+        //Create the okay button
+        dialogOkButton = new JButton("Ok");
+        dialogOkButton.addActionListener(dialogListener);
+        okCancelPanel.add(dialogOkButton);
+
+        //Add the housing panel to the primary panel
+        primaryDialogPanel.add(okCancelPanel, BorderLayout.SOUTH);
+    }
+
+    /*******************************************************************
+     * Set up the fields and add them to the primary panel
+     ******************************************************************/
+    private void setUpFields(){
+        //Create an update listener for these fields
+        FieldUpdateListener fieldListener = new FieldUpdateListener();
+
+        //Create the panel that will house the fields
         JPanel fieldPanel = new JPanel(new GridLayout(7, 2));
         fieldPanel.setPreferredSize(new Dimension(400, 140));
 
+        //Populate the base fields (from the Account class)
+        setUpBaseFields(fieldPanel, fieldListener);
+
+        //Make the special fields (Saving and Checking account fields)
+        setUpSpecialFields(fieldPanel, fieldListener);
+
+        //Add the fieldPanel to the primary panel
+        primaryDialogPanel.add(fieldPanel, BorderLayout.CENTER);
+
+        //Make sure the correct fields are enabled
+        updateEnabledFields();
+    }
+
+    /*******************************************************************
+     * Populate the base fields (from the Account class)
+     * @param fieldPanel The panel to add the fields to
+     * @param fieldListener The listener to add to the fields
+     ******************************************************************/
+    private void setUpBaseFields(JPanel fieldPanel,
+                                 FieldUpdateListener fieldListener){
         fieldPanel.add(new JLabel(
                 Account.defaultDataHeaders[1].getFieldName() + " :")
         );
         accountNumberField = new JTextField();
         accountNumberField.getDocument()
-                                    .addDocumentListener(fieldListener);
+                .addDocumentListener(fieldListener);
         fieldPanel.add(accountNumberField);
 
         fieldPanel.add(new JLabel(
@@ -111,37 +182,8 @@ public class AccountAddDialog {
         ownerNameField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(ownerNameField);
 
-        fieldPanel.add(new JLabel(
-                Account.defaultDataHeaders[3].getFieldName()
-                + "(mm/dd/yyyy):")
-        );
-        dateField = new JTextField();
-
-        //Fill it with today's date
-        dateField.setText(Account.DATE_FORMAT.format(
-                new GregorianCalendar().getTime()
-        ));
-        dateField.getDocument().addDocumentListener(fieldListener);
-        JPanel dateButtonAndFieldPanel = new JPanel(new GridBagLayout());
-        dateButtonAndFieldPanel.setPreferredSize(new Dimension(200, 20));
-        fieldPanel.add(dateButtonAndFieldPanel);
-
-        JCalendarButton calendarPopButton = new JCalendarButton();
-        calendarPopButton.addPropertyChangeListener(
-                (PropertyChangeEvent evt) -> {
-                    if (evt.getNewValue() instanceof Date)
-                        dateField.setText(
-                                Account.DATE_FORMAT.format(
-                                        (Date) evt.getNewValue()
-                                )
-                        );
-                }
-        );
-
-        calendarPopButton.setPreferredSize(new Dimension(35, 20));
-        dateField.setPreferredSize(new Dimension(165, 20));
-        dateButtonAndFieldPanel.add(calendarPopButton);
-        dateButtonAndFieldPanel.add(dateField);
+        //Call the helper method for the date field
+        setUpDateField(fieldPanel, fieldListener);
 
         fieldPanel.add(new JLabel(
                 Account.defaultDataHeaders[4].getFieldName() + " :")
@@ -153,6 +195,67 @@ public class AccountAddDialog {
         fieldPanel.add(new JLabel(
                 SavingsAccount.uniqueHeaders[0].getFieldName() + " :")
         );
+    }
+
+    /*******************************************************************
+     * Set up the date field and add it to the specified panel
+     * @param fieldPanel The panel to add the field to
+     * @param fieldListener The listener to apply to the field
+     ******************************************************************/
+    private void setUpDateField(JPanel fieldPanel,
+                                FieldUpdateListener fieldListener){
+        fieldPanel.add(new JLabel(
+                        Account.defaultDataHeaders[3].getFieldName()
+                                + "(mm/dd/yyyy):")
+        );
+        dateField = new JTextField();
+
+        //Fill it with today's date
+        dateField.setText(Account.DATE_FORMAT.format(
+                new GregorianCalendar().getTime()
+        ));
+
+        //Add the appropriate listener
+        dateField.getDocument().addDocumentListener(fieldListener);
+
+        //Set the size
+        dateField.setPreferredSize(new Dimension(165, 20));
+
+        //Create the panel to house the the Calenar button and field
+        JPanel dateButtonAndFieldPanel = new JPanel(new GridBagLayout());
+        dateButtonAndFieldPanel.setPreferredSize(new Dimension(200, 20));
+
+        //Create the calendar pop-up button
+        JCalendarButton calendarPopButton = new JCalendarButton();
+        calendarPopButton.setPreferredSize(new Dimension(35, 20));
+
+        //When a date is selected, set the text of dateField accordingly
+        calendarPopButton.addPropertyChangeListener(
+                (PropertyChangeEvent evt) -> {
+                    if (evt.getNewValue() instanceof Date)
+                        dateField.setText(
+                                Account.DATE_FORMAT.format(
+                                        (Date) evt.getNewValue()
+                                )
+                        );
+                }
+        );
+
+        //Add the items to the housing panel
+        dateButtonAndFieldPanel.add(calendarPopButton);
+        dateButtonAndFieldPanel.add(dateField);
+
+        //Add the housing panel to the field panel
+        fieldPanel.add(dateButtonAndFieldPanel);
+    }
+
+    /*******************************************************************
+     * Populate the special fields (Savings and Checking account fields)
+     * @param fieldPanel The panel to add the fields to
+     * @param fieldListener The listener to add to the fields
+     ******************************************************************/
+    private void setUpSpecialFields(JPanel fieldPanel,
+                                    FieldUpdateListener fieldListener){
         minimumBalField = new JTextField();
         minimumBalField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(minimumBalField);
@@ -162,7 +265,7 @@ public class AccountAddDialog {
         );
         interestRateField = new JTextField();
         interestRateField.getDocument()
-                                    .addDocumentListener(fieldListener);
+                .addDocumentListener(fieldListener);
         fieldPanel.add(interestRateField);
 
         fieldPanel.add(new JLabel(
@@ -171,21 +274,6 @@ public class AccountAddDialog {
         monthlyFeeField = new JTextField();
         monthlyFeeField.getDocument().addDocumentListener(fieldListener);
         fieldPanel.add(monthlyFeeField);
-
-        primaryDialogPanel.add(fieldPanel, BorderLayout.CENTER);
-
-        JPanel okCancelPanel = new JPanel();
-        dialogCancelButton = new JButton("Cancel");
-        dialogCancelButton.addActionListener(dialogListener);
-        okCancelPanel.add(dialogCancelButton);
-        dialogOkButton = new JButton("Ok");
-        dialogOkButton.addActionListener(dialogListener);
-        okCancelPanel.add(dialogOkButton);
-
-        primaryDialogPanel.add(okCancelPanel, BorderLayout.SOUTH);
-
-        //Make sure the correct fields are enabled
-        updateEnabledFields();
     }
 
     /*******************************************************************
