@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.Comparator;
@@ -13,11 +14,11 @@ import java.util.Comparator;
  * Displays the GUI for interacting with the banking program
  **********************************************************************/
 
-//TODO: Right clicking / double clicking an element pulls up the edit menu(Sully)
 //TODO: a clear all button??(Sully)
-
 //TODO: Javadoc this class thoroughly
+
 public class BankPanel extends JPanel {
+
 	
 	/** JMenu that gives you options on how to manipulate the file.*/
 	private JMenu file;
@@ -73,7 +74,7 @@ public class BankPanel extends JPanel {
     
     /** Adds an copy of the selected account to the JTable. */
     private JButton cloneAccountButton;
-
+    
 	/** Constructor of main frame */
 	public BankPanel(JFrame frame){
 	    
@@ -104,8 +105,8 @@ public class BankPanel extends JPanel {
 		scrollPane = new JScrollPane(table);
         table.setDragEnabled(false);
         table.getTableHeader().setReorderingAllowed(false);
-        
     	table.getTableHeader().addMouseListener(sortListener);
+    	table.addMouseListener(new PopClickListener());
 
 		//adds actionListener butListener to objects
 		quit.addActionListener(butListener);
@@ -155,16 +156,16 @@ public class BankPanel extends JPanel {
         nothingTextLabel = new JLabel("No accounts yet...");
         primaryDisplayArea.add(nothingTextLabel, 1, 0);
         nothingTextLabel.setBounds(375, 190, 300, 20);
-
+             	
 		this.add(primaryDisplayArea);
         this.add(buttonPanel);
 		frame.setJMenuBar(menuBar);
 	}
 
-    /**
+    /*******************************************************************
      * Get the selected account from the JTable
      * @return The currently selected account or null
-     */
+     ******************************************************************/
     private Account getSelectedAccount(){
         int row = table.getSelectedRow();
         if (row == -1){
@@ -174,10 +175,10 @@ public class BankPanel extends JPanel {
         }
     }
 
-    /**
+    /*******************************************************************
      * Displays a warning dialog to the user when they try to use a
      * button that requires a selection and have nothing selected
-     */
+     ******************************************************************/
     private void warnNoAccountSelected(){
         JOptionPane.showMessageDialog(getParent(),
                 "You didn't select an account to preform this action",
@@ -185,10 +186,10 @@ public class BankPanel extends JPanel {
                 JOptionPane.WARNING_MESSAGE);
     }
 
-    /**
+    /*******************************************************************
      * Displays the dialog from the AccountAddDialog class and adds the
      * new account to the model as applicable
-     */
+     ******************************************************************/
     private void showAddAccountDialog(){
         AccountAddDialog dialog = new AccountAddDialog(getParent());
 
@@ -216,6 +217,68 @@ public class BankPanel extends JPanel {
 
     private void checkIfNoAccountTextIsNeeded(){
         nothingTextLabel.setVisible(model.getRowCount() == 0);
+    }
+    
+    public void editAccount(){
+    	 Account account = getSelectedAccount();
+         if (account != null) {
+             AccountAddDialog dialog =
+                     new AccountAddDialog(getParent());
+
+             //Null if canceled or invalid data
+             Account editedAccount = dialog.displayDialog(account);
+
+             //Updates account in the bank Model
+             if (editedAccount != null) {
+                 try {
+                     model.updateAccount(account, editedAccount);
+                 } catch (IllegalArgumentException e){
+                     //The account number is a duplicate. Alert the user
+                     JOptionPane.showMessageDialog(getParent(),
+                             "Accounts must have unique account numbers",
+                             "Duplicate Detected",
+                             JOptionPane.ERROR_MESSAGE);
+                 }
+             }
+         } else {
+             //No account was selected. Let's warn the user
+             warnNoAccountSelected();
+         }
+    }
+    
+    public void cloneAccount(){
+    	Account account = getSelectedAccount();
+        if (account != null) {
+            String newNumber = JOptionPane.showInputDialog(
+                    getParent(),
+                    "Please enter a new account number: ",
+                    account.getNumber());
+            if (newNumber != null){
+                if (!model.hasAccountNumber(newNumber)) {
+                    account.setNumber(newNumber);
+                    model.addAccount(account);
+                } else {
+                    JOptionPane.showMessageDialog(getParent(),
+                            "Account number must be unique",
+                            "Error while adding account",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            //No account was selected. Let's warn the user
+            warnNoAccountSelected();
+        }
+    }
+    
+    public void deleteAccount(){
+        if (getSelectedAccount() != null) {
+            model.removeAccount(getSelectedAccount());
+        } else {
+            //No account was selected. Let's warn the user
+            warnNoAccountSelected();
+        }
+
+        checkIfNoAccountTextIsNeeded();
     }
 
 	private class ButtonListener implements ActionListener {
@@ -284,66 +347,16 @@ public class BankPanel extends JPanel {
             }
 
             if (removeAccountButton == event.getSource()){
-                if (getSelectedAccount() != null) {
-                    model.removeAccount(getSelectedAccount());
-                } else {
-                    //No account was selected. Let's warn the user
-                    warnNoAccountSelected();
-                }
-
-                checkIfNoAccountTextIsNeeded();
+            	deleteAccount();
             }
 
             if (editAccountButton == event.getSource()){
-                Account account = getSelectedAccount();
-                if (account != null) {
-                    AccountAddDialog dialog =
-                            new AccountAddDialog(getParent());
-
-                    //Null if canceled or invalid data
-                    Account editedAccount = dialog.displayDialog(account);
-
-                    //Updates account in the bank Model
-                    if (editedAccount != null) {
-                        try {
-                            model.updateAccount(account, editedAccount);
-                        } catch (IllegalArgumentException e){
-                            //The account number is a duplicate. Alert the user
-                            JOptionPane.showMessageDialog(getParent(),
-                                    "Accounts must have unique account numbers",
-                                    "Duplicate Detected",
-                                    JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                } else {
-                    //No account was selected. Let's warn the user
-                    warnNoAccountSelected();
-                }
+               editAccount();
             }
 
             if (cloneAccountButton == event.getSource()){
-                Account account = getSelectedAccount();
-                if (account != null) {
-                    String newNumber = JOptionPane.showInputDialog(
-                            getParent(),
-                            "Please enter a new account number: ",
-                            account.getNumber());
-                    if (newNumber != null){
-                        if (!model.hasAccountNumber(newNumber)) {
-                            account.setNumber(newNumber);
-                            model.addAccount(account);
-                        } else {
-                            JOptionPane.showMessageDialog(getParent(),
-                                    "Account number must be unique",
-                                    "Error while adding account",
-                                    JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                } else {
-                    //No account was selected. Let's warn the user
-                    warnNoAccountSelected();
-                }
-            }
+                cloneAccount();
+            }            
 		}
 	}
 	
@@ -362,13 +375,59 @@ public class BankPanel extends JPanel {
 		}
 	}
 	
-//	public class handleRight extends MouseClickListener {
-//		public void mouseClicked(MouseEvent e)
-//	    {
-//	        if (SwingUtilities.isRightMouseButton(e) || e.isControlDown()){
-//	            System.out.println("Right Worked");
-//	            
-//	        }
-//	    }
-//	}
+	private class PopUp extends JPopupMenu {
+		
+  	  	JMenuItem editAccount;
+  	  	JMenuItem cloneAccount;
+  	  	JMenuItem deleteAccount;
+  	  	
+  	  	ButtonListener butListener = new ButtonListener();
+  	  	public PopUp()
+  	  	{
+  		  	editAccount = new JMenuItem("Edit Account");
+  		  	editAccount.addActionListener(butListener);
+  	      	add(editAccount);
+  	      	
+  	      	cloneAccount = new JMenuItem("Clone Account");
+  	      	cloneAccount.addActionListener(butListener);
+	      	add(cloneAccount);
+	      	
+	      	deleteAccount = new JMenuItem("Delete Account");
+  	      	deleteAccount.addActionListener(butListener);
+	      	add(deleteAccount);
+  	  	}
+  	    
+  		private class ButtonListener implements ActionListener {
+  			public void actionPerformed(ActionEvent event) {
+      			if(editAccount == event.getSource())
+      			{
+      				editAccount();
+      			}
+      			if(cloneAccount == event.getSource())
+      			{
+      				cloneAccount();
+      			}
+      			if(deleteAccount == event.getSource())
+      			{
+      				deleteAccount();
+      			}
+  			}
+  		}
+  	}
+	  
+	  public class PopClickListener extends MouseAdapter {
+  	    public void mousePressed(MouseEvent e){
+  	        if (e.isPopupTrigger()){
+  	  	        PopUp menu = new PopUp();
+  	  	        menu.show(e.getComponent(), e.getX(), e.getY());
+  	  	    }
+  	    }
+
+  	    public void mouseReleased(MouseEvent e){
+  	        if (e.isPopupTrigger()){
+  	  	        PopUp menu = new PopUp();
+  	  	        menu.show(e.getComponent(), e.getX(), e.getY());
+  	  	    }
+  	    }
+  	}
 }
