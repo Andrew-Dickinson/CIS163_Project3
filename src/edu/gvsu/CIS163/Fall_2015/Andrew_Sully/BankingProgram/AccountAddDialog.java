@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -572,6 +573,12 @@ public class AccountAddDialog {
      ******************************************************************/
     private boolean validDouble(String doubleVal){
         try {
+            //To disallow "1.0f" or "2.0d" in the box
+            if (doubleVal.toLowerCase().contains("d")
+                    || doubleVal.toLowerCase().contains("f")){
+                return false;
+            }
+
             Double.parseDouble(doubleVal);
         } catch (NumberFormatException e){
             return false;
