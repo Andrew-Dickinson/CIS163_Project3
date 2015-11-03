@@ -386,6 +386,8 @@ public class BankPanel extends JPanel {
             
             if (removeAllAccountButton == event.getSource())
             	model.removeAllAccounts();
+
+                checkIfNoAccountTextIsNeeded();
 		}
 	}
 	
