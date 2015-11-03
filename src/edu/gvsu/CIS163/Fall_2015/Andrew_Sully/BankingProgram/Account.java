@@ -18,6 +18,7 @@ public abstract class Account implements Serializable, Cloneable {
      * A unique identifier for this class
      */
 	private static final long serialVersionUID = 959565410L;
+
     /**
      * The headers used for the base Account properties
      */
