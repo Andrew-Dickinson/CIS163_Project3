@@ -1,6 +1,6 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
-//Imports
+/**Imports*/
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,44 +18,71 @@ import java.util.Comparator;
 
 //TODO: Javadoc this class thoroughly
 public class BankPanel extends JPanel {
-    // Instance attributes
+	
+	/** JMenu that gives you options on how to manipulate the file.*/
 	private JMenu file;
+	
+	/** JMenu that gives you options on how to sort the JTable. */
 	private JMenu sort;
+	
+	/** JMenuItem that allows the user to exit the application. */
 	private JMenuItem quit;
-	//save to a Binary File
+	
+	/** Menu Item that allows the user to save to a file*/
 	private JMenuItem save;
-	//Load from a Binary FIle
+	
+	/** Menu Item that allows the user tp load from a file*/
 	private JMenuItem load;
-	//sort by Account number
+	
+	/** Sort the JTable by Account number. */
 	private JMenuItem byAcctNum;
-	//sort by account owner
+	
+	/** Sort the JTable by account owner. */
 	private JMenuItem byAcctOwn;
-	//sort by date opened
+	
+	/** Sort the JTable by date opened. */
 	private JMenuItem byDateOpen;
-	//add a savings account
+	
+	/** Add an account to the JTable. */
 	private JMenuItem addAccountMenuButton;
-	//an array of the column names in the JTable
+	
+	/** JTable that outputs the accounts and all of their information.*/
 	private JTable table;
-	//used to manipulate data in a JTable
+	
+	/** Used to manipulate data in a JTable. */
 	private BankModel model;
-	//menu bar
+	
+	/** Menu bar used to help the user find actions. */
 	private JMenuBar menuBar;
-	//this allows us to have any size window and we can scroll through data
+	
+	/** Allows the JTable to have any size window can scroll through 
+	 * data. */
 	private JScrollPane scrollPane;
 
+	/** Label that informs the user that no accounts have been added. */
     private JLabel nothingTextLabel;
 
-    //The buttons along the bottom of the panel
+    /** Add an account to the JTable. */
     private JButton addAccountButton;
+    
+    /** Remove an account from the JTable. */
     private JButton removeAccountButton;
+    
+    /** Allows the user to edit the selected account. */
     private JButton editAccountButton;
+    
+    /** Adds an copy of the selected account to the JTable. */
     private JButton cloneAccountButton;
 
-	// Constructor of main frame
+	/** Constructor of main frame */
 	public BankPanel(JFrame frame){
-	    //a new button Listener
+	    
+		/** Creates a new ButtonListener*/
 		ButtonListener butListener = new ButtonListener();
+		
+		/** Creates a new ColumnSortListener*/
 		ColumnSortListener sortListener = new ColumnSortListener();
+		
 		menuBar = new JMenuBar();
 		file = new JMenu("File");
 		sort = new JMenu("Sort");
@@ -67,14 +94,13 @@ public class BankPanel extends JPanel {
 		byDateOpen = new JMenuItem("By Date Opened");
 		addAccountMenuButton = new JMenuItem("Add Account");
 
-		// Create a new table instance
+		/** Create a new table instance*/
 		model = new BankModel();
-        
 		table = new JTable(model);
         table.setPreferredScrollableViewportSize(new Dimension(900, 400));
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-        // Add the table to a scrolling pane
+        // Adds the table to a scrolling pane
 		scrollPane = new JScrollPane(table);
         table.setDragEnabled(false);
         table.getTableHeader().setReorderingAllowed(false);
