@@ -14,33 +14,37 @@ import java.util.HashMap;
  * An account that has a minimum balance and an interest rate
  **********************************************************************/
 public class SavingsAccount extends Account implements Serializable {
-    /*******************************************************************
+    /**
      * A unique identifier for this class
-     ******************************************************************/
+     */
 	private static final long serialVersionUID = 996106642L;
 
+    /**
+     * The headers that are unique to this implementation of Account
+     */
     public static final HeaderName[] uniqueHeaders = {
             new HeaderName(SavingsAccount.class, "Minimum Balance"),
             new HeaderName(SavingsAccount.class, "Interest Rate"),
     };
 
-    /*******************************************************************
+    /**
      * Identifies the class for the toString() method
-     ******************************************************************/
+     */
     public static final String classIdentifier = "SavingsAccount";
 
-    /*******************************************************************
+    /**
      * The number of items represented in the output of toString()
-     ******************************************************************/
+     */
     private static final int numberOfItemsInToString = 7;
 
-    /*******************************************************************
+    /**
      * The minimum balance the account must have
-     ******************************************************************/
+     */
 	private double minBalance;
-    /*******************************************************************
+
+    /**
      * The interest rate for this account
-     ******************************************************************/
+     */
 	private double interestRate;
 
     public SavingsAccount() {
@@ -240,7 +244,9 @@ public class SavingsAccount extends Account implements Serializable {
         }
 
         //Uses lambda expressions to simplify the syntax
-        if (header.equals(uniqueHeaders[0]) || header.equals(uniqueHeaders[1])){
+        if (    header.equals(uniqueHeaders[0]) ||
+                header.equals(uniqueHeaders[1])){
+
             return (Account a1, Account a2) -> {
                 if (a1 instanceof SavingsAccount &&
                     a2 instanceof SavingsAccount){
