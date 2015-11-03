@@ -10,16 +10,17 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /***********************************************************************
- * A base account class with several
- * instance variables and getters and setters
- * @author Sully
+ * A base account class with several important statics,
+ * instance variables, getters and setters, and DOM generators/parsers
  **********************************************************************/
 public abstract class Account implements Serializable, Cloneable {
-    /*******************************************************************
+    /**
      * A unique identifier for this class
-     ******************************************************************/
+     */
 	private static final long serialVersionUID = 959565410L;
-
+    /**
+     * The headers used for the base Account properties
+     */
     public static final HeaderName[] defaultDataHeaders = {
             new HeaderName(Account.class, "Account Type"),
             new HeaderName(Account.class, "Account Number"),
@@ -34,39 +35,49 @@ public abstract class Account implements Serializable, Cloneable {
     public static final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("MM/dd/yyyy");
 
-    /*******************************************************************
+    /**
      * The character used to separate the values in toString()
-     ******************************************************************/
+     */
     public static final String toStringSeparator = ";";
 
-    /*******************************************************************
+    /**
      * The unique account number for this account
-     ******************************************************************/
+     */
 	private String number;
 
-    /*******************************************************************
+    /**
      * The name of the owner of this account
-     ******************************************************************/
+     */
 	private String owner;
 
-    /*******************************************************************
+    /**
      * The date that this account was created
-     ******************************************************************/
+     */
 	private GregorianCalendar dateOpened;
 
-    /*******************************************************************
+    /**
      * The current balance of the account
-     ******************************************************************/
+     */
 	private double balance;
 
+    /*******************************************************************
+     * Sets the instance variables according to the specified parameters
+     * Called from sub-classes
+     * @param number The unique account number to represent this Account
+     * @param ownerName The name of the owner of this account
+     * @param dateOpened The date this account was opened
+     * @param balance The balance in this account
+     * @throws IllegalArgumentException if a string parameter
+     *                                  contains a ";" or if balance
+     *                                  is less than 0
+     ******************************************************************/
     public Account(String number, String ownerName,
                    GregorianCalendar dateOpened, double balance){
         //Calls to methods to ensure the data is in valid format
         setNumber(number);
         setOwnerName(ownerName);
         setBalance(balance);
-
-        this.dateOpened = dateOpened;
+        setDateOpened(dateOpened);
     }
 
     /*******************************************************************
@@ -118,7 +129,7 @@ public abstract class Account implements Serializable, Cloneable {
 	
 	/*******************************************************************
      * Gets the serial UID of this class
-	 * @return the serialversionuid
+	 * @return the serialversionuid for this class
 	 ******************************************************************/
 	public static long getSerialversionuid() {
         return serialVersionUID;
@@ -127,6 +138,7 @@ public abstract class Account implements Serializable, Cloneable {
 	/*******************************************************************
      * Sets the account number
 	 * @param number The new account number for this account
+     * @throws IllegalArgumentException if number contains a ";"
 	 ******************************************************************/
 	public void setNumber(String number) {
         if (number.contains(";"))
@@ -138,6 +150,7 @@ public abstract class Account implements Serializable, Cloneable {
 	/*******************************************************************
      * Sets the name of the owner of this account
 	 * @param owner The name of the owner
+     * @throws IllegalArgumentException if owner contains a ";"
 	 ******************************************************************/
 	public void setOwnerName(String owner) {
         if (number.contains(";"))
@@ -174,20 +187,19 @@ public abstract class Account implements Serializable, Cloneable {
 	}
 
     /*******************************************************************
-     * Creates an array of the names of the data stored in the account.
-     * Example for this class:
+     * Creates an array of HeaderNames for the properties stored in this
+     * Account
+     * Example field names for this class:
      *      {"Account Number", "Owner Name", "Date Opened", "Balance"}
      * @return The array of data headers
      ******************************************************************/
-    public HeaderName[] getDataHeaders(){
-        return getClassDataAndHeaders().keySet().toArray(
-                new HeaderName[getClassDataAndHeaders().keySet().size()]);
-    }
+    public abstract HeaderName[] getDataHeaders();
     //Isn't a static method because java doesn't support
     // polymorphic static methods
 
     /*******************************************************************
-     * Returns a unique identifying name for the account class
+     * Returns a unique (human readable) identifying name for the
+     * account class
      * @return A human readable unique class name
      ******************************************************************/
     public abstract String getClassIdentifier();
@@ -196,17 +208,18 @@ public abstract class Account implements Serializable, Cloneable {
 
     /*******************************************************************
      * Generates a HashMap with the data headers as keys
-     * @return The generated hashmap
+     * @return The generated HashMap
      ******************************************************************/
     public abstract HashMap<HeaderName, String> getClassDataAndHeaders();
 
     /*******************************************************************
-     * Gets a comparator based on the name of the header
-     * @param header The header to look up
+     * Gets a comparator based on the name of the header that will sort
+     * in ascending order
+     * @param head The header to look up
      * @return The appropriate comparator or null if none is found
      ******************************************************************/
-    public Comparator<Account> getComparatorFromHeader(HeaderName header) {
-        return getComparatorFromHeader(header, true);
+    public Comparator<Account> getComparatorFromHeader(HeaderName head){
+        return getComparatorFromHeader(head, true);
     }
 
     /*******************************************************************
@@ -216,7 +229,7 @@ public abstract class Account implements Serializable, Cloneable {
      * @return The appropriate comparator or null if none is found
      ******************************************************************/
     public abstract Comparator<Account>
-                getComparatorFromHeader(HeaderName header, boolean ascending);
+          getComparatorFromHeader(HeaderName header, boolean ascending);
 
     /*******************************************************************
      * Gets a comparator based on the name of the header if the header
@@ -237,6 +250,8 @@ public abstract class Account implements Serializable, Cloneable {
         }
 
         //Uses lambda expressions to simplify the syntax
+        //For each of the headers, we check if it's equal and generate
+        //the appropriate comparator
         if (header.equals(defaultDataHeaders[0])){
             return (Account a1, Account a2) -> reverse *
              a1.getClassIdentifier().compareTo(a2.getClassIdentifier());
@@ -261,14 +276,16 @@ public abstract class Account implements Serializable, Cloneable {
     /*******************************************************************
      * Generates a HashMap with the data headers as keys for the
      * components in this Account base class
-     * @return The generated hashmap
+     * @return The generated HashMap
      ******************************************************************/
     protected HashMap<HeaderName, String> getBaseHashMap(){
         HashMap<HeaderName, String> map = new HashMap<>();
         map.put(defaultDataHeaders[0], getClassIdentifier());
         map.put(defaultDataHeaders[1], getNumber());
         map.put(defaultDataHeaders[2], getOwnerName());
-        map.put(defaultDataHeaders[3], DATE_FORMAT.format(getDateOpened().getTime()));
+        map.put(defaultDataHeaders[3], DATE_FORMAT.format(
+                getDateOpened().getTime())
+        );
         map.put(defaultDataHeaders[4], Double.toString(getBalance()));
         return map;
     }
@@ -276,27 +293,32 @@ public abstract class Account implements Serializable, Cloneable {
     /*******************************************************************
      * Given two conflicting sets of data headers, this function creates
      * a properly sorted array with no duplicate elements. It's
-     * basically a dove-tail merge of two arrays
+     * basically a tip-to-tail merge of two arrays
      * @param h1 The headers from one Account class
      * @param h2 The headers from another Account class
      * @return The combined array
      ******************************************************************/
-    public static HeaderName[] resolveHeaders(HeaderName[] h1, HeaderName[] h2){
+    public static HeaderName[] resolveHeaders(HeaderName[] h1,
+                                              HeaderName[] h2){
+        //Create a single list to store the combined headers
         ArrayList<HeaderName> computed = new ArrayList<>();
+
+        //For each one in h1, if it's not already in the list, add it
         for (HeaderName header : h1){
             if (!computed.contains(header)){
                 computed.add(header);
             }
         }
 
+        //For each one in h2, if it's not already in the list, add it
         for (HeaderName header : h2){
             if (!computed.contains(header)){
                 computed.add(header);
             }
         }
 
-        HeaderName[] out = computed.toArray(new HeaderName[computed.size()]);
-        return out;
+        //Convert the result to an array and return it
+        return computed.toArray(new HeaderName[computed.size()]);
     }
 
     /*******************************************************************
@@ -308,7 +330,7 @@ public abstract class Account implements Serializable, Cloneable {
     public abstract String toString();
 
     /*******************************************************************
-     * Generates a DOM element that represents this account
+     * Generates a DOM element that represents this account. For XML
      * @param dom The parent document for this element
      * @return A DOM element that represents the account
      ******************************************************************/
@@ -316,6 +338,7 @@ public abstract class Account implements Serializable, Cloneable {
 
     /*******************************************************************
      * Parses an account from an element and sets instance variables
+     * For use in XML
      * @param element The element to parse from
      ******************************************************************/
     public abstract void parseFromDOMElement(Element element);
@@ -340,7 +363,7 @@ public abstract class Account implements Serializable, Cloneable {
 
     /*******************************************************************
      * Produces an identical copy of this account at a separate
-     * location in memory
+     * location in memory. Is a deep copy of the fields
      * @return A reference to the clone
      ******************************************************************/
     @Override
@@ -348,7 +371,8 @@ public abstract class Account implements Serializable, Cloneable {
         try {
             Account clone = (Account) super.clone();
 
-            //Will "clone" the gregorian calendar as required by super.clone()
+            //Will "clone" the gregorian calendar as required
+            //by super.clone()
             clone.setDateOpenedInMillis(clone.getDateOpenedInMillis());
 
             return clone;
