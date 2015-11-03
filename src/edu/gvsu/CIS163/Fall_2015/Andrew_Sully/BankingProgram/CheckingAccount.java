@@ -13,28 +13,31 @@ import java.util.HashMap;
  * An account that has a monthly fee
  **********************************************************************/
 public class CheckingAccount extends Account implements Serializable {
-    /*******************************************************************
+    /**
      * A unique identifier for this class
-     ******************************************************************/
+     */
 	private static final long serialVersionUID = 920560622L;
 
+    /**
+     * The headers that are unique to this implementation of Account
+     */
     public static final HeaderName[] uniqueHeaders = {
             new HeaderName(CheckingAccount.class, "Monthly Fee")
     };
 
-    /*******************************************************************
+    /**
      * Identifies the class for the toString() method
-     ******************************************************************/
+     */
     public static final String classIdentifier = "CheckingAccount";
 
-    /*******************************************************************
+    /**
      * The number of items represented in the output of toString()
-     ******************************************************************/
+     */
     private static final int numberOfItemsInToString = 6;
 
-    /*******************************************************************
+    /**
      * The fee to be deducted from this account every month
-     ******************************************************************/
+     */
 	private double monthlyFee;
 
     public CheckingAccount() {
@@ -117,6 +120,7 @@ public class CheckingAccount extends Account implements Serializable {
     /*******************************************************************
      * Set the monthly fee for this account
      * @param monthlyFee The new monthly fee
+     * @throws IllegalArgumentException if monthlyFee < 0
      ******************************************************************/
     public void setMonthlyFee(double monthlyFee) {
         if (monthlyFee < 0)
@@ -134,7 +138,7 @@ public class CheckingAccount extends Account implements Serializable {
 
     /*******************************************************************
      * Creates an array of the names of the data stored in the account.
-     * Adds unique fields from this class to the abstract fields
+     * Adds unique fields from this class to the abstract base fields
      * @return The array of data headers
      ******************************************************************/
     public HeaderName[] getDataHeaders() {
