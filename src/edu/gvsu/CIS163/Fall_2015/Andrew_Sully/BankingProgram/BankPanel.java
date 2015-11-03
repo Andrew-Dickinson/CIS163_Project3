@@ -15,7 +15,6 @@ import java.util.Comparator;
 
 //TODO: Java style guide all over. But mostly here (Sully)
 //TODO: Right clicking / double clicking an element pulls up the edit menu(Sully)
-//TODO: XML Definitions file (Andrew)
 //TODO: a clear all button??(Sully)
     
 public class BankPanel extends JPanel {
