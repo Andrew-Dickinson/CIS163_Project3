@@ -18,19 +18,35 @@ import org.w3c.dom.*;
  * This class contains a collection of accounts that can be sorted in
  * various ways and saved to and read from disk in a variety of formats
  **********************************************************************/
-public class BankModel extends AbstractTableModel implements Serializable {
-    /*******************************************************************
+public class BankModel extends AbstractTableModel implements Serializable{
+    /**
      * Stores all of this accounts for this bank
-     ******************************************************************/
+     */
     private ArrayList<Account> accounts;
+
+    /**
+     * A list of the types of accounts allowed in this model
+     */
     private ArrayList<Class> validAccountTypes;
+
+    /**
+     * An array of headers representing the data present in this model
+     */
     private HeaderName[] headers;
 
+    /*******************************************************************
+     * A default constructor. For our purposes it sets
+     * CheckingAccount and SavingsAccount as the allowed types
+     ******************************************************************/
     public BankModel(){
         //Set with default valid Account Types
         this(new Class[]{CheckingAccount.class, SavingsAccount.class});
     }
 
+    /*******************************************************************
+     * Constructs the model with the given valid account types
+     * @param validAccountTypes An array of valid account types
+     ******************************************************************/
     public BankModel(Class[] validAccountTypes){
         //Create an empty ArrayList of accounts
         accounts = new ArrayList<Account>();
@@ -42,7 +58,14 @@ public class BankModel extends AbstractTableModel implements Serializable {
         }
     }
 
-    public BankModel(Class[] validAccountTypes, ArrayList<Account> accounts){
+    /*******************************************************************
+     * Constructs the model with the given valid account types and
+     * pre-existing accounts
+     * @param validAccountTypes An array of valid account types
+     * @param accounts An ArrayList of accounts to include in the model
+     ******************************************************************/
+    public BankModel(Class[] validAccountTypes,
+                     ArrayList<Account> accounts){
         this(validAccountTypes);
 
         //Done this way so that we can encounter any invalid accounts
@@ -51,6 +74,10 @@ public class BankModel extends AbstractTableModel implements Serializable {
         }
     }
 
+    /*******************************************************************
+     * Constructs the model with the given pre-existing accounts
+     * @param accounts An ArrayList of accounts to include in the model
+     ******************************************************************/
     public BankModel(ArrayList<Account> accounts){
         this();
 
@@ -72,7 +99,7 @@ public class BankModel extends AbstractTableModel implements Serializable {
     }
 
     /*******************************************************************
-     * Gets the number of columns of data in this bankmodel
+     * Gets the number of columns of data in this BankModel
      * @return The number of columns
      ******************************************************************/
     @Override
@@ -92,10 +119,13 @@ public class BankModel extends AbstractTableModel implements Serializable {
      ******************************************************************/
     @Override
     public Object getValueAt(int row, int col) {
+        //Get the value from the Account's hashmap
         HashMap<HeaderName, String> dataMap = getAccount(row)
                                         .getClassDataAndHeaders();
+        //Determine the name of the requested data
         HeaderName requestedData = getHeaders()[col];
 
+        //Return it if it exists or "N/A" if not
         String data = dataMap.get(requestedData);
         if (data != null){
             return data;
@@ -139,10 +169,12 @@ public class BankModel extends AbstractTableModel implements Serializable {
 
     /*******************************************************************
      * Removes an account from this model
+     * Finds the location of the account and calls removeAccount(int)
      * @param account The account to remove
+     * @throws IllegalArgumentException if account isn't found
      ******************************************************************/
     public void removeAccount(Account account){
-        int index = 0;
+        int index = -1;
         for (int i = 0; i < accounts.size(); i++){
             if (account.equals(accounts.get(i))){
                 index = i;
@@ -150,6 +182,11 @@ public class BankModel extends AbstractTableModel implements Serializable {
             }
         }
 
+        //If we didn't find it, throw an exception
+        if (index == -1)
+            throw new IllegalArgumentException();
+
+        //Call the removal based on index method
         removeAccount(index);
     }
 
@@ -166,11 +203,16 @@ public class BankModel extends AbstractTableModel implements Serializable {
      *                                  index >= this.getSize()
      ******************************************************************/
     public void updateAccount(int index, Account account) {
+        //Remove and re-add to make duplicate account number
+        //checking easier
         accounts.remove(index);
+
         if (hasAccountNumber(account.getNumber()))
             throw new IllegalArgumentException();
         if (!validAccountTypes.contains(account.getClass()))
             throw new IllegalArgumentException();
+
+        //Add the new account in the original account's location
         accounts.add(index, account);
 
         //The column headers could have changed
@@ -395,8 +437,11 @@ public class BankModel extends AbstractTableModel implements Serializable {
      * store them in an array
      ******************************************************************/
     private void resolveHeaders(){
+        //Create an array of arrays of headers to be resolved into a
+        // single array of headers
         HeaderName[][] headerArrays = new HeaderName[accounts.size()][];
 
+        //Clone the accounts so that sorting doesn't screw them up
         ArrayList<Account> cloned = (ArrayList<Account>) accounts.clone();
 
         //Sort in a standardized way. Based on ID Number
@@ -405,15 +450,19 @@ public class BankModel extends AbstractTableModel implements Serializable {
         Collections.sort(cloned,
                 getComparatorFromHeader(Account.defaultDataHeaders[1]));
 
+        //For each account, copy it's proposed headers into the the
+        //corresponding array slot
         for (int i = 0; i < headerArrays.length; i++){
             headerArrays[i] = cloned.get(i).getDataHeaders();
         }
 
+        //We don't need any funky business if there's only one account
         if (headerArrays.length == 1) {
             headers = headerArrays[0];
             return;
         }
 
+        //Call a recursive static method to resolve the headers
         headers = resolveHeadersRecurse(headerArrays);
     }
 
@@ -422,15 +471,17 @@ public class BankModel extends AbstractTableModel implements Serializable {
      ******************************************************************/
     public static HeaderName[] resolveHeadersRecurse(HeaderName h1[][]){
         if (h1.length == 2){
+            //Base case. Call our static method that combines two arrays
             return  Account.resolveHeaders(h1[0], h1[1]);
         } else {
-
             //Remove the last element from h1
             HeaderName[][] newh1 = new HeaderName[h1.length - 1][];
             for (int i = 0; i < newh1.length; i++){
                 newh1[i] = h1[i];
             }
 
+            //Combine the result from the shorted array with the
+            //last entry
             return Account.resolveHeaders(
                     resolveHeadersRecurse(newh1),
                     h1[h1.length - 1]);
@@ -481,17 +532,21 @@ public class BankModel extends AbstractTableModel implements Serializable {
      * @throws IllegalArgumentException If the file is formatted wrongly
      ******************************************************************/
     public void loadFromBinaryFile(String filePath) throws IOException {
+        //Wipe out the old data
         accounts.clear();
         validAccountTypes.clear();
-    	
+
+        //Take in the new file
     	FileInputStream fileIn = new FileInputStream(filePath);
         try {
             ObjectInputStream in = new ObjectInputStream(fileIn);
 
+            //Read in the BankModel from the file
             BankModel bm = (BankModel) in.readObject();
             accounts = bm.accounts;
             validAccountTypes = bm.validAccountTypes;
         } catch(ClassNotFoundException | ObjectStreamException c) {
+            //This was a file formatting problem
             throw new IllegalArgumentException();
         }
         finally{
@@ -802,6 +857,10 @@ public class BankModel extends AbstractTableModel implements Serializable {
         return true;
     }
 
+    /*******************************************************************
+     * Creates a string representation of this model for debug purposes
+     * @return A string representation
+     ******************************************************************/
     @Override
     public String toString(){
         String built = "";
