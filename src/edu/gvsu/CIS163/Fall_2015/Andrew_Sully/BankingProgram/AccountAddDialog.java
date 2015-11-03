@@ -323,14 +323,14 @@ public class AccountAddDialog {
         String interestRate = interestRateField.getText();
         String monthlyFee = monthlyFeeField.getText();
 
-        if (accountNumber.equals("")){
+        if (accountNumber.equals("") || accountNumber.contains(";")){
             showError(accountNumberField);
             problems += 1;
         } else {
             showGood(accountNumberField);
         }
 
-        if (ownerName.equals("")){
+        if (ownerName.equals("")|| ownerName.contains(";")){
             showError(ownerNameField);
             problems += 1;
         } else {
@@ -347,36 +347,43 @@ public class AccountAddDialog {
         //If balance is invalid, or minimumBalance is enabled and
         // minBal > bal, then we make balance error
         if (!validDouble(balance)
-                || (validDouble(minimumBalance) && validDouble(balance)
-                && minimumBalField.isEnabled()
-                && Double.parseDouble(minimumBalance)
-                > Double.parseDouble(balance))){
+                || (
+                    validDouble(minimumBalance) && validDouble(balance)
+                    && minimumBalField.isEnabled()
+                    && Double.parseDouble(minimumBalance)
+                    > Double.parseDouble(balance)
+                ) || (Double.parseDouble(balance) < 0)){
             showError(balanceField);
             problems += 1;
         } else {
             showGood(balanceField);
         }
 
-        if (!validDouble(minimumBalance) && minimumBalField.isEnabled()){
+        if (    (
+                    !validDouble(minimumBalance) ||
+                    Double.parseDouble(minimumBalance) < 0
+                )  && minimumBalField.isEnabled()) {
+
             showError(minimumBalField);
             problems += 1;
         } else {
             showGood(minimumBalField);
         }
 
-        if (validDouble(minimumBalance) && validDouble(balance)
-                && minimumBalField.isEnabled()){
-
-        }
-
-        if (!validDouble(interestRate) && interestRateField.isEnabled()){
+        if (    (
+                !validDouble(interestRate) ||
+                        Double.parseDouble(interestRate) < 0
+                )  && interestRateField.isEnabled()) {
             showError(interestRateField);
             problems += 1;
         } else {
             showGood(interestRateField);
         }
 
-        if (!validDouble(monthlyFee) && monthlyFeeField.isEnabled()){
+        if (    (
+                !validDouble(monthlyFee) ||
+                        Double.parseDouble(monthlyFee) < 0
+                )  && monthlyFeeField.isEnabled()) {
             showError(monthlyFeeField);
             problems += 1;
         } else {
