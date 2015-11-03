@@ -128,9 +128,10 @@ public class BankFileDialog extends JFileChooser {
                 if (extFilter.equals(txtFilter)) {
                     //It is a txt file
 
-                    //Automatically append the file extension if not done
-                    //by the user
-                    if (!filePath.endsWith("." + txtFilter.getExtensions()[0])) {
+                    //Automatically append the file extension if not
+                    //done by the user
+                    if (!filePath.endsWith("."
+                            + txtFilter.getExtensions()[0])) {
                         filePath += "." + txtFilter.getExtensions()[0];
                     }
 
@@ -138,9 +139,10 @@ public class BankFileDialog extends JFileChooser {
                 } else if (extFilter.equals(bnkFilter)) {
                     //It is a binary file
 
-                    //Automatically append the file extension if not done
-                    //by the user
-                    if (!filePath.endsWith("." + bnkFilter.getExtensions()[0])) {
+                    //Automatically append the file extension if not
+                    //done by the user
+                    if (!filePath.endsWith("."
+                            + bnkFilter.getExtensions()[0])) {
                         filePath += "." + bnkFilter.getExtensions()[0];
                     }
 
@@ -148,9 +150,10 @@ public class BankFileDialog extends JFileChooser {
                 } else if (extFilter.equals(xmlFilter)) {
                     //It is an XML file
 
-                    //Automatically append the file extension if not done
-                    //by the user
-                    if (!filePath.endsWith("." + xmlFilter.getExtensions()[0])) {
+                    //Automatically append the file extension if not
+                    //done by the user
+                    if (!filePath.endsWith("."
+                            + xmlFilter.getExtensions()[0])) {
                         filePath += "." + xmlFilter.getExtensions()[0];
                     }
 
