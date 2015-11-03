@@ -156,6 +156,8 @@ public class SavingsAccount extends Account implements Serializable {
 	 * @param minBalance the new minimum balance to set
 	 ******************************************************************/
 	public void setMinBalance(double minBalance) {
+        if (minBalance < 0)
+            throw new IllegalArgumentException();
 		this.minBalance = minBalance;
 	}
 	
@@ -164,6 +166,8 @@ public class SavingsAccount extends Account implements Serializable {
 	 * @param interestRate the new interest rate to set
 	 ******************************************************************/
 	public void setInterestRate(double interestRate) {
+        if (interestRate < 0)
+            throw new IllegalArgumentException();
 		this.interestRate = interestRate;
 	}
 

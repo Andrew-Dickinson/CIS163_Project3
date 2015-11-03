@@ -119,6 +119,8 @@ public class CheckingAccount extends Account implements Serializable {
      * @param monthlyFee The new monthly fee
      ******************************************************************/
     public void setMonthlyFee(double monthlyFee) {
+        if (monthlyFee < 0)
+            throw new IllegalArgumentException();
         this.monthlyFee = monthlyFee;
     }
 
