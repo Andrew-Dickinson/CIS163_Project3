@@ -11,7 +11,8 @@ public class Driver {
         JFrame frame = new JFrame("Bank Application");
         JPanel panel = new BankPanel(frame);
         frame.add(panel);
-        frame.setSize(950,550);
+        frame.setSize(950, 550);
+        frame.setResizable(false);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }

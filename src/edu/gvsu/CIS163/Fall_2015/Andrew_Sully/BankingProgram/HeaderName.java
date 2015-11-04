@@ -1,10 +1,12 @@
 package edu.gvsu.CIS163.Fall_2015.Andrew_Sully.BankingProgram;
 
+import java.io.Serializable;
+
 /***********************************************************************
  * A simple implementation of a namespace system to allow fields to have
  * the same name in different classes with no conflict
  **********************************************************************/
-public class HeaderName {
+public class HeaderName implements Serializable {
     /**
      * The package and class name of the class that owns this header
      */
